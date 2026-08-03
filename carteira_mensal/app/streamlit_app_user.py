@@ -150,7 +150,7 @@ def historical_executable_portfolios(f):
             df=df.rename(columns={'tipo_linha':'tipo_alocacao','peso_final':'peso_executavel_total','contribuicao':'contribuicao_executavel'})
         else:
             df=pd.DataFrame()
-    extra=finalized_partial_portfolio_rows(f)
+    extra=all_finalized_partial_portfolio_rows(f)
     if not extra.empty:
         if df.empty or 'mes' not in df.columns:
             df=extra
@@ -159,6 +159,8 @@ def historical_executable_portfolios(f):
             extra=extra[~extra['mes'].astype(str).str[:7].isin(months)]
             if not extra.empty: df=pd.concat([df,extra],ignore_index=True,sort=False)
     return df
+def finalized_partial_files()->list[Path]:
+    return sorted(EXCEL_DIR.glob('parcial_carteira_forward_2026_*.xlsx'), key=lambda p:p.stat().st_mtime)
 def finalized_partial_forward(ps:dict[str,Any],mes:str)->Path|None:
     name=str(ps.get('arquivo_forward_usado') or '').strip()
     if name:
@@ -166,9 +168,10 @@ def finalized_partial_forward(ps:dict[str,Any],mes:str)->Path|None:
         if p.exists(): return p
     key=mes.replace('-','_')
     return latest(f'carteira_forward_{key}*.xlsx')
-def finalized_partial_portfolio_rows(f)->pd.DataFrame:
-    if not f.partial: return pd.DataFrame()
-    ps=fields(f.partial,'Resumo Parcial')
+def finalized_partial_portfolio_rows(f,partial_path:Path|None=None)->pd.DataFrame:
+    partial_path=partial_path or f.partial
+    if not partial_path: return pd.DataFrame()
+    ps=fields(partial_path,'Resumo Parcial')
     if 'fechamento' not in str(ps.get('status','')).lower(): return pd.DataFrame()
     mes=str(ps.get('mes') or ps.get('mes_referencia') or '')[:7]
     if not mes: return pd.DataFrame()
@@ -179,7 +182,7 @@ def finalized_partial_portfolio_rows(f)->pd.DataFrame:
     if base.empty: return pd.DataFrame()
     ex,_,_=executable_portfolio(base,HISTORY_CAPITAL,0.01,True)
     if ex.empty: return pd.DataFrame()
-    assets=sheet(str(f.partial),'Ativos')
+    assets=sheet(str(partial_path),'Ativos')
     out=ex.copy(); out['ticker']=out['ticker'].astype(str).str.upper()
     if not assets.empty and 'ticker' in assets:
         src=assets.copy(); src['ticker_key']=src['ticker'].astype(str).str.upper()
@@ -193,17 +196,22 @@ def finalized_partial_portfolio_rows(f)->pd.DataFrame:
     out['mes']=mes
     out['tipo_alocacao']=out.apply(lambda r:'CDI' if is_cdi(r) else 'acoes',axis=1)
     out['peso_executavel_total']=out.get('peso_executavel')
-    out['arquivo_origem']=f.partial.name
+    out['arquivo_origem']=partial_path.name
     cols=['mes','ticker','nome','setor','tipo_alocacao','peso_executavel_total','peso_modelo','quantidade','preco_referencia','preco_atual','valor_estimado','retorno_periodo','contribuicao_executavel','arquivo_origem']
     return out[[c for c in cols if c in out.columns]]
-def finalized_partial_month_row(f)->pd.DataFrame:
-    if not f.partial: return pd.DataFrame()
-    ps=fields(f.partial,'Resumo Parcial')
+def all_finalized_partial_portfolio_rows(f)->pd.DataFrame:
+    frames=[finalized_partial_portfolio_rows(f,p) for p in finalized_partial_files()]
+    frames=[x for x in frames if not x.empty]
+    return pd.concat(frames,ignore_index=True,sort=False) if frames else pd.DataFrame()
+def finalized_partial_month_row(f,partial_path:Path|None=None)->pd.DataFrame:
+    partial_path=partial_path or f.partial
+    if not partial_path: return pd.DataFrame()
+    ps=fields(partial_path,'Resumo Parcial')
     status=str(ps.get('status','')).lower()
     if 'fechamento' not in status: return pd.DataFrame()
     mes=str(ps.get('mes') or ps.get('mes_referencia') or '')[:7]
     if not mes: return pd.DataFrame()
-    rows=finalized_partial_portfolio_rows(f)
+    rows=finalized_partial_portfolio_rows(f,partial_path)
     stock_value=float(pd.to_numeric(rows.loc[~rows.apply(is_cdi,axis=1),'valor_estimado'],errors='coerce').sum()) if not rows.empty and 'valor_estimado' in rows.columns else np.nan
     cdi_value=float(pd.to_numeric(rows.loc[rows.apply(is_cdi,axis=1),'valor_estimado'],errors='coerce').sum()) if not rows.empty and 'valor_estimado' in rows.columns else np.nan
     ret_pratico=np.nan
@@ -221,6 +229,12 @@ def finalized_partial_month_row(f)->pd.DataFrame:
     row['alfa']=row['retorno_modelo']-row['retorno_expost_ibov'] if not np.isnan(row['retorno_modelo']) and not np.isnan(row['retorno_expost_ibov']) else np.nan
     row['bateu_ibov']=bool(row['alfa']>0) if not np.isnan(row['alfa']) else False
     return pd.DataFrame([row])
+def all_finalized_partial_month_rows(f)->pd.DataFrame:
+    frames=[finalized_partial_month_row(f,p) for p in finalized_partial_files()]
+    frames=[x for x in frames if not x.empty]
+    if not frames: return pd.DataFrame()
+    out=pd.concat(frames,ignore_index=True,sort=False)
+    return out.drop_duplicates(subset=['mes'],keep='last') if 'mes' in out.columns else out
 def monthly(f):
     if not f.operational: return pd.DataFrame()
     df=sheet(str(f.operational),'Mes a Mes')
@@ -244,9 +258,12 @@ def monthly(f):
         df=df.merge(cdi_cal,on='mes',how='left')
         df['retorno_cdi_liquido_periodo']=df['retorno_cdi_liquido_calendario'].combine_first(df.get('retorno_cdi_liquido_periodo'))
         df=df.drop(columns=['retorno_cdi_liquido_calendario'])
-    extra=finalized_partial_month_row(f)
-    if not extra.empty and 'mes' in df.columns and not extra['mes'].iloc[0] in set(df['mes'].astype(str).str[:7]):
-        df=pd.concat([df,extra],ignore_index=True,sort=False)
+    extra=all_finalized_partial_month_rows(f)
+    if not extra.empty and 'mes' in df.columns:
+        existing=set(df['mes'].astype(str).str[:7])
+        extra=extra[~extra['mes'].astype(str).str[:7].isin(existing)]
+        if not extra.empty:
+            df=pd.concat([df,extra],ignore_index=True,sort=False)
     ibov_cal=calendar_ibov_monthly()
     if not ibov_cal.empty and 'mes' in df.columns:
         df['mes']=df['mes'].astype(str).str[:7]
@@ -439,5 +456,6 @@ def main():
     with tabs[4]: render_previous_portfolios(f)
     with tabs[5]: render_method()
 if __name__=='__main__': main()
+
 
 
