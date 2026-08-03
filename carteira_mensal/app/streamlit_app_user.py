@@ -339,7 +339,8 @@ def render_start(f,port,capital,min_w,frac):
     if ps:
         cr,_pa=practical_partial_return(ex,ps,assets) if not ex.empty and not assets.empty else (first(ps,['retorno_carteira_parcial_aplicada','retorno_carteira_periodo']),pd.DataFrame())
         ib=first(ps,['retorno_ibov_parcial','retorno_ibov_periodo']); al=fnum(cr,np.nan)-fnum(ib,np.nan) if not np.isnan(fnum(cr,np.nan)) and not np.isnan(fnum(ib,np.nan)) else first(ps,['alfa_parcial_vs_ibov','alfa_vs_ibov']); dt=format_updated_at(first(ps,['data_avaliacao_parcial','data_avaliacao']),f.partial)
-        st.markdown('#### Fechamento do mes'); p1,p2,p3,p4=st.columns(4); p1.metric('Modelo executavel',pct(cr)); p2.metric('IBOV',pct(ib)); p3.metric('Diferenca',pct(al)); p4.metric('Atualizado em',dt)
+        status_txt=str(ps.get('status','')).lower(); period_title='Fechamento do mes' if 'fechamento' in status_txt else 'Acompanhamento do mes'
+        st.markdown(f'#### {period_title}'); p1,p2,p3,p4=st.columns(4); p1.metric('Modelo executavel',pct(cr)); p2.metric('IBOV',pct(ib)); p3.metric('Diferenca',pct(al)); p4.metric('Atualizado em',dt)
     left,right=st.columns([.9,1.35])
     with left:
         st.markdown('#### Divisao executavel')
@@ -456,6 +457,7 @@ def main():
     with tabs[4]: render_previous_portfolios(f)
     with tabs[5]: render_method()
 if __name__=='__main__': main()
+
 
 
 
