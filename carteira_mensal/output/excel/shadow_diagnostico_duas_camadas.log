@@ -1,0 +1,21 @@
+Teste 6 - Diagnostico de Mercado em Duas Camadas
+BASELINE_ATUAL: retorno=32.63% | IBOV=43.89% | alfa=-11.26%
+DUAS_CAMADAS_AGRESSIVO: retorno=31.91% | IBOV=43.89% | alfa=-11.98%
+DUAS_CAMADAS_CONSERVADOR: retorno=32.32% | IBOV=43.89% | alfa=-11.57%
+DUAS_CAMADAS_MODERADO: retorno=32.21% | IBOV=43.89% | alfa=-11.68%
+Meses com sinal de virada relevante:
+  2025-02: bucket=queda_forte | score=6 | sinais=amplitude_perto_limite_15pct; ativos_positivos_1m_40pct; rsi_mediano_recuperacao_35_55; reversao_ou_bollinger_15pct; retorno_1m_mediano_maior_menos2pct; retorno_4m_mediano_maior_menos10pct
+  2025-03: bucket=queda_leve | score=7 | sinais=amplitude_perto_limite_15pct; amplitude_melhorando_5pp; mm9_gt_mm21_35pct; rsi_mediano_recuperacao_35_55; reversao_ou_bollinger_15pct; retorno_1m_mediano_maior_menos2pct; retorno_4m_mediano_maior_menos10pct
+  2025-04: bucket=alta | score=8 | sinais=amplitude_perto_limite_15pct; amplitude_melhorando_5pp; ativos_positivos_1m_40pct; mm9_gt_mm21_35pct; rsi_mediano_recuperacao_35_55; reversao_ou_bollinger_15pct; retorno_1m_mediano_maior_menos2pct; retorno_4m_mediano_maior_menos10pct
+  2025-05: bucket=alta | score=6 | sinais=amplitude_perto_limite_15pct; amplitude_melhorando_5pp; ativos_positivos_1m_40pct; mm9_gt_mm21_35pct; retorno_1m_mediano_maior_menos2pct; retorno_4m_mediano_maior_menos10pct
+  2025-06: bucket=alta | score=5 | sinais=amplitude_perto_limite_15pct; ativos_positivos_1m_40pct; mm9_gt_mm21_35pct; retorno_1m_mediano_maior_menos2pct; retorno_4m_mediano_maior_menos10pct
+  2025-07: bucket=alta | score=5 | sinais=amplitude_perto_limite_15pct; ativos_positivos_1m_40pct; mm9_gt_mm21_35pct; retorno_1m_mediano_maior_menos2pct; retorno_4m_mediano_maior_menos10pct
+  2025-08: bucket=alta | score=5 | sinais=amplitude_perto_limite_15pct; mm9_gt_mm21_35pct; rsi_mediano_recuperacao_35_55; reversao_ou_bollinger_15pct; retorno_4m_mediano_maior_menos10pct
+  2025-09: bucket=alta | score=5 | sinais=amplitude_perto_limite_15pct; ativos_positivos_1m_40pct; mm9_gt_mm21_35pct; retorno_1m_mediano_maior_menos2pct; retorno_4m_mediano_maior_menos10pct
+  2025-10: bucket=alta | score=6 | sinais=amplitude_perto_limite_15pct; amplitude_melhorando_5pp; ativos_positivos_1m_40pct; mm9_gt_mm21_35pct; retorno_1m_mediano_maior_menos2pct; retorno_4m_mediano_maior_menos10pct
+  2025-11: bucket=alta | score=6 | sinais=amplitude_perto_limite_15pct; amplitude_melhorando_5pp; ativos_positivos_1m_40pct; mm9_gt_mm21_35pct; retorno_1m_mediano_maior_menos2pct; retorno_4m_mediano_maior_menos10pct
+  2025-12: bucket=alta | score=6 | sinais=amplitude_perto_limite_15pct; amplitude_melhorando_5pp; ativos_positivos_1m_40pct; mm9_gt_mm21_35pct; retorno_1m_mediano_maior_menos2pct; retorno_4m_mediano_maior_menos10pct
+  2026-02: bucket=alta | score=5 | sinais=amplitude_perto_limite_15pct; ativos_positivos_1m_40pct; mm9_gt_mm21_35pct; retorno_1m_mediano_maior_menos2pct; retorno_4m_mediano_maior_menos10pct
+  2026-03: bucket=alta | score=6 | sinais=amplitude_perto_limite_15pct; amplitude_melhorando_5pp; ativos_positivos_1m_40pct; mm9_gt_mm21_35pct; retorno_1m_mediano_maior_menos2pct; retorno_4m_mediano_maior_menos10pct
+  2026-05: bucket=alta | score=5 | sinais=amplitude_perto_limite_15pct; mm9_gt_mm21_35pct; rsi_mediano_recuperacao_35_55; reversao_ou_bollinger_15pct; retorno_4m_mediano_maior_menos10pct
+  2026-06: bucket=alta | score=5 | sinais=amplitude_perto_limite_15pct; mm9_gt_mm21_35pct; rsi_mediano_recuperacao_35_55; reversao_ou_bollinger_15pct; retorno_4m_mediano_maior_menos10pct

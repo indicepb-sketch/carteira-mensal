@@ -1,0 +1,59 @@
+2026-06-29 09:49:46,513 INFO __main__ - Iniciando carteira mensal para 78 ativos
+2026-06-29 09:49:56,261 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: IEEX.SA"}}}
+2026-06-29 09:49:56,770 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-29 09:49:56,771 ERROR yfinance - 
+1 Failed download:
+2026-06-29 09:49:56,771 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-29 09:49:58,153 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: IEEX.SA"}}}
+2026-06-29 09:49:58,547 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-29 09:49:58,547 ERROR yfinance - 
+1 Failed download:
+2026-06-29 09:49:58,548 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-29 09:49:59,555 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-29 09:49:59,556 ERROR yfinance - 
+1 Failed download:
+2026-06-29 09:49:59,556 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-29 09:50:02,678 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-29 09:50:02,680 ERROR yfinance - 
+1 Failed download:
+2026-06-29 09:50:02,680 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-29 09:50:03,186 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-29 09:50:03,187 ERROR yfinance - 
+1 Failed download:
+2026-06-29 09:50:03,187 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-29 09:50:04,194 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-29 09:50:04,195 ERROR yfinance - 
+1 Failed download:
+2026-06-29 09:50:04,195 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-29 09:51:12,394 INFO __main__ - Data-base: formacao=2026-04-01 limite_selecao=2026-04-01 avaliacao=2026-04-30
+2026-06-29 09:51:22,420 INFO __main__ - AUDITORIA_RSI_PRIO3: timeframe=1W periodo=14 ultimo_fechamento=2026-04-03 00:00:00 fechamento=64.1300 rsi=69.7876
+2026-06-29 09:51:22,431 INFO __main__ - AUDITORIA_RSI_PRIO3_ULTIMAS_20_SEMANAS:
+data_fechamento  fechamento  variacao     ganho     perda  media_ganho_wilder  media_perda_wilder       rs       rsi
+     2025-11-21   38.799999 -0.990002  0.000000  0.990002            0.564429            0.561231 1.005700 50.142091
+     2025-11-28   37.209999 -1.590000  0.000000  1.590000            0.524113            0.634714 0.825747 45.227890
+     2025-12-05   39.259998  2.049999  2.049999 -0.000000            0.633105            0.589377 1.074193 51.788475
+     2025-12-12   39.410000  0.150002  0.150002 -0.000000            0.598598            0.547279 1.093770 52.239271
+     2025-12-19   38.209999 -1.200001  0.000000  1.200001            0.555841            0.593902 0.935913 48.344787
+     2025-12-26   40.599998  2.389999  2.389999 -0.000000            0.686852            0.551480 1.245469 55.465880
+     2026-01-02   41.759998  1.160000  1.160000 -0.000000            0.720648            0.512089 1.407272 58.459194
+     2026-01-09   42.680000  0.920002  0.920002 -0.000000            0.734888            0.475511 1.545469 60.714509
+     2026-01-16   44.169998  1.489998  1.489998 -0.000000            0.788824            0.441546 1.786505 64.112748
+     2026-01-23   48.520000  4.350002  4.350002 -0.000000            1.043194            0.410007 2.544332 71.785937
+     2026-01-30   50.990002  2.470001  2.470001 -0.000000            1.145109            0.380721 3.007739 75.048273
+     2026-02-06   50.630001 -0.360001  0.000000  0.360001            1.063315            0.379241 2.803800 73.710498
+     2026-02-13   52.560001  1.930000  1.930000 -0.000000            1.125221            0.352152 3.195270 76.163632
+     2026-02-20   55.020000  2.459999  2.459999 -0.000000            1.220563            0.326998 3.732625 78.870077
+     2026-02-27   54.490002 -0.529999  0.000000  0.529999            1.133380            0.341499 3.318842 76.845646
+     2026-03-06   59.389999  4.899998  4.899998 -0.000000            1.402424            0.317106 4.422574 81.558575
+     2026-03-13   57.799999 -1.590000  0.000000  1.590000            1.302251            0.408027 3.191581 76.142655
+     2026-03-20   67.889999 10.090000 10.090000 -0.000000            1.929947            0.378882 5.093794 83.589863
+     2026-03-27   70.820000  2.930000  2.930000 -0.000000            2.001379            0.351819 5.688662 85.049327
+     2026-04-03   64.129997 -6.690002  0.000000  6.690002            1.858424            0.804546 2.309903 69.787630
+2026-06-29 09:57:38,110 INFO __main__ - Auditoria beta/correlacao: janela_inicio=2025-12-02 janela_fim=2026-04-01 benchmark=^BVSP fonte=yfinance tipo_preco=adjusted_close observacoes_ibov=81 ativos_auditados=20 beta_ibov=1.0 correlacao_ibov=1.0 beta_batendo=20 beta_divergencias=0 beta_divergentes= correlacao_batendo=20 correlacao_divergencias=0 correlacao_divergentes=
+2026-06-29 09:57:38,111 INFO __main__ - Arquivos gerados: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\carteira_recomendada_2026_04_v2.xlsx, C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\pdf\relatorio_carteira_2026_04_v2.pdf
+2026-06-29 09:57:38,111 INFO __main__ - Resumo: analisados=78 preliminares=20 risco=20 liberados=13 selecionados=0 peso_zero=20 valida=False
+2026-06-29 09:57:38,115 INFO __main__ - Comparativo regime: [{'quantidade de acoes': 5, 'CV': nan, 'beta': nan, 'correlacao_carteira_ibov': nan, 'score_aderencia_regime': nan, 'maior_peso_setorial': nan, 'setor_mais_concentrado': '', 'quantidade_blocos_risco_duplicados': 0, 'carteira_elegivel_para_escolha_final': False, 'motivo de escolha ou rejeicao': 'limites individuais de peso tornam a carteira inviavel'}, {'quantidade de acoes': 6, 'CV': nan, 'beta': nan, 'correlacao_carteira_ibov': nan, 'score_aderencia_regime': nan, 'maior_peso_setorial': nan, 'setor_mais_concentrado': '', 'quantidade_blocos_risco_duplicados': 0, 'carteira_elegivel_para_escolha_final': False, 'motivo de escolha ou rejeicao': 'limites individuais de peso tornam a carteira inviavel'}, {'quantidade de acoes': 8, 'CV': nan, 'beta': nan, 'correlacao_carteira_ibov': nan, 'score_aderencia_regime': nan, 'maior_peso_setorial': nan, 'setor_mais_concentrado': '', 'quantidade_blocos_risco_duplicados': 0, 'carteira_elegivel_para_escolha_final': False, 'motivo de escolha ou rejeicao': 'limites individuais de peso tornam a carteira inviavel'}, {'quantidade de acoes': 10, 'CV': nan, 'beta': nan, 'correlacao_carteira_ibov': nan, 'score_aderencia_regime': nan, 'maior_peso_setorial': nan, 'setor_mais_concentrado': '', 'quantidade_blocos_risco_duplicados': 0, 'carteira_elegivel_para_escolha_final': False, 'motivo de escolha ou rejeicao': 'maximo de ativos em watchlist flexivel excedido; limites individuais de peso tornam a carteira inviavel'}]
+2026-06-29 09:57:38,128 INFO __main__ - Ativos bloqueados por aderencia ao regime: [{'ticker': 'PRIO3.SA', 'beta': 0.14196577457360507, 'correlacao_ibov': 0.08251703695336916, 'tipo_watchlist': 'watchlist_flexivel', 'grupo_economico_ou_bloco_risco': 'PRIO', 'motivo_bloqueio_aderencia_regime': 'beta_e_correlacao_muito_baixos_em_mercado_favoravel_watchlist_flexivel'}]
+2026-06-29 09:57:38,129 INFO __main__ - Ativos bloqueados por beta/correlacao negativa em mercado favoravel: []
+2026-06-29 09:57:38,131 INFO __main__ - Ativos bloqueados por beta/correlacao muito baixos em mercado favoravel: [{'ticker': 'PRIO3.SA', 'beta': 0.14196577457360507, 'correlacao_ibov': 0.08251703695336916, 'tipo_watchlist': 'watchlist_flexivel', 'grupo_economico_ou_bloco_risco': 'PRIO', 'motivo_bloqueio_aderencia_regime': 'beta_e_correlacao_muito_baixos_em_mercado_favoravel_watchlist_flexivel'}]
+2026-06-29 09:57:38,132 INFO __main__ - Carteira escolhida: motivo= ativos= pesos= retorno=nan risco=nan CV=nan beta=nan Sharpe=nan maior_peso_setorial=nan setor_concentrado= blocos_duplicados= perf_carteira=nan perf_ibov=-0.0007681556795510192 alfa=nan

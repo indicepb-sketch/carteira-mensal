@@ -1,0 +1,209 @@
+Teste 16 - Diagnostico de Regime com Camada Risk-On/Risk-Off
+Modo sombra; producao intacta; compara 13B contra beta mediano, MM50/MM100 e confirmacoes hibridas.
+Sinais risk-on/risk-off por mes:
+  2024-01: IBOV=-3.73% | beta_med=1.0378 => risk_off | pct_MM50>MM100=63.16% => risk_on
+  2024-02: IBOV=0.42% | beta_med=1.0630 => risk_off | pct_MM50>MM100=69.74% => risk_off
+  2024-03: IBOV=-0.83% | beta_med=0.9980 => risk_off | pct_MM50>MM100=71.43% => risk_off
+  2024-04: IBOV=-0.84% | beta_med=0.9663 => risk_off | pct_MM50>MM100=74.03% => risk_off
+  2024-05: IBOV=-3.95% | beta_med=1.0565 => risk_off | pct_MM50>MM100=75.32% => risk_off
+  2024-06: IBOV=1.54% | beta_med=1.1290 => risk_on | pct_MM50>MM100=74.03% => risk_off
+  2024-07: IBOV=2.35% | beta_med=1.1345 => risk_on | pct_MM50>MM100=71.43% => risk_off
+  2024-08: IBOV=6.76% | beta_med=1.1701 => risk_on | pct_MM50>MM100=67.53% => risk_on
+  2024-09: IBOV=-2.34% | beta_med=1.0399 => risk_off | pct_MM50>MM100=70.13% => risk_off
+  2024-10: IBOV=-2.10% | beta_med=1.0902 => risk_on | pct_MM50>MM100=71.43% => risk_off
+  2024-11: IBOV=-1.91% | beta_med=1.0531 => risk_off | pct_MM50>MM100=70.13% => risk_off
+  2024-12: IBOV=-3.95% | beta_med=1.1284 => risk_on | pct_MM50>MM100=68.83% => risk_off
+  2025-01: IBOV=5.00% | beta_med=1.1661 => risk_on | pct_MM50>MM100=59.74% => risk_on
+  2025-02: IBOV=-2.52% | beta_med=1.2420 => risk_on | pct_MM50>MM100=51.95% => risk_on
+  2025-03: IBOV=5.86% | beta_med=1.2398 => risk_on | pct_MM50>MM100=45.45% => risk_on
+  2025-04: IBOV=2.99% | beta_med=1.1930 => risk_on | pct_MM50>MM100=42.86% => risk_on
+  2025-05: IBOV=1.40% | beta_med=1.0969 => risk_on | pct_MM50>MM100=40.26% => risk_on
+  2025-06: IBOV=1.51% | beta_med=1.0819 => risk_on | pct_MM50>MM100=50.65% => risk_on
+  2025-07: IBOV=-4.64% | beta_med=1.0713 => risk_off | pct_MM50>MM100=53.25% => risk_on
+  2025-08: IBOV=6.78% | beta_med=1.0533 => risk_off | pct_MM50>MM100=53.25% => risk_on
+  2025-09: IBOV=3.62% | beta_med=1.1171 => risk_on | pct_MM50>MM100=49.35% => risk_on
+  2025-10: IBOV=2.76% | beta_med=1.1344 => risk_on | pct_MM50>MM100=51.95% => risk_on
+  2025-11: IBOV=5.73% | beta_med=1.1164 => risk_on | pct_MM50>MM100=54.55% => risk_on
+  2025-12: IBOV=1.59% | beta_med=1.1249 => risk_on | pct_MM50>MM100=58.44% => risk_on
+  2026-01: IBOV=12.56% | beta_med=1.1619 => risk_on | pct_MM50>MM100=64.10% => risk_on
+  2026-02: IBOV=4.09% | beta_med=1.1346 => risk_on | pct_MM50>MM100=65.38% => risk_on
+  2026-03: IBOV=-0.70% | beta_med=1.1273 => risk_on | pct_MM50>MM100=73.08% => risk_off
+  2026-04: IBOV=-0.08% | beta_med=1.0628 => risk_off | pct_MM50>MM100=76.92% => risk_off
+  2026-05: IBOV=-7.22% | beta_med=0.9442 => risk_off | pct_MM50>MM100=76.92% => risk_off
+  2026-06: IBOV=-0.34% | beta_med=0.9570 => risk_off | pct_MM50>MM100=76.92% => risk_off
+
+Cenario: 13b_conservador | Baseline Teste 14: diagnostico em duas camadas com filtro anti-falso-positivo.
+  2024-01: bucket=alta | IBOV=-3.73% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-02: bucket=alta | IBOV=0.42% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-03: bucket=alta | IBOV=-0.83% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-04: bucket=alta | IBOV=-0.84% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-05: bucket=alta | IBOV=-3.95% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-06: bucket=queda_forte | IBOV=1.54% | 13B conservador: tendencia favoravel <35% (28.2%)
+  2024-07: bucket=queda_forte | IBOV=2.35% | 13B conservador: tendencia favoravel <35% (26.9%)
+  2024-08: bucket=queda_forte | IBOV=6.76% | 13B conservador: tendencia favoravel <35% (32.1%)
+  2024-09: bucket=alta | IBOV=-2.34% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-10: bucket=alta | IBOV=-2.10% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-11: bucket=alta | IBOV=-1.91% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-12: bucket=queda_forte | IBOV=-3.95% | 13B conservador: tendencia favoravel <35% (26.9%)
+  2025-01: bucket=queda_forte | IBOV=5.00% | 13B conservador: tendencia favoravel <35% (19.2%)
+  2025-02: bucket=queda_forte | IBOV=-2.52% | 13B conservador: tendencia favoravel <35% (17.9%)
+  2025-03: bucket=alta | IBOV=5.86% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-04: bucket=alta | IBOV=2.99% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-05: bucket=alta | IBOV=1.40% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-06: bucket=alta | IBOV=1.51% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-07: bucket=alta | IBOV=-4.64% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-08: bucket=alta | IBOV=6.78% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-09: bucket=alta | IBOV=3.62% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-10: bucket=alta | IBOV=2.76% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-11: bucket=alta | IBOV=5.73% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-12: bucket=alta | IBOV=1.59% | 13B conservador: alta mantida por falta de confirmacao de virada
+  2026-01: bucket=alta | IBOV=12.56% | 13B conservador: preserva alta estrutural ampla sem sobrecompra extrema
+  2026-02: bucket=alta | IBOV=4.09% | 13B conservador: preserva rali amplo; amplitude >=80% e IBOV 1m forte
+  2026-03: bucket=queda_leve | IBOV=-0.70% | 13B conservador: sobrecompra com amplitude 1m abaixo de 80% (69.2%)
+  2026-04: bucket=queda_leve | IBOV=-0.08% | 13B conservador: amplitude <45% (34.6%) e IBOV 1m negativo (-0.7%)
+  2026-05: bucket=queda_forte | IBOV=-7.22% | 13B conservador: amplitude <35% (33.3%) com tendencia/preco acima MM50 enfraquecidos
+  2026-06: bucket=queda_forte | IBOV=-0.34% | 13B conservador: amplitude <35% (23.1%) com tendencia/preco acima MM50 enfraquecidos
+
+Cenario: risk_on_off_beta | Camada risk-on/risk-off usando somente beta mediano do universo.
+  2024-01: bucket=queda_leve | IBOV=-3.73% | beta-only risk-off: beta mediano 1.0378 < 1.0777
+  2024-02: bucket=queda_leve | IBOV=0.42% | beta-only risk-off: beta mediano 1.0630 < 1.0777
+  2024-03: bucket=queda_forte | IBOV=-0.83% | beta-only risk-off: beta mediano 0.9980 < 1.0777
+  2024-04: bucket=queda_forte | IBOV=-0.84% | beta-only risk-off: beta mediano 0.9663 < 1.0777
+  2024-05: bucket=queda_leve | IBOV=-3.95% | beta-only risk-off: beta mediano 1.0565 < 1.0777
+  2024-06: bucket=alta | IBOV=1.54% | beta-only risk-on: beta mediano 1.1290 >= 1.0777
+  2024-07: bucket=alta | IBOV=2.35% | beta-only risk-on: beta mediano 1.1345 >= 1.0777
+  2024-08: bucket=alta | IBOV=6.76% | beta-only risk-on: beta mediano 1.1701 >= 1.0777
+  2024-09: bucket=queda_leve | IBOV=-2.34% | beta-only risk-off: beta mediano 1.0399 < 1.0777
+  2024-10: bucket=alta | IBOV=-2.10% | beta-only risk-on: beta mediano 1.0902 >= 1.0777
+  2024-11: bucket=queda_leve | IBOV=-1.91% | beta-only risk-off: beta mediano 1.0531 < 1.0777
+  2024-12: bucket=alta | IBOV=-3.95% | beta-only risk-on: beta mediano 1.1284 >= 1.0777
+  2025-01: bucket=alta | IBOV=5.00% | beta-only risk-on: beta mediano 1.1661 >= 1.0777
+  2025-02: bucket=alta | IBOV=-2.52% | beta-only risk-on: beta mediano 1.2420 >= 1.0777
+  2025-03: bucket=alta | IBOV=5.86% | beta-only risk-on: beta mediano 1.2398 >= 1.0777
+  2025-04: bucket=alta | IBOV=2.99% | beta-only risk-on: beta mediano 1.1930 >= 1.0777
+  2025-05: bucket=alta | IBOV=1.40% | beta-only risk-on: beta mediano 1.0969 >= 1.0777
+  2025-06: bucket=alta | IBOV=1.51% | beta-only risk-on: beta mediano 1.0819 >= 1.0777
+  2025-07: bucket=queda_leve | IBOV=-4.64% | beta-only risk-off: beta mediano 1.0713 < 1.0777
+  2025-08: bucket=queda_leve | IBOV=6.78% | beta-only risk-off: beta mediano 1.0533 < 1.0777
+  2025-09: bucket=alta | IBOV=3.62% | beta-only risk-on: beta mediano 1.1171 >= 1.0777
+  2025-10: bucket=alta | IBOV=2.76% | beta-only risk-on: beta mediano 1.1344 >= 1.0777
+  2025-11: bucket=alta | IBOV=5.73% | beta-only risk-on: beta mediano 1.1164 >= 1.0777
+  2025-12: bucket=alta | IBOV=1.59% | beta-only risk-on: beta mediano 1.1249 >= 1.0777
+  2026-01: bucket=alta | IBOV=12.56% | beta-only risk-on: beta mediano 1.1619 >= 1.0777
+  2026-02: bucket=alta | IBOV=4.09% | beta-only risk-on: beta mediano 1.1346 >= 1.0777
+  2026-03: bucket=alta | IBOV=-0.70% | beta-only risk-on: beta mediano 1.1273 >= 1.0777
+  2026-04: bucket=queda_leve | IBOV=-0.08% | beta-only risk-off: beta mediano 1.0628 < 1.0777
+  2026-05: bucket=queda_forte | IBOV=-7.22% | beta-only risk-off: beta mediano 0.9442 < 1.0777
+  2026-06: bucket=queda_forte | IBOV=-0.34% | beta-only risk-off: beta mediano 0.9570 < 1.0777
+
+Cenario: risk_on_off_mm50 | Camada risk-on/risk-off usando somente pct de ativos com MM50 > MM100.
+  2024-01: bucket=alta | IBOV=-3.73% | MM50/MM100 risk-on: pct MM50>MM100 63.2% <= 68.5%
+  2024-02: bucket=queda_leve | IBOV=0.42% | MM50/MM100 risk-off: pct MM50>MM100 69.7% > 68.5%
+  2024-03: bucket=queda_leve | IBOV=-0.83% | MM50/MM100 risk-off: pct MM50>MM100 71.4% > 68.5%
+  2024-04: bucket=queda_forte | IBOV=-0.84% | MM50/MM100 risk-off: pct MM50>MM100 74.0% > 68.5%
+  2024-05: bucket=queda_forte | IBOV=-3.95% | MM50/MM100 risk-off: pct MM50>MM100 75.3% > 68.5%
+  2024-06: bucket=queda_forte | IBOV=1.54% | MM50/MM100 risk-off: pct MM50>MM100 74.0% > 68.5%
+  2024-07: bucket=queda_leve | IBOV=2.35% | MM50/MM100 risk-off: pct MM50>MM100 71.4% > 68.5%
+  2024-08: bucket=alta | IBOV=6.76% | MM50/MM100 risk-on: pct MM50>MM100 67.5% <= 68.5%
+  2024-09: bucket=queda_leve | IBOV=-2.34% | MM50/MM100 risk-off: pct MM50>MM100 70.1% > 68.5%
+  2024-10: bucket=queda_leve | IBOV=-2.10% | MM50/MM100 risk-off: pct MM50>MM100 71.4% > 68.5%
+  2024-11: bucket=queda_leve | IBOV=-1.91% | MM50/MM100 risk-off: pct MM50>MM100 70.1% > 68.5%
+  2024-12: bucket=queda_leve | IBOV=-3.95% | MM50/MM100 risk-off: pct MM50>MM100 68.8% > 68.5%
+  2025-01: bucket=alta | IBOV=5.00% | MM50/MM100 risk-on: pct MM50>MM100 59.7% <= 68.5%
+  2025-02: bucket=alta | IBOV=-2.52% | MM50/MM100 risk-on: pct MM50>MM100 51.9% <= 68.5%
+  2025-03: bucket=alta | IBOV=5.86% | MM50/MM100 risk-on: pct MM50>MM100 45.5% <= 68.5%
+  2025-04: bucket=alta | IBOV=2.99% | MM50/MM100 risk-on: pct MM50>MM100 42.9% <= 68.5%
+  2025-05: bucket=alta | IBOV=1.40% | MM50/MM100 risk-on: pct MM50>MM100 40.3% <= 68.5%
+  2025-06: bucket=alta | IBOV=1.51% | MM50/MM100 risk-on: pct MM50>MM100 50.6% <= 68.5%
+  2025-07: bucket=alta | IBOV=-4.64% | MM50/MM100 risk-on: pct MM50>MM100 53.2% <= 68.5%
+  2025-08: bucket=alta | IBOV=6.78% | MM50/MM100 risk-on: pct MM50>MM100 53.2% <= 68.5%
+  2025-09: bucket=alta | IBOV=3.62% | MM50/MM100 risk-on: pct MM50>MM100 49.4% <= 68.5%
+  2025-10: bucket=alta | IBOV=2.76% | MM50/MM100 risk-on: pct MM50>MM100 51.9% <= 68.5%
+  2025-11: bucket=alta | IBOV=5.73% | MM50/MM100 risk-on: pct MM50>MM100 54.5% <= 68.5%
+  2025-12: bucket=alta | IBOV=1.59% | MM50/MM100 risk-on: pct MM50>MM100 58.4% <= 68.5%
+  2026-01: bucket=alta | IBOV=12.56% | MM50/MM100 risk-on: pct MM50>MM100 64.1% <= 68.5%
+  2026-02: bucket=alta | IBOV=4.09% | MM50/MM100 risk-on: pct MM50>MM100 65.4% <= 68.5%
+  2026-03: bucket=queda_forte | IBOV=-0.70% | MM50/MM100 risk-off: pct MM50>MM100 73.1% > 68.5%
+  2026-04: bucket=queda_forte | IBOV=-0.08% | MM50/MM100 risk-off: pct MM50>MM100 76.9% > 68.5%
+  2026-05: bucket=queda_forte | IBOV=-7.22% | MM50/MM100 risk-off: pct MM50>MM100 76.9% > 68.5%
+  2026-06: bucket=queda_forte | IBOV=-0.34% | MM50/MM100 risk-off: pct MM50>MM100 76.9% > 68.5%
+
+Cenario: risk_on_off_voto | Voto majoritario: 13B + beta mediano + MM50/MM100 estrutural.
+  2024-01: bucket=alta | IBOV=-3.73% | voto majoritario risk-on (['alta', 'queda', 'alta']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-02: bucket=queda_leve | IBOV=0.42% | voto majoritario risk-off (['alta', 'queda', 'queda']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-03: bucket=queda_forte | IBOV=-0.83% | voto majoritario risk-off (['alta', 'queda', 'queda']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-04: bucket=queda_forte | IBOV=-0.84% | voto majoritario risk-off (['alta', 'queda', 'queda']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-05: bucket=queda_forte | IBOV=-3.95% | voto majoritario risk-off (['alta', 'queda', 'queda']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-06: bucket=queda_forte | IBOV=1.54% | voto majoritario risk-off (['queda', 'alta', 'queda']); 13B=queda_forte; 13B conservador: tendencia favoravel <35% (28.2%)
+  2024-07: bucket=queda_forte | IBOV=2.35% | voto majoritario risk-off (['queda', 'alta', 'queda']); 13B=queda_forte; 13B conservador: tendencia favoravel <35% (26.9%)
+  2024-08: bucket=alta | IBOV=6.76% | voto majoritario risk-on (['queda', 'alta', 'alta']); 13B=queda_forte; 13B conservador: tendencia favoravel <35% (32.1%)
+  2024-09: bucket=queda_leve | IBOV=-2.34% | voto majoritario risk-off (['alta', 'queda', 'queda']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-10: bucket=alta | IBOV=-2.10% | voto majoritario risk-on (['alta', 'alta', 'queda']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-11: bucket=queda_leve | IBOV=-1.91% | voto majoritario risk-off (['alta', 'queda', 'queda']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-12: bucket=queda_forte | IBOV=-3.95% | voto majoritario risk-off (['queda', 'alta', 'queda']); 13B=queda_forte; 13B conservador: tendencia favoravel <35% (26.9%)
+  2025-01: bucket=alta | IBOV=5.00% | voto majoritario risk-on (['queda', 'alta', 'alta']); 13B=queda_forte; 13B conservador: tendencia favoravel <35% (19.2%)
+  2025-02: bucket=alta | IBOV=-2.52% | voto majoritario risk-on (['queda', 'alta', 'alta']); 13B=queda_forte; 13B conservador: tendencia favoravel <35% (17.9%)
+  2025-03: bucket=alta | IBOV=5.86% | voto majoritario risk-on (['alta', 'alta', 'alta']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-04: bucket=alta | IBOV=2.99% | voto majoritario risk-on (['alta', 'alta', 'alta']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-05: bucket=alta | IBOV=1.40% | voto majoritario risk-on (['alta', 'alta', 'alta']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-06: bucket=alta | IBOV=1.51% | voto majoritario risk-on (['alta', 'alta', 'alta']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-07: bucket=alta | IBOV=-4.64% | voto majoritario risk-on (['alta', 'queda', 'alta']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-08: bucket=alta | IBOV=6.78% | voto majoritario risk-on (['alta', 'queda', 'alta']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-09: bucket=alta | IBOV=3.62% | voto majoritario risk-on (['alta', 'alta', 'alta']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-10: bucket=alta | IBOV=2.76% | voto majoritario risk-on (['alta', 'alta', 'alta']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-11: bucket=alta | IBOV=5.73% | voto majoritario risk-on (['alta', 'alta', 'alta']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-12: bucket=alta | IBOV=1.59% | voto majoritario risk-on (['alta', 'alta', 'alta']); 13B=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2026-01: bucket=alta | IBOV=12.56% | voto majoritario risk-on (['alta', 'alta', 'alta']); 13B=alta; 13B conservador: preserva alta estrutural ampla sem sobrecompra extrema
+  2026-02: bucket=alta | IBOV=4.09% | voto majoritario risk-on (['alta', 'alta', 'alta']); 13B=alta; 13B conservador: preserva rali amplo; amplitude >=80% e IBOV 1m forte
+  2026-03: bucket=queda_forte | IBOV=-0.70% | voto majoritario risk-off (['queda', 'alta', 'queda']); 13B=queda_leve; 13B conservador: sobrecompra com amplitude 1m abaixo de 80% (69.2%)
+  2026-04: bucket=queda_forte | IBOV=-0.08% | voto majoritario risk-off (['queda', 'queda', 'queda']); 13B=queda_leve; 13B conservador: amplitude <45% (34.6%) e IBOV 1m negativo (-0.7%)
+  2026-05: bucket=queda_forte | IBOV=-7.22% | voto majoritario risk-off (['queda', 'queda', 'queda']); 13B=queda_forte; 13B conservador: amplitude <35% (33.3%) com tendencia/preco acima MM50 enfraquecidos
+  2026-06: bucket=queda_forte | IBOV=-0.34% | voto majoritario risk-off (['queda', 'queda', 'queda']); 13B=queda_forte; 13B conservador: amplitude <35% (23.1%) com tendencia/preco acima MM50 enfraquecidos
+
+Cenario: risk_on_off_confirmacao | 13B troca de regime apenas quando beta e MM50/MM100 concordam contra ele.
+  2024-01: bucket=alta | IBOV=-3.73% | 13B mantido; confirmacao insuficiente para troca. beta=queda; mm50=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-02: bucket=queda_leve | IBOV=0.42% | 13B rebaixado por confirmacao dupla risk-off: beta=1.0630; pct_MM50>MM100=69.7%; antes=alta
+  2024-03: bucket=queda_forte | IBOV=-0.83% | 13B rebaixado por confirmacao dupla risk-off: beta=0.9980; pct_MM50>MM100=71.4%; antes=alta
+  2024-04: bucket=queda_forte | IBOV=-0.84% | 13B rebaixado por confirmacao dupla risk-off: beta=0.9663; pct_MM50>MM100=74.0%; antes=alta
+  2024-05: bucket=queda_forte | IBOV=-3.95% | 13B rebaixado por confirmacao dupla risk-off: beta=1.0565; pct_MM50>MM100=75.3%; antes=alta
+  2024-06: bucket=queda_forte | IBOV=1.54% | 13B mantido; confirmacao insuficiente para troca. beta=alta; mm50=queda; 13B conservador: tendencia favoravel <35% (28.2%)
+  2024-07: bucket=queda_forte | IBOV=2.35% | 13B mantido; confirmacao insuficiente para troca. beta=alta; mm50=queda; 13B conservador: tendencia favoravel <35% (26.9%)
+  2024-08: bucket=alta | IBOV=6.76% | 13B elevado por confirmacao dupla risk-on: beta=1.1701; pct_MM50>MM100=67.5%; antes=queda_forte
+  2024-09: bucket=queda_leve | IBOV=-2.34% | 13B rebaixado por confirmacao dupla risk-off: beta=1.0399; pct_MM50>MM100=70.1%; antes=alta
+  2024-10: bucket=alta | IBOV=-2.10% | 13B mantido; confirmacao insuficiente para troca. beta=alta; mm50=queda; 13B conservador: alta mantida por falta de confirmacao de virada
+  2024-11: bucket=queda_leve | IBOV=-1.91% | 13B rebaixado por confirmacao dupla risk-off: beta=1.0531; pct_MM50>MM100=70.1%; antes=alta
+  2024-12: bucket=queda_forte | IBOV=-3.95% | 13B mantido; confirmacao insuficiente para troca. beta=alta; mm50=queda; 13B conservador: tendencia favoravel <35% (26.9%)
+  2025-01: bucket=alta | IBOV=5.00% | 13B elevado por confirmacao dupla risk-on: beta=1.1661; pct_MM50>MM100=59.7%; antes=queda_forte
+  2025-02: bucket=alta | IBOV=-2.52% | 13B elevado por confirmacao dupla risk-on: beta=1.2420; pct_MM50>MM100=51.9%; antes=queda_forte
+  2025-03: bucket=alta | IBOV=5.86% | 13B mantido; confirmacao insuficiente para troca. beta=alta; mm50=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-04: bucket=alta | IBOV=2.99% | 13B mantido; confirmacao insuficiente para troca. beta=alta; mm50=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-05: bucket=alta | IBOV=1.40% | 13B mantido; confirmacao insuficiente para troca. beta=alta; mm50=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-06: bucket=alta | IBOV=1.51% | 13B mantido; confirmacao insuficiente para troca. beta=alta; mm50=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-07: bucket=alta | IBOV=-4.64% | 13B mantido; confirmacao insuficiente para troca. beta=queda; mm50=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-08: bucket=alta | IBOV=6.78% | 13B mantido; confirmacao insuficiente para troca. beta=queda; mm50=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-09: bucket=alta | IBOV=3.62% | 13B mantido; confirmacao insuficiente para troca. beta=alta; mm50=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-10: bucket=alta | IBOV=2.76% | 13B mantido; confirmacao insuficiente para troca. beta=alta; mm50=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-11: bucket=alta | IBOV=5.73% | 13B mantido; confirmacao insuficiente para troca. beta=alta; mm50=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2025-12: bucket=alta | IBOV=1.59% | 13B mantido; confirmacao insuficiente para troca. beta=alta; mm50=alta; 13B conservador: alta mantida por falta de confirmacao de virada
+  2026-01: bucket=alta | IBOV=12.56% | 13B mantido; confirmacao insuficiente para troca. beta=alta; mm50=alta; 13B conservador: preserva alta estrutural ampla sem sobrecompra extrema
+  2026-02: bucket=alta | IBOV=4.09% | 13B mantido; confirmacao insuficiente para troca. beta=alta; mm50=alta; 13B conservador: preserva rali amplo; amplitude >=80% e IBOV 1m forte
+  2026-03: bucket=queda_leve | IBOV=-0.70% | 13B mantido; confirmacao insuficiente para troca. beta=alta; mm50=queda; 13B conservador: sobrecompra com amplitude 1m abaixo de 80% (69.2%)
+  2026-04: bucket=queda_leve | IBOV=-0.08% | 13B mantido; confirmacao insuficiente para troca. beta=queda; mm50=queda; 13B conservador: amplitude <45% (34.6%) e IBOV 1m negativo (-0.7%)
+  2026-05: bucket=queda_forte | IBOV=-7.22% | 13B mantido; confirmacao insuficiente para troca. beta=queda; mm50=queda; 13B conservador: amplitude <35% (33.3%) com tendencia/preco acima MM50 enfraquecidos
+  2026-06: bucket=queda_forte | IBOV=-0.34% | 13B mantido; confirmacao insuficiente para troca. beta=queda; mm50=queda; 13B conservador: amplitude <35% (23.1%) com tendencia/preco acima MM50 enfraquecidos
+
+Resumo acumulado:
+  13b_conservador: retorno=41.00% | IBOV=31.22% | alfa=9.78% | delta_vs_13B=0.00%
+  risk_on_off_beta: retorno=52.47% | IBOV=31.22% | alfa=21.25% | delta_vs_13B=11.47%
+  risk_on_off_mm50: retorno=56.48% | IBOV=31.22% | alfa=25.26% | delta_vs_13B=15.48%
+  risk_on_off_voto: retorno=56.63% | IBOV=31.22% | alfa=25.41% | delta_vs_13B=15.63%
+  risk_on_off_confirmacao: retorno=55.36% | IBOV=31.22% | alfa=24.14% | delta_vs_13B=14.36%
+
+Assertividade direcional:
+  13b_conservador: direcional=60.00% | exato=53.33% | 2024=16.67% | 2025=83.33% | 2026=100.00%
+  risk_on_off_beta: direcional=80.00% | exato=60.00% | 2024=75.00% | 2025=83.33% | 2026=83.33%
+  risk_on_off_mm50: direcional=80.00% | exato=63.33% | 2024=66.67% | 2025=83.33% | 2026=100.00%
+  risk_on_off_voto: direcional=76.67% | exato=60.00% | 2024=58.33% | 2025=83.33% | 2026=100.00%
+  risk_on_off_confirmacao: direcional=76.67% | exato=66.67% | 2024=58.33% | 2025=83.33% | 2026=100.00%
+Validacao retorno bruto: maior diferenca peso x retorno = 0.0000000000
+Validacao retorno defensivo: maior diferenca exposicao x retorno = 0.0000000000

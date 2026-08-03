@@ -1,0 +1,241 @@
+﻿strategy:
+  frequency: monthly
+  run_day: first_business_day
+  rebalance: false
+  mes_referencia: 3
+  ano_referencia: 2026
+  data_formacao_carteira:
+  data_avaliacao_carteira: 2026-03-31
+  usar_primeiro_dia_util_mes: true
+  max_assets: 10
+  min_assets: 5
+  optimization_candidates: 20
+  pre_risk_candidates: 25
+  max_subset_evaluations: 2500
+  enable_optimizer_precheck: true
+
+universe:
+  mode: ibovespa_online
+  fallback_to_custom_csv: true
+  custom_csv_path: config/ativos.csv
+  save_downloaded_universe: true
+
+calendar:
+  market: B3
+  source_primary: b3_market_data
+  monthly_return_mode: actual_trading_days
+  fallback_trading_days_month: 21
+
+data:
+  price_source_primary: yfinance
+  fundamentals_source_primary: fundamentus
+  use_adjusted_prices: true
+  risk_window_months: 4
+  history_months: 60
+  save_raw_data: true
+  min_price_rows: 120
+  download_retries: 3
+  sector_index_map:
+    Financeiro: IFNC
+    Energia: IEEX
+    Materiais: IMAT
+    Consumo: ICON
+    Imobiliario: IFIX
+    Industria: IBOV
+    Utilidade Publica: IEEX
+    Outros: IBOV
+  indexes:
+    IBOV: ^BVSP
+    IFNC: IFNC.SA
+    IEEX: IEEX.SA
+    IFIX: IFIX.SA
+    IMAT: IMAT.SA
+    ICON: ICON.SA
+  index_fallbacks:
+    IBOV: [BOVA11.SA]
+    IFNC: [ITUB4.SA, BBDC4.SA, BBAS3.SA]
+    IEEX: [EQTL3.SA, ELET6.SA, TAEE11.SA]
+    IFIX: [XFIX11.SA, KNRI11.SA, HGLG11.SA]
+    IMAT: [VALE3.SA, GGBR4.SA, SUZB3.SA]
+    ICON: [ABEV3.SA, RENT3.SA, RADL3.SA]
+  ticker_fallbacks:
+    ELET3.SA: [ELET6.SA]
+
+technical:
+  moving_averages_weekly: [9, 21, 50, 100]
+  rsi_period: 14
+  rsi_lower: 30
+  rsi_middle: 50
+  rsi_upper: 70
+  bollinger_period: 20
+  bollinger_std: 2
+
+technical_timing:
+  ideal_rsi_min: 50
+  ideal_rsi_max: 65
+  attention_rsi_max: 70
+  overbought_rsi: 70
+  extreme_overbought_rsi: 75
+  oversold_rsi: 30
+  reversal_rsi_limit: 35
+  near_band_threshold: 0.05
+  block_overbought_near_upper_band: true
+  allow_overbought_entries: false
+risk:
+  std_limit_daily: 0.02
+  cv_limit: 11.5
+  beta_alert: 1.0
+  correlation_alert: 0.7
+  trading_days_year: 252
+  cv_as_hard_filter: false
+  cv_relaxation_levels: [11.5, 25, 50]
+  allow_relaxed_portfolio: true
+
+portfolio:
+  candidate_counts: [5, 6, 8, 10]
+  min_weight: 0.05
+  max_weight: 0.20
+  score_aderencia_regime_minimo: 70
+  beta_carteira_minimo_mercado_favoravel: 0.75
+  correlacao_carteira_ibov_minima_mercado_favoravel: 0.45
+  bloquear_baixa_aderencia_em_mercado_favoravel: true
+  permitir_beta_negativo_em_mercado_favoravel: false
+  bloquear_watchlist_flexivel_baixa_aderencia_mercado_favoravel: true
+  beta_minimo_watchlist_flexivel_mercado_favoravel: 0.30
+  correlacao_minima_watchlist_flexivel_mercado_favoravel: 0.20
+  peso_maximo_setor_preferencial: 0.30
+  peso_maximo_setor_tolerado: 0.35
+  peso_maximo_setor_excepcional: 0.40
+  permitir_peso_setor_excepcional: true
+  peso_maximo_bloco_risco_preferencial: 0.20
+  peso_maximo_bloco_risco_tolerado: 0.25
+  correlacao_muito_baixa_mercado_favoravel: 0.20
+  beta_muito_baixo_mercado_favoravel: 0.30
+  correlacao_carteira_ibov_minima_preferencial_mercado_favoravel: 0.45
+  beta_carteira_minimo_preferencial_mercado_favoravel: 0.75
+  peso_maximo_ativo_com_correlacao_baixa_em_mercado_favoravel: 0.10
+  peso_maximo_ativo_com_beta_negativo_em_mercado_favoravel: 0.10
+  peso_maximo_individual_watchlist_flexivel: 0.15
+  peso_maximo_timing_com_alerta: 0.10
+  peso_maximo_timing_tardio: 0.05
+  peso_maximo_turnaround_especulativo: 0.05
+  max_peso_total_watchlist_flexivel: 0.35
+  max_ativos_watchlist_flexivel: 2
+  tolerancia_cv_para_maior_diversificacao: 0.15
+  diversification_preferred_counts: [6, 8]
+  max_assets_per_sector: 2
+  preferred_max_sector_weight: 0.30
+  hard_max_sector_weight: 0.40
+  objective: minimize_portfolio_cv
+  tie_breaker_1: maximize_sharpe
+  tie_breaker_2: minimize_beta
+  tie_breaker_3: maximize_sector_diversification
+  max_reversal_assets: 2
+  max_reversal_weight: 0.30
+
+fundamentals:
+  roe_bad_limit: 0.10
+  roe_good_limit: 0.20
+  roic_bad_limit: 0.08
+  roic_good_limit: 0.15
+  allow_missing_fundamentals: true
+
+risk_free_rate:
+  source: manual_or_online
+  annual_rate: 0.15
+
+liquidity:
+  enabled: false
+  min_average_volume_brl: 10000000
+relative_strength:
+  enabled: true
+  require_positive_relative_strength_in_weak_market: true
+  windows: ["1m", "4m", "ytd"]
+
+market_regime:
+  allow_selective_portfolio_in_weak_market: true
+  min_assets_for_selective_portfolio: 5
+  classificar_mercado_favoravel_esticado: true
+  rsi_ibov_esticado: 75
+  rsi_ibov_cansado: 70
+  amplitude_positiva_1m_cansado: 0.50
+  bloquear_forca_relativa_fraca_em_favoravel_esticado: true
+
+watchlist:
+  allow_watchlist_entries: false
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+shadow:
+  enable_partial_portfolio: false
+  partial_portfolio_min_invested: 0.40
+  partial_portfolio_max_invested: 0.70
+  enable_objetivo_retorno: false
+  objetivo_retorno_variant: V1
+  objetivo_retorno_lambda_cv: 0.5
+  objetivo_retorno_lambda_beta: 0.0
+  enable_beta_target: false
+  beta_target_lambda: 1.0
+  beta_target_by_regime:
+    favoravel_oportunidade:
+      target: 1.15
+      min: 1.05
+      max: 1.30
+    favoravel_amplo:
+      target: 1.10
+      min: 1.00
+      max: 1.20
+    favoravel_estreitando:
+      target: 0.95
+      min: 0.85
+      max: 1.05
+    cansado:
+      target: 0.75
+      min: 0.65
+      max: 0.90
+    fraco_desfavoravel:
+      target: 0.70
+      min: 0.60
+      max: 0.80
+  enable_composicao_ampliada: false
+  composicao_candidate_counts: [5, 6, 8, 10, 12, 15]
+  composicao_base_topn: 25
+  composicao_expanded_topn: 30
+  composicao_extra_min_nota_final: 50
+  composicao_quality_cap_strong: 0.20
+  composicao_quality_cap_alert: 0.15
+  composicao_quality_cap_watchlist: 0.15
+  composicao_quality_cap_late_or_speculative: 0.05
+  enable_carteira_tamanho_livre: false
+  enable_sinal_defensivo_quedas: false
+  enable_sinal_reversao_estrito: false
+  sinal_reversao_estrito_rsi_max: 40
+  sinal_reversao_estrito_ret4_max: 0.0
+  sinal_reversao_estrito_bollinger_dist_max: 0.10
+  sinal_quedas_amplitude_forte: 0.34
+  sinal_quedas_rsi_forte: 65
+  sinal_quedas_reversal_threshold: 0.15
+  sinal_quedas_setores_defensivos: ["energia eletrica", "agua", "saneamento", "bebidas", "telecom", "saude"]
+  enable_beta_regime_tamanho_livre: false
+  tamanho_livre_beta_lambdas:
+    SUAVE: 0.5
+    MEDIO: 1.5
+    FORTE: 3.0
+  tamanho_livre_teto_individual: 0.25
+  tamanho_livre_minimo_acoes: 5
+  tamanho_livre_signal_floor: 0.01
+
+

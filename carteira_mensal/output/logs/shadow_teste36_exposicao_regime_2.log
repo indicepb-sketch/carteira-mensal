@@ -1,0 +1,21 @@
+Teste 36 - Exposicao por Regime 2.0
+Escopo: muda apenas multiplicador de exposicao acoes/CDI sobre carteiras ja formadas; producao intacta.
+Resumo 2022-2026:
+  ATUAL_T35: ret=112.88%; IBOV=60.36%; alfa=52.52%; acerto=36/54 (66.67%); dd=-14.82%; peso_acoes_medio=76.11%; delta_alfa_vs_atual=0.00%
+  DIAG_MAX_CAP_ATUAL: ret=102.93%; IBOV=60.36%; alfa=42.57%; acerto=37/54 (68.52%); dd=-13.25%; peso_acoes_medio=97.22%; delta_alfa_vs_atual=-9.96%
+  T36A_QUEDA_LEVE_80: ret=115.17%; IBOV=60.36%; alfa=54.81%; acerto=37/54 (68.52%); dd=-13.99%; peso_acoes_medio=83.61%; delta_alfa_vs_atual=2.28%
+  T36B_QUEDA_FORTE_50: ret=103.27%; IBOV=60.36%; alfa=42.91%; acerto=36/54 (66.67%); dd=-13.65%; peso_acoes_medio=80.83%; delta_alfa_vs_atual=-9.61%
+  T36AB_80_50: ret=109.92%; IBOV=60.36%; alfa=49.56%; acerto=38/54 (70.37%); dd=-13.25%; peso_acoes_medio=86.02%; delta_alfa_vs_atual=-2.97%
+  T36C_QUALIDADE: ret=118.01%; IBOV=60.36%; alfa=57.65%; acerto=38/54 (70.37%); dd=-13.25%; peso_acoes_medio=91.39%; delta_alfa_vs_atual=5.12%
+  T36D_CONFIRMACAO: ret=113.74%; IBOV=60.36%; alfa=53.38%; acerto=37/54 (68.52%); dd=-13.25%; peso_acoes_medio=92.22%; delta_alfa_vs_atual=0.86%
+Resumo 2022 isolado:
+  ATUAL_T35: ret=-8.56%; alfa=-6.62%; acerto=6/12; delta_alfa_2022=0.00%
+  DIAG_MAX_CAP_ATUAL: ret=-1.39%; alfa=0.55%; acerto=8/12; delta_alfa_2022=7.17%
+  T36A_QUEDA_LEVE_80: ret=-7.23%; alfa=-5.29%; acerto=7/12; delta_alfa_2022=1.33%
+  T36B_QUEDA_FORTE_50: ret=-7.31%; alfa=-5.37%; acerto=6/12; delta_alfa_2022=1.25%
+  T36AB_80_50: ret=-5.96%; alfa=-4.02%; acerto=7/12; delta_alfa_2022=2.60%
+  T36C_QUALIDADE: ret=-3.32%; alfa=-1.38%; acerto=7/12; delta_alfa_2022=5.24%
+  T36D_CONFIRMACAO: ret=-3.69%; alfa=-1.75%; acerto=7/12; delta_alfa_2022=4.87%
+Validacao: pesos != 100%: 0; retorno != soma contribuicoes: 0
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste36_exposicao_regime_2.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_teste36_exposicao_regime_2.log

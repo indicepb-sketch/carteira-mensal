@@ -1,0 +1,7 @@
+Teste 28C - Modulacao Defensiva de Risco somente em Quedas
+Base: Teste 25 cap 7,5%. ModulaÃ§Ã£o defensiva aplicada apenas em bucket previsto queda_leve/queda_forte.
+  t25_cap7_5_base: retorno=58.23%; IBOV=31.22%; alfa=27.01%; bateu=20/30; drawdown=-8.78%
+  modulacao_defensiva_so_quedas: retorno=60.67%; IBOV=31.22%; alfa=29.45%; bateu=19/30; drawdown=-8.78%
+  Delta 28C vs base: alfa=2.43%; retorno=2.43%; taxa_acerto_delta=-3.33%
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste28c_risco_so_quedas.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_teste28c_risco_so_quedas.log

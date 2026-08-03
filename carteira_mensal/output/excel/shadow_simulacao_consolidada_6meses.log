@@ -1,0 +1,36 @@
+Datas/retornos ex-post carregados:
+  2026-01: inicio=2025-12-30 00:00:00 | avaliacao=2026-01-30 00:00:00 | IBOV=12.56% | ativos=78
+  2026-02: inicio=2026-01-30 00:00:00 | avaliacao=2026-02-27 00:00:00 | IBOV=4.09% | ativos=78
+  2026-03: inicio=2026-02-27 00:00:00 | avaliacao=2026-03-31 00:00:00 | IBOV=-0.70% | ativos=78
+  2026-04: inicio=2026-03-31 00:00:00 | avaliacao=2026-04-30 00:00:00 | IBOV=-0.08% | ativos=78
+  2026-05: inicio=2026-04-30 00:00:00 | avaliacao=2026-05-29 00:00:00 | IBOV=-7.22% | ativos=78
+  2026-06: inicio=2026-05-29 00:00:00 | avaliacao=2026-06-29 00:00:00 | IBOV=-0.28% | ativos=78
+TESTE-ANCORA: configuracao consolidada desligada
+  2026-01: PASSOU | reproduz carteira real
+  2026-02: PASSOU | sem carteira como no real
+  2026-03: PASSOU | sem carteira como no real
+  2026-04: PASSOU | sem carteira como no real
+  2026-05: PASSOU | sem carteira como no real
+  2026-06: PASSOU | junho reproduz carteira real exatamente
+TESTE UNITARIO PESOS POS-TETO:
+  3_acoes_cap_60 | alto: sinal=0.90 -> peso=55.83%
+  3_acoes_cap_60 | medio: sinal=0.50 -> peso=31.29%
+  3_acoes_cap_60 | baixo: sinal=0.20 -> peso=12.88%
+  6_acoes_cap_25 | a1: sinal=1.00 -> peso=25.00%
+  6_acoes_cap_25 | a2: sinal=0.80 -> peso=25.00%
+  6_acoes_cap_25 | a3: sinal=0.60 -> peso=21.94%
+  6_acoes_cap_25 | a4: sinal=0.40 -> peso=14.75%
+  6_acoes_cap_25 | a5: sinal=0.25 -> peso=9.35%
+  6_acoes_cap_25 | a6: sinal=0.10 -> peso=3.96%
+ANCORA PASSOU. Rodando consolidada: tamanho livre + V3 + beta-alvo por regime (lambda_beta=1.5) + Sinal A defensivo em quedas.
+  2026-01: status=valida | subtipo=alta | sinal=V3_MOMENTUM | beta_alvo=1.10 | beta_real=0.91 | pesos=ABEV3.SA: 23.31%; BBSE3.SA: 10.41%; EGIE3.SA: 16.66%; SBSP3.SA: 17.42%; EMBJ3.SA: 5.11%; BPAC11.SA: 7.89%; BBDC3.SA: 12.63%; CMIG4.SA: 6.58% | ret=7.74% | IBOV=12.56% | alfa=-4.83%
+  2026-02: status=valida | subtipo=alta | sinal=V3_MOMENTUM | beta_alvo=1.10 | beta_real=1.25 | pesos=CURY3.SA: 25.00%; YDUQ3.SA: 10.74%; ABEV3.SA: 2.97%; GOAU4.SA: 3.80%; CMIN3.SA: 10.66%; SANB11.SA: 0.30%; ALOS3.SA: 0.30%; PETR3.SA: 9.16%; TIMS3.SA: 1.86%; VIVT3.SA: 8.89%; BBAS3.SA: 6.01%; B3SA3.SA: 11.14%; RENT3.SA: 9.16% | ret=6.03% | IBOV=4.09% | alfa=1.94%
+  2026-03: status=valida | subtipo=queda_leve_lateral | sinal=SINAL_A_DEFENSIVO | beta_alvo=0.95 | beta_real=0.92 | pesos=CURY3.SA: 7.83%; BRAV3.SA: 5.47%; SLCE3.SA: 8.67%; ABEV3.SA: 9.91%; SBSP3.SA: 13.85%; TIMS3.SA: 11.33%; ASAI3.SA: 0.18%; MULT3.SA: 6.97%; ENGI11.SA: 5.57%; VBBR3.SA: 8.18%; ITSA4.SA: 5.83%; ALOS3.SA: 7.08%; RENT3.SA: 3.01%; BBAS3.SA: 6.11% | ret=-0.97% | IBOV=-0.70% | alfa=-0.27%
+  2026-04: status=valida | subtipo=queda_leve_lateral | sinal=SINAL_A_DEFENSIVO | beta_alvo=0.75 | beta_real=0.86 | pesos=BRAV3.SA: 7.51%; VIVT3.SA: 16.64%; TIMS3.SA: 14.76%; SLCE3.SA: 10.80%; SBSP3.SA: 11.59%; MULT3.SA: 4.91%; CURY3.SA: 3.91%; ITSA4.SA: 5.62%; ASAI3.SA: 0.21%; B3SA3.SA: 1.65%; VBBR3.SA: 5.90%; CMIG4.SA: 12.11%; ENEV3.SA: 4.38% | ret=-2.56% | IBOV=-0.08% | alfa=-2.48%
+  2026-05: status=valida | subtipo=queda_forte | sinal=SINAL_A_DEFENSIVO | beta_alvo=0.75 | beta_real=0.90 | pesos=VIVT3.SA: 14.70%; SLCE3.SA: 9.85%; TIMS3.SA: 10.03%; CSMG3.SA: 9.74%; EGIE3.SA: 7.51%; MULT3.SA: 6.43%; ITSA4.SA: 4.53%; ISAE4.SA: 8.66%; B3SA3.SA: 1.15%; UGPA3.SA: 11.30%; SBSP3.SA: 10.78%; VBBR3.SA: 5.32% | ret=-9.80% | IBOV=-7.22% | alfa=-2.58%
+  2026-06: status=valida | subtipo=alta | sinal=V3_MOMENTUM | beta_alvo=1.15 | beta_real=0.88 | pesos=PETR4.SA: 5.68%; VALE3.SA: 14.05%; BBSE3.SA: 8.83%; EGIE3.SA: 11.67%; GGBR4.SA: 11.78%; ABEV3.SA: 10.46%; BRAV3.SA: 10.51%; CPLE3.SA: 9.35%; ITSA4.SA: 4.35%; SBSP3.SA: 1.59%; CSMG3.SA: 9.60%; B3SA3.SA: 1.94%; IGTI11.SA: 0.19% | ret=1.13% | IBOV=-0.28% | alfa=1.41%
+ALFA ACUMULADO 6 MESES: -7.01% | retorno sombra=0.54% | IBOV=7.55%
+CHECAGEM ALTAS jan+fev: sinais=['V3_MOMENTUM'] | alfa acumulado=-2.94%
+CHECAGEM 2026-03: alfa consolidado=-0.27% vs V3 puro referencia=-0.64%
+CHECAGEM 2026-04: alfa consolidado=-2.48% vs V3 puro referencia=-2.94%
+CHECAGEM MAIO: alfa=-2.58% | beta_real=0.90

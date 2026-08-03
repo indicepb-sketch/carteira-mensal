@@ -1,0 +1,35 @@
+Teste 41 - Auditoria dos Meses 4M
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste41_auditoria_meses_4m.xlsx
+Meses auditados com 4M: 22; ajudou: 11; atrapalhou/neutro: 11; delta alfa simples: 2.42%
+
+Resumo dos meses 4M:
+    mes regime_previsto_norm_t39 tipo_regime_expost_t39  retorno_total_base  retorno_total_t39  retorno_expost_ibov  delta_alfa_t39_vs_base bucket_resultado_4m
+2022-01               queda_leve                   alta            0.030047           0.022784             0.081465               -0.007264       4m_atrapalhou
+2022-07               queda_leve                   alta            0.057693           0.042577             0.042555               -0.015116       4m_atrapalhou
+2022-08              queda_forte                   alta            0.057958           0.078186             0.071392                0.020228           4m_ajudou
+2023-01               queda_leve                   alta            0.061573           0.096170             0.067271                0.034597           4m_ajudou
+2023-02               queda_leve            queda_forte           -0.049306          -0.068518            -0.065635               -0.019212       4m_atrapalhou
+2023-03               queda_leve             queda_leve           -0.009960          -0.020853            -0.023979               -0.010892       4m_atrapalhou
+2023-04               queda_leve                   alta            0.044464           0.036763             0.028826               -0.007701       4m_atrapalhou
+2023-11               queda_leve                   alta            0.110126           0.120115             0.106716                0.009989           4m_ajudou
+2024-02               queda_leve                   alta            0.013636           0.022539             0.004195                0.008903           4m_ajudou
+2024-03               queda_leve             queda_leve            0.030190           0.031335            -0.008314                0.001146           4m_ajudou
+2024-04              queda_forte             queda_leve           -0.037802          -0.034109            -0.008394                0.003693           4m_ajudou
+2024-05              queda_forte            queda_forte           -0.030609          -0.029374            -0.039521                0.001235           4m_ajudou
+2024-06              queda_forte                   alta            0.026139           0.025855             0.015365               -0.000285       4m_atrapalhou
+2024-07               queda_leve                   alta            0.030807           0.051425             0.023525                0.020618           4m_ajudou
+2024-09               queda_leve             queda_leve           -0.014679          -0.010824            -0.023448                0.003856           4m_ajudou
+2024-10               queda_leve             queda_leve           -0.005286           0.013516            -0.020997                0.018802           4m_ajudou
+2024-11               queda_leve             queda_leve            0.011982          -0.010426            -0.019146               -0.022408       4m_atrapalhou
+2024-12               queda_leve            queda_forte           -0.046112          -0.057539            -0.039549               -0.011427       4m_atrapalhou
+2026-03              queda_forte             queda_leve            0.005382           0.002605            -0.007018               -0.002777       4m_atrapalhou
+2026-04              queda_forte             queda_leve            0.004179           0.003263            -0.000768               -0.000916       4m_atrapalhou
+2026-05              queda_forte            queda_forte           -0.014383          -0.013963            -0.072230                0.000420           4m_ajudou
+2026-06              queda_forte       jun_oportunidade            0.009130           0.007834            -0.003355               -0.001296       4m_atrapalhou
+
+Padroes por regime real:
+tipo_regime_expost_t39  meses  delta_alfa_medio  delta_alfa_total_simples  taxa_ajuda
+                  alta      9          0.007108                  0.063969    0.555556
+           queda_forte      4         -0.007246                 -0.028984    0.500000
+            queda_leve      8         -0.001187                 -0.009497    0.500000
+      jun_oportunidade      1         -0.001296                 -0.001296    0.000000

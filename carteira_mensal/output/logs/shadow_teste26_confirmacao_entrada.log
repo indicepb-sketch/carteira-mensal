@@ -1,0 +1,11 @@
+Teste 26 - Confirmacao de Entrada Para Candidatas Fortes
+Base: Teste 25 cap 7,5%. Confirmacao: preco>MM9, MM9>MM21, RSI entre 45 e 70.
+  t25_cap7_5_base: retorno=58.23%; IBOV=31.22%; alfa=27.01%; bateu=20/30; drawdown=-8.78%
+  confirmacao_suave_cap: retorno=58.16%; IBOV=31.22%; alfa=26.94%; bateu=19/30; drawdown=-8.78%
+  confirmacao_leve_bloqueia_0de3: retorno=41.58%; IBOV=31.22%; alfa=10.36%; bateu=16/30; drawdown=-8.78%
+  confirmacao_estrita: retorno=41.64%; IBOV=31.22%; alfa=10.42%; bateu=16/30; drawdown=-8.78%
+  Delta confirmacao_suave_cap vs base: alfa=-0.08%; retorno=-0.08%; taxa_acerto_delta=-3.33%
+  Delta confirmacao_leve_bloqueia_0de3 vs base: alfa=-16.65%; retorno=-16.65%; taxa_acerto_delta=-13.33%
+  Delta confirmacao_estrita vs base: alfa=-16.60%; retorno=-16.60%; taxa_acerto_delta=-13.33%
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste26_confirmacao_entrada.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_teste26_confirmacao_entrada.log

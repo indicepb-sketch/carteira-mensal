@@ -1,0 +1,11 @@
+Parcial forward 2026-07
+Arquivo forward usado: carteira_forward_2026_07_v20260727_120253.xlsx
+Fonte precos: yfinance
+Data entrada: 2026-06-30
+CDI fonte: bcb_sgs_12
+CDI bruto periodo: 1.0559%
+IR CDI: 22.50%; CDI liquido periodo: 0.8183%
+Retorno carteira aplicada: 0.87%
+Retorno IBOV parcial: 1.08%
+Alfa parcial: -0.21%
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\parcial_carteira_forward_2026_07_v20260729_215320.xlsx

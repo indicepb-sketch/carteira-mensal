@@ -1,0 +1,40 @@
+TESTE-ANCORA: flags sombra desligadas
+  2026-01: PASSOU - reproduz carteira real
+  2026-02: PASSOU - sem carteira como no real
+  2026-03: PASSOU - sem carteira como no real
+  2026-04: PASSOU - sem carteira como no real
+  2026-05: PASSOU - sem carteira como no real
+  2026-06: PASSOU - junho reproduz carteira real exatamente
+Rodando carteira consolidada base 100% e simulando exposicao/caixa por regime.
+RESUMO ACUMULADO:
+  BASELINE_100: retorno=0.72% IBOV=7.55% alfa=-6.84% delta_vs_baseline=0.00%
+  EXPOSICAO_DEFENSIVA: retorno=9.95% IBOV=7.55% alfa=2.39% delta_vs_baseline=9.23%
+  EXPOSICAO_MODERADA: retorno=5.85% IBOV=7.55% alfa=-1.70% delta_vs_baseline=5.14%
+  EXPOSICAO_SIMPLES: retorno=7.34% IBOV=7.55% alfa=-0.21% delta_vs_baseline=6.63%
+DETALHE MENSAL:
+  BASELINE_100 2026-01: regime=alta exposicao=100.00% ret=9.84% IBOV=12.56% alfa=-2.72%
+  BASELINE_100 2026-02: regime=alta exposicao=100.00% ret=4.17% IBOV=4.09% alfa=0.08%
+  BASELINE_100 2026-03: regime=queda_leve exposicao=100.00% ret=-0.97% IBOV=-0.70% alfa=-0.27%
+  BASELINE_100 2026-04: regime=queda_leve exposicao=100.00% ret=-2.56% IBOV=-0.08% alfa=-2.48%
+  BASELINE_100 2026-05: regime=queda_forte exposicao=100.00% ret=-9.80% IBOV=-7.22% alfa=-2.58%
+  BASELINE_100 2026-06: regime=oportunidade exposicao=100.00% ret=1.13% IBOV=-0.28% alfa=1.41%
+  EXPOSICAO_SIMPLES 2026-01: regime=alta exposicao=100.00% ret=9.84% IBOV=12.56% alfa=-2.72%
+  EXPOSICAO_SIMPLES 2026-02: regime=alta exposicao=100.00% ret=4.17% IBOV=4.09% alfa=0.08%
+  EXPOSICAO_SIMPLES 2026-03: regime=queda_leve exposicao=70.00% ret=-0.68% IBOV=-0.70% alfa=0.02%
+  EXPOSICAO_SIMPLES 2026-04: regime=queda_leve exposicao=70.00% ret=-1.79% IBOV=-0.08% alfa=-1.72%
+  EXPOSICAO_SIMPLES 2026-05: regime=queda_forte exposicao=50.00% ret=-4.90% IBOV=-7.22% alfa=2.32%
+  EXPOSICAO_SIMPLES 2026-06: regime=oportunidade exposicao=100.00% ret=1.13% IBOV=-0.28% alfa=1.41%
+  EXPOSICAO_DEFENSIVA 2026-01: regime=alta exposicao=100.00% ret=9.84% IBOV=12.56% alfa=-2.72%
+  EXPOSICAO_DEFENSIVA 2026-02: regime=alta exposicao=100.00% ret=4.17% IBOV=4.09% alfa=0.08%
+  EXPOSICAO_DEFENSIVA 2026-03: regime=queda_leve exposicao=60.00% ret=-0.58% IBOV=-0.70% alfa=0.12%
+  EXPOSICAO_DEFENSIVA 2026-04: regime=queda_leve exposicao=60.00% ret=-1.54% IBOV=-0.08% alfa=-1.46%
+  EXPOSICAO_DEFENSIVA 2026-05: regime=queda_forte exposicao=30.00% ret=-2.94% IBOV=-7.22% alfa=4.28%
+  EXPOSICAO_DEFENSIVA 2026-06: regime=oportunidade exposicao=100.00% ret=1.13% IBOV=-0.28% alfa=1.41%
+  EXPOSICAO_MODERADA 2026-01: regime=alta exposicao=100.00% ret=9.84% IBOV=12.56% alfa=-2.72%
+  EXPOSICAO_MODERADA 2026-02: regime=alta exposicao=100.00% ret=4.17% IBOV=4.09% alfa=0.08%
+  EXPOSICAO_MODERADA 2026-03: regime=queda_leve exposicao=80.00% ret=-0.78% IBOV=-0.70% alfa=-0.08%
+  EXPOSICAO_MODERADA 2026-04: regime=queda_leve exposicao=80.00% ret=-2.05% IBOV=-0.08% alfa=-1.97%
+  EXPOSICAO_MODERADA 2026-05: regime=queda_forte exposicao=60.00% ret=-5.88% IBOV=-7.22% alfa=1.34%
+  EXPOSICAO_MODERADA 2026-06: regime=oportunidade exposicao=100.00% ret=1.13% IBOV=-0.28% alfa=1.41%
+VALIDACAO RETORNO: maior diferenca peso x ativo = 0.0000000000
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_exposicao_por_regime.xlsx

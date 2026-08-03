@@ -1,0 +1,11 @@
+2026-06-26 21:33:45,807 INFO __main__ - Iniciando carteira mensal para 15 ativos
+2026-06-26 21:34:10,580 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ELET3.SA"}}}
+2026-06-26 21:34:11,195 ERROR yfinance - $ELET3.SA: possibly delisted; no timezone found
+2026-06-26 21:34:11,204 ERROR yfinance - 
+1 Failed download:
+2026-06-26 21:34:11,204 ERROR yfinance - ['ELET3.SA']: possibly delisted; no timezone found
+2026-06-26 21:34:15,905 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: IEEX.SA"}}}
+2026-06-26 21:34:16,519 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-26 21:34:16,520 ERROR yfinance - 
+1 Failed download:
+2026-06-26 21:34:16,520 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found

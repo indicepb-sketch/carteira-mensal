@@ -1,0 +1,9 @@
+Teste 30 - Recuperacao Controlada de Candidatas com Restricao
+Base: 28D. Recupera apenas candidata_com_restricao qualificada, com teto pequeno, sem mexer em producao.
+  base_28d: retorno=60.57%; IBOV=31.22%; alfa=29.35%; bateu=20/30; drawdown=-8.78%; rec_pool=0; rec_cart=0
+  recupera_restricao_cap5_nota50: retorno=60.66%; IBOV=31.22%; alfa=29.44%; bateu=20/30; drawdown=-8.78%; rec_pool=61; rec_cart=50
+  recupera_restricao_cap7_5_nota50: retorno=60.61%; IBOV=31.22%; alfa=29.39%; bateu=20/30; drawdown=-8.78%; rec_pool=61; rec_cart=50
+  recupera_restricao_cap5_nota60: retorno=59.12%; IBOV=31.22%; alfa=27.90%; bateu=20/30; drawdown=-8.78%; rec_pool=25; rec_cart=18
+  Delta recupera_restricao_cap5_nota50 vs base_28d: alfa=0.09%; retorno=0.09%; taxa_acerto_delta=0.00%
+  Delta recupera_restricao_cap7_5_nota50 vs base_28d: alfa=0.04%; retorno=0.04%; taxa_acerto_delta=0.00%
+  Delta recupera_restricao_cap5_nota60 vs base_28d: alfa=-1.45%; retorno=-1.45%; taxa_acerto_delta=0.00%

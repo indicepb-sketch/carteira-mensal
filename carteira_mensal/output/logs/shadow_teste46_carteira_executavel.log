@@ -1,0 +1,23 @@
+Teste 46 - Carteira Executavel com Quantidades Inteiras
+Modelo base: T44A_QUEDA_CONFIANCA
+Capital base: R$ 10.000,00
+Minimo por ativo dentro da parte de acoes: 1.00%
+Mercado fracionario com quantidade inteira: True
+IR CDI origem: 15.00%
+IR CDI plataforma: 22.50%
+
+2022-2026: executavel=122.03%; teorico=129.21%; IBOV=60.36%; alfa_exec=61.67%; acerto_exec=70.37%; delta_exec_vs_teorico=-7.18%
+2023-2026: executavel=129.39%; teorico=137.68%; IBOV=63.54%; alfa_exec=65.85%; acerto_exec=73.81%; delta_exec_vs_teorico=-8.29%
+
+Resumo por ano:
+2022: exec=-3.21%; teorico=-3.57%; IBOV=-1.94%; alfa_exec=-1.27%; acerto=58.33%; n_medio=15.6
+2023: exec=43.57%; teorico=44.31%; IBOV=24.63%; alfa_exec=18.94%; acerto=83.33%; n_medio=16.8
+2024: exec=4.31%; teorico=4.15%; IBOV=-8.76%; alfa_exec=13.07%; acerto=83.33%; n_medio=15.7
+2025: exec=36.49%; teorico=37.85%; IBOV=33.78%; alfa_exec=2.70%; acerto=50.00%; n_medio=14.7
+2026: exec=12.22%; teorico=14.72%; IBOV=7.50%; alfa_exec=4.73%; acerto=83.33%; n_medio=13.7
+
+Validacao pesos != 100%: 0
+Validacao retorno != contribuicoes: 0
+Precos faltantes/problemas: 0
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste46_carteira_executavel.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_teste46_carteira_executavel.log

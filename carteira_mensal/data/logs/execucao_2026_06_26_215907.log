@@ -1,0 +1,57 @@
+2026-06-26 21:59:07,081 INFO __main__ - Iniciando carteira mensal para 15 ativos
+2026-06-26 21:59:45,161 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ELET3.SA"}}}
+2026-06-26 21:59:45,775 ERROR yfinance - $ELET3.SA: possibly delisted; no timezone found
+2026-06-26 21:59:45,776 ERROR yfinance - 
+1 Failed download:
+2026-06-26 21:59:45,776 ERROR yfinance - ['ELET3.SA']: possibly delisted; no timezone found
+2026-06-26 21:59:49,455 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ELET3.SA"}}}
+2026-06-26 21:59:52,896 ERROR yfinance - $ELET3.SA: possibly delisted; no timezone found
+2026-06-26 21:59:52,897 ERROR yfinance - 
+1 Failed download:
+2026-06-26 21:59:52,897 ERROR yfinance - ['ELET3.SA']: possibly delisted; no timezone found
+2026-06-26 21:59:53,907 ERROR yfinance - $ELET3.SA: possibly delisted; no timezone found
+2026-06-26 21:59:53,908 ERROR yfinance - 
+1 Failed download:
+2026-06-26 21:59:53,908 ERROR yfinance - ['ELET3.SA']: possibly delisted; no timezone found
+2026-06-26 22:00:04,529 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-26 22:00:04,530 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:00:04,531 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-26 22:00:05,038 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-26 22:00:05,040 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:00:05,040 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-26 22:00:06,047 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-26 22:00:06,048 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:00:06,049 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-26 22:00:22,964 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-26 22:00:22,965 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:00:22,965 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-26 22:00:23,475 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-26 22:00:23,477 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:00:23,477 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-26 22:00:24,484 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-26 22:00:24,484 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:00:24,485 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-26 22:00:27,503 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-26 22:00:27,504 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:00:27,505 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-26 22:00:28,012 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-26 22:00:28,013 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:00:28,013 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-26 22:00:29,023 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-26 22:00:29,023 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:00:29,024 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-26 22:00:59,775 ERROR yfinance - $SUZB3.SA: possibly delisted; no price data found  (1d 2021-06-26 -> 2026-06-27)
+2026-06-26 22:00:59,777 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:00:59,777 ERROR yfinance - ['SUZB3.SA']: possibly delisted; no price data found  (1d 2021-06-26 -> 2026-06-27)
+2026-06-26 22:01:37,937 INFO __main__ - Arquivos gerados: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\carteira_recomendada_2026_06.xlsx, C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\csv\carteira_recomendada_2026_06.csv, C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\pdf\relatorio_carteira_2026_06.pdf
+2026-06-26 22:01:37,937 INFO __main__ - Resumo: analisados=15 excluidos=15 elegiveis=0 valida=False

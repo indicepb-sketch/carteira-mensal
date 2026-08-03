@@ -1,0 +1,19 @@
+Teste 49 - Top 15 Operacional Final vs Atual por Regime e Capital
+Entrada: shadow_teste46_carteira_executavel.xlsx
+
+ATUAL | R$ 1.000,00: retorno=127.04%; IBOV=60.36%; alfa=66.68%; acerto=61.11%; drawdown=-9.62%; qtd_media=13.4; CDI_medio=28.35%
+TOP15 | R$ 1.000,00: retorno=129.74%; IBOV=60.36%; alfa=69.38%; acerto=59.26%; drawdown=-10.55%; qtd_media=12.5; CDI_medio=26.82%
+ATUAL | R$ 5.000,00: retorno=123.72%; IBOV=60.36%; alfa=63.36%; acerto=70.37%; drawdown=-12.51%; qtd_media=15.4; CDI_medio=13.47%
+TOP15 | R$ 5.000,00: retorno=123.25%; IBOV=60.36%; alfa=62.89%; acerto=66.67%; drawdown=-12.09%; qtd_media=14.0; CDI_medio=13.09%
+ATUAL | R$ 10.000,00: retorno=122.00%; IBOV=60.36%; alfa=61.65%; acerto=70.37%; drawdown=-12.97%; qtd_media=15.4; CDI_medio=11.37%
+TOP15 | R$ 10.000,00: retorno=123.32%; IBOV=60.36%; alfa=62.96%; acerto=66.67%; drawdown=-12.21%; qtd_media=14.1; CDI_medio=11.26%
+ATUAL | R$ 50.000,00: retorno=122.21%; IBOV=60.36%; alfa=61.86%; acerto=72.22%; drawdown=-13.16%; qtd_media=15.4; CDI_medio=9.90%
+TOP15 | R$ 50.000,00: retorno=122.21%; IBOV=60.36%; alfa=61.85%; acerto=68.52%; drawdown=-12.41%; qtd_media=14.1; CDI_medio=9.85%
+
+Top15 vs Atual | R$ 1.000,00: ajudou=16; prejudicou=18; delta_medio_mensal=0.03%
+Top15 vs Atual | R$ 5.000,00: ajudou=19; prejudicou=15; delta_medio_mensal=-0.00%
+Top15 vs Atual | R$ 10.000,00: ajudou=21; prejudicou=13; delta_medio_mensal=0.01%
+Top15 vs Atual | R$ 50.000,00: ajudou=21; prejudicou=13; delta_medio_mensal=0.00%
+
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste49_top15_regime_capital.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_teste49_top15_regime_capital.log

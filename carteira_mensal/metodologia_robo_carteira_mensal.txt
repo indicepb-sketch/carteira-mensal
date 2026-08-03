@@ -1,0 +1,626 @@
+METODOLOGIA DO ROBO DE CARTEIRA MENSAL
+Versao resumida para revisao externa
+
+1. OBJETIVO DO ROBO
+
+O robo monta uma carteira mensal de acoes brasileiras a partir do universo do
+Ibovespa. A carteira e formada no primeiro pregao do mes de referencia, usando
+somente dados disponiveis ate a data de formacao, para evitar look-ahead bias.
+
+Depois da formacao, a carteira fica congelada e a performance realizada e
+avaliada ate a data de avaliacao do mes, normalmente o ultimo pregao do mes.
+
+O objetivo principal da carteira nao e prever valor intrinseco, mas selecionar
+acoes com bom momento mensal, risco controlado e aderencia ao regime de mercado.
+
+
+2. FLUXO GERAL
+
+O fluxo atual e separado em etapas:
+
+1. Carregar universo de ativos.
+2. Coletar precos, indicadores tecnicos, fundamentos e dados de setor.
+3. Gerar a aba "Analise Preliminar".
+4. Selecionar candidatas preliminares para risco.
+5. Calcular risco, beta, correlacao, CV individual e matriz de covariancia.
+6. Bloquear ou liberar ativos para otimizacao.
+7. Rodar otimizacao de carteira.
+8. Validar restricoes.
+9. Gerar Excel/PDF.
+10. Calcular performance realizada ex-post.
+11. Rodar simulacoes sombra para testar alteracoes sem mudar producao.
+
+
+3. DATAS E LOOK-AHEAD BIAS
+
+O robo separa:
+
+- data_formacao_carteira: primeiro pregao do mes de referencia.
+- data_limite_dados_selecao: igual ou anterior a data de formacao.
+- data_inicio_performance: inicio da medicao realizada.
+- data_avaliacao_carteira: ultimo pregao disponivel no periodo de avaliacao.
+
+Na selecao, os indicadores devem usar apenas dados ate a formacao:
+
+- precos;
+- medias moveis;
+- RSI/IFR;
+- Bollinger;
+- retornos acumulados;
+- forca relativa contra IBOV;
+- risco historico;
+- beta;
+- correlacao;
+- fundamentos disponiveis.
+
+A performance realizada da carteira e calculada depois, usando a janela entre
+data_inicio_performance e data_avaliacao.
+
+
+4. UNIVERSO DE ATIVOS
+
+O universo padrao e a carteira teorica do Ibovespa obtida online ou reconstruida
+de arquivos historicos ja gerados.
+
+Configuracao relevante:
+
+- universe.mode = ibovespa_online
+- fallback_to_custom_csv = true
+- custom_csv_path = config/ativos.csv
+
+O arquivo config/ativos.csv existe como fallback ou universo customizado, mas a
+metodologia real usa o universo amplo do Ibovespa, cerca de 78 ativos.
+
+Para auditorias ex-post, o universo historico deve ser reconstruido por mes, e
+nao pelo universo atual.
+
+
+5. PRECOS E RETORNOS
+
+O robo usa precos ajustados quando configurado:
+
+- data.use_adjusted_prices = true
+
+Indicadores tecnicos principais usam periodicidade semanal:
+
+- RSI 14 semanal, fechamento;
+- Bollinger semanal, periodo 20, SMA, 2 desvios;
+- MM9, MM21, MM50 e MM100 semanais.
+
+Na etapa de risco, os retornos usados sao log-retornos diarios na janela de
+risco, hoje tipicamente 4 meses.
+
+Na performance realizada, o retorno ex-post e simples:
+
+retorno_realizado = preco_avaliacao / preco_inicio_performance - 1
+
+O retorno do IBOV para comparacao usa a mesma janela da carteira.
+
+
+6. ANALISE PRELIMINAR
+
+A aba "Analise Preliminar" e a triagem mensal.
+
+Ela tenta responder:
+
+"Este ativo tem bom ponto de entrada mensal, forca relativa e fundamentos
+minimos para ir para gestao de risco?"
+
+Ela nao e uma analise completa de valuation.
+
+Principais blocos:
+
+- tendencia mensal;
+- contexto estrutural;
+- timing de entrada;
+- forca relativa contra IBOV;
+- fundamentos absolutos;
+- fundamentos relativos ao setor;
+- decisao preliminar ajustada.
+
+
+7. TENDENCIA MENSAL E CONTEXTO ESTRUTURAL
+
+As medias curtas semanais sao o principal sinal de entrada mensal:
+
+- MM9 semanal;
+- MM21 semanal.
+
+As medias longas sao contexto estrutural:
+
+- MM50 semanal;
+- MM100 semanal.
+
+Classificacoes de tendencia mensal:
+
+- alta_forte_mensal;
+- alta_aceitavel_ou_virada;
+- correcao_em_tendencia;
+- fraca;
+- descarte_tecnico.
+
+Classificacoes de contexto estrutural:
+
+- estrutural_alta: MM50 > MM100;
+- estrutural_baixa: MM50 < MM100;
+- estrutural_indefinida: dados insuficientes ou medias muito proximas.
+
+Importante: MM50/MM100 nao devem eliminar automaticamente uma acao com bom
+momento mensal. Elas funcionam como contexto.
+
+
+8. TIMING DE ENTRADA
+
+O timing separa tendencia, reversao e sobrecompra.
+
+Tipos principais:
+
+- timing_favoravel_tendencia;
+- timing_reversao_oportunidade;
+- timing_esticado_sobrecompra;
+- timing_neutro;
+- timing_fraco.
+
+Regras de tendencia favoravel:
+
+- RSI semanal entre 50 e 65;
+- preco acima das medias principais;
+- preco nao excessivamente perto da banda superior;
+- tendencia tecnica positiva.
+
+Regras de reversao:
+
+- RSI <= 35;
+- Bollinger indicando oportunidade ou preco perto/abaixo da banda inferior;
+- fundamentos aceitaveis ou bons;
+- ausencia de deterioracao fundamental grave;
+- estrutura nao destruida, por exemplo MM50 > MM100 ou preco acima da MM50;
+- retorno YTD positivo ou retorno 4m positivo.
+
+Regras de sobrecompra:
+
+- RSI > 70 e preco perto/acima da banda superior gera bloqueio de entrada,
+  salvo excecao configurada;
+- RSI > 75 e bloqueio temporario, salvo excecao;
+- ativos bons mas esticados vao para Watchlist, nao para carteira imediata.
+
+
+9. FORCA RELATIVA CONTRA O IBOV
+
+A forca relativa da janela de 1 mes tem peso maior, pois a carteira e mensal.
+
+Colunas relevantes:
+
+- retorno_1m_relativo_ibov;
+- retorno_4m_relativo_ibov;
+- retorno_ytd_relativo_ibov;
+- forca_relativa_score;
+- classificacao_forca_relativa;
+- leitura_forca_relativa_mensal.
+
+Classificacoes possiveis:
+
+- forte_no_mes;
+- positiva_no_mes;
+- forte_no_medio_prazo_mas_fraca_no_mes;
+- neutra;
+- fraca;
+- reversao_em_observacao.
+
+
+10. FUNDAMENTOS
+
+Fundamentos sao usados como filtro de qualidade minima e risco de deterioracao,
+nao como valuation completo.
+
+Indicadores considerados:
+
+- ROE;
+- ROIC;
+- GAF aproximado = ROE / ROIC;
+- P/L;
+- P/VP;
+- dividend yield;
+- margem liquida;
+- margem EBIT;
+- divida liquida / patrimonio;
+- crescimento de receita 5 anos;
+- liquidez media.
+
+O P/L nao deve ser filtro duro isolado. Ele gera alerta:
+
+- P/L negativo: prejuizo ou lucro distorcido;
+- P/L alto contra setor: alerta de valuation;
+- P/L ausente: dado indisponivel, nao bloqueante sozinho.
+
+Dado ausente isolado nao deve virar deterioracao grave.
+
+fundamento_bloqueante = True somente quando ha deterioracao clara, como:
+
+- ROE negativo relevante;
+- ROIC negativo ou muito baixo;
+- margem liquida negativa;
+- P/L negativo;
+- alavancagem alta com baixa rentabilidade;
+- crescimento de receita muito fraco;
+- desempenho muito inferior ao setor em varios indicadores.
+
+
+11. COMPARACAO FUNDAMENTALISTA SETORIAL
+
+Cada empresa e comparada com as demais do proprio setor.
+
+O robo usa medianas setoriais validas, nao medias simples, para reduzir efeito
+de outliers.
+
+Para medianas de rentabilidade/margem, entram apenas valores positivos e
+validos. Indicadores ruins nao entram na mediana, mas continuam punindo a
+empresa analisada.
+
+Indicadores maiores sao melhores:
+
+- ROE;
+- ROIC;
+- margem liquida;
+- margem EBIT;
+- crescimento de receita;
+- dividend yield, com cuidado.
+
+Indicadores menores sao melhores:
+
+- P/L positivo;
+- P/VP, com cuidado;
+- divida liquida / patrimonio.
+
+Classificacao setorial:
+
+- forte_relativo_ao_setor;
+- bom_relativo_ao_setor;
+- neutro_relativo_ao_setor;
+- fraco_relativo_ao_setor;
+- critico_relativo_ao_setor.
+
+
+12. DECISAO PRELIMINAR
+
+Categorias:
+
+- candidata_para_risco;
+- candidata_com_restricao;
+- watchlist_qualificada;
+- descartar_tecnico;
+- descartar_fundamentalista;
+- descartar_dados_insuficientes.
+
+A decisao preliminar ajustada considera:
+
+- tendencia mensal;
+- timing;
+- forca relativa mensal;
+- fundamentos absolutos;
+- fundamentos relativos ao setor;
+- bloqueios tecnicos;
+- fundamento_bloqueante;
+- dados essenciais.
+
+
+13. FUNIL PARA RISCO
+
+Configuracao atual:
+
+- strategy.pre_risk_candidates = 25
+
+Ou seja, o robo pega ate 25 melhores candidatas preliminares para levar a
+gestao de risco.
+
+Esse numero e diferente de max_subset_evaluations. Ele controla o funil, nao o
+numero de combinacoes testadas.
+
+
+14. ANALISE DE RISCO
+
+Para as candidatas de risco, o robo calcula:
+
+- retorno medio diario;
+- retorno acumulado 1m;
+- retorno acumulado 4m;
+- desvio padrao;
+- variancia;
+- CV individual;
+- beta;
+- correlacao com IBOV;
+- matriz de covariancia;
+- correlacao media com demais candidatas.
+
+O retorno medio e baseado em log-retornos diarios da janela de risco.
+O desvio padrao usa a mesma janela.
+
+CV individual = desvio_padrao / retorno_medio.
+
+Importante:
+
+- CV individual alto gera alerta ou penalizacao;
+- CV individual nao deve bloquear automaticamente, salvo configuracao explicita;
+- beta alto gera alerta, nao bloqueio automatico;
+- correlacao alta gera alerta, nao bloqueio automatico.
+
+
+15. BLOQUEIO PARA OTIMIZACAO
+
+Ativos podem ser:
+
+- aprovados_para_risco;
+- moderados_para_risco;
+- bloqueados_para_risco.
+
+Bloqueios reais incluem:
+
+- watchlist por timing inadequado;
+- sobrecompra extrema;
+- fundamento_bloqueante;
+- tendencia mensal desfavoravel;
+- retorno_medio_negativo, na regra de producao atual;
+- dados essenciais insuficientes;
+- configuracao manual.
+
+Alertas nao bloqueantes incluem:
+
+- beta alto;
+- correlacao alta;
+- CV individual alto quando cv_as_hard_filter = false;
+- dados ausentes nao essenciais.
+
+
+16. OTIMIZACAO
+
+Configuracoes principais:
+
+- strategy.optimization_candidates = 20;
+- strategy.max_subset_evaluations = 2500;
+- portfolio.candidate_counts = [5, 6, 8, 10];
+- portfolio.min_weight = 0.05;
+- portfolio.max_weight = 0.20;
+- portfolio.max_assets_per_sector = 2;
+- portfolio.preferred_max_sector_weight = 0.30;
+- portfolio.hard_max_sector_weight = 0.40.
+
+O otimizador testa combinacoes de carteiras com 5, 6, 8 e 10 acoes.
+
+Para cada combinacao, otimiza pesos tentando minimizar:
+
+CV da carteira = risco da carteira / retorno esperado da carteira.
+
+Calculos principais:
+
+retorno_carteira = pesos * retornos_medios
+
+risco_carteira = sqrt(pesos * matriz_covariancia * pesos_transposto)
+
+beta_carteira = pesos * betas
+
+sharpe = (retorno_carteira - taxa_livre_risco_diaria) / risco_carteira
+
+Restricoes:
+
+- soma dos pesos = 100%;
+- peso minimo por ativo = 5%;
+- peso maximo por ativo = 20%, salvo caps especificos menores;
+- retorno esperado positivo;
+- limite de setor;
+- limite de bloco de risco;
+- maximo de acoes de reversao;
+- limite de peso em reversao;
+- maximo de ativos em watchlist flexivel;
+- limite de peso em watchlist flexivel.
+
+
+17. BLOCO DE RISCO
+
+O robo evita combinacoes redundantes ou concentradas por grupo economico/bloco.
+
+Exemplos:
+
+- PETR3 e PETR4 nao devem entrar juntas;
+- GGBR4 e GOAU4 tem tratamento especial como GERDAU_GOAU;
+- em carteiras pequenas, duplicidade de bloco e penalizada/bloqueada.
+
+
+18. REGIME DE MERCADO
+
+O robo classifica o mercado como:
+
+- mercado favoravel;
+- mercado seletivo;
+- mercado fraco/desfavoravel.
+
+Diagnostico usa:
+
+- retorno do IBOV no mes;
+- retorno YTD do IBOV;
+- medias moveis do IBOV;
+- RSI do IBOV;
+- Bollinger do IBOV;
+- amplitude de mercado;
+- setores em alta/neutros/baixa;
+- quantidade de ativos com tendencia favoravel.
+
+Regra-base:
+
+- mais de 40% com tendencia favoravel: mercado favoravel;
+- entre 20% e 40%: mercado seletivo;
+- menos de 20%: mercado fraco/desfavoravel.
+
+Em mercado favoravel, carteiras defensivas demais podem ser rejeitadas por baixa
+aderencia ao regime.
+
+
+19. PERFORMANCE REALIZADA
+
+A aba "Performance Realizada" calcula, para cada ativo da carteira:
+
+- preco_formacao;
+- preco_avaliacao;
+- retorno_realizado_periodo;
+- contribuicao_para_retorno_carteira;
+- retorno_ibov_periodo;
+- alfa_vs_ibov.
+
+Resumo:
+
+- retorno_realizado_carteira;
+- retorno_realizado_ibov;
+- alfa_realizado_vs_ibov;
+- melhor ativo;
+- pior ativo;
+- quantidade de ativos positivos;
+- quantidade de ativos negativos.
+
+
+20. PAINEL EX-POST DO UNIVERSO
+
+Existe um script de painel ex-post que gera:
+
+universo_expost_consolidado.xlsx
+
+Ele calcula uma linha por mes/ticker para o universo todo:
+
+- retorno realizado do ativo;
+- retorno do IBOV na mesma janela;
+- retorno relativo;
+- se bateu IBOV;
+- status na selecao;
+- peso final;
+- nota final;
+- regime de mercado.
+
+Isso permite medir custo de oportunidade:
+
+- quantos ativos bateram o IBOV;
+- quantos foram aprovados/candidatos mas nao selecionados;
+- quais bloqueios causaram perda de oportunidade.
+
+
+21. SIMULACAO SOMBRA
+
+O modo sombra testa mudancas sem alterar a producao.
+
+O rig atual faz:
+
+1. Teste-ancora com shadow_fixes = false.
+2. Verifica se reproduz os resultados reais:
+   - fevereiro a maio: sem carteira;
+   - junho: carteira real exata.
+3. So se o ancora passa, roda as correcoes sombra.
+
+Correcoes estruturais testadas:
+
+C1. Alerta de realizacao seletivo:
+alerta so dispara se houver pelo menos 3 de 5 sinais:
+
+- retorno 1m forte;
+- beta alto;
+- RSI alto;
+- preco perto da banda superior;
+- perfil especulativo.
+
+C2. retorno_medio_negativo vira penalizacao, nao bloqueio, exceto se houver
+deterioracao fundamental real:
+
+- ROE < 0;
+- margem liquida < 0;
+- P/L < 0.
+
+C3. Em mercado favoravel, ativo descolado do IBOV recebe teto de peso de 10%:
+
+- beta < 0.30;
+- correlacao_ibov < 0.20.
+
+Teste sombra recente:
+
+- maio continuou sem carteira;
+- junho reduziu PETR3 de 20% para 10%;
+- junho sombra melhorou alfa versus carteira real;
+- BBSE, ITSA e SBSP tiveram bloqueio por retorno medio negativo removido, mas
+  ainda nao entraram na carteira por outros filtros do funil.
+
+
+22. CARTEIRA PARCIAL
+
+Foi testada em sombra e deve ficar desligada por enquanto.
+
+Configuracao:
+
+- shadow.enable_partial_portfolio = false
+
+Resultado do teste:
+
+- fevereiro acionou carteira parcial com 60% investido e 40% caixa;
+- retorno parcial foi pior que ficar 100% em caixa;
+- por isso a regra nao deve ir para producao neste momento.
+
+
+23. ARQUIVOS IMPORTANTES
+
+Principais modulos:
+
+- src/main.py: orquestra o pipeline mensal.
+- src/data_loader.py: carrega precos e dados de mercado.
+- src/fundamentals.py: coleta fundamentos.
+- src/scoring.py: calcula notas e rankings.
+- src/risk_analysis.py: calcula retornos, risco, beta, correlacao e matriz.
+- src/optimizer.py: monta e valida a carteira final.
+- src/report_excel.py ou equivalente: exporta Excel.
+- src/report_pdf.py: exporta PDF.
+- scripts/shadow_simulacao.py: roda testes sombra.
+- scripts/universo_expost_consolidado.py: painel ex-post do universo.
+- config/settings.yaml: parametros centrais.
+
+
+24. PONTOS DE MELHORIA PARA DISCUSSAO
+
+1. Retorno medio negativo como bloqueio:
+   - producao ainda pode estar restritiva demais.
+   - sombra C2 parece promissora, mas precisa entender por que nomes bons ainda
+     ficam fora do pool final.
+
+2. Aderencia ao regime:
+   - em mercado favoravel, evitar carteiras defensivas ou descorrelacionadas
+     demais.
+   - C3 corrige parcialmente ativos muito descolados do IBOV.
+
+3. Watchlist flexivel:
+   - pode estar bloqueando demais em alguns meses.
+   - precisa distinguir timing ruim real de atraso temporario.
+
+4. Setores:
+   - maio parece bloqueado por concentracao setorial real.
+   - preservar essa trava parece importante.
+
+5. Custo de oportunidade:
+   - usar o painel ex-post para medir ativos que bateram IBOV mas ficaram fora.
+
+6. Ranking preliminar:
+   - avaliar se os 25 candidatos sao suficientes.
+   - ja houve teste com aumento para 25; pode-se testar 30 em sombra.
+
+7. Objetivo da otimizacao:
+   - hoje minimiza CV da carteira.
+   - pode-se comparar com objetivo hibrido: alfa esperado, CV, beta e aderencia
+     ao regime.
+
+8. Caixa:
+   - carteira parcial testada piorou fevereiro.
+   - talvez caixa deva ser decisao macro/regime, nao solucao matematica para
+     caps individuais.
+
+
+25. RESUMO CURTO DA METODOLOGIA
+
+O robo seleciona uma carteira mensal do Ibovespa. Primeiro faz uma triagem
+tecnica/fundamentalista com foco em entrada mensal e forca relativa. Depois
+leva as melhores candidatas para risco, calcula retornos diarios, covariancia,
+CV, beta e correlacao, e otimiza combinacoes de 5, 6, 8 e 10 acoes. A carteira
+final precisa respeitar pesos, setores, blocos de risco, timing e regime de
+mercado. A performance e medida depois, contra o IBOV, na mesma janela. Mudancas
+metodologicas devem ser testadas primeiro em modo sombra, sempre com teste
+ancora para garantir que o rig reproduz a producao antes das alteracoes.

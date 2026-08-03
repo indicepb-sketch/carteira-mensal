@@ -1,0 +1,37 @@
+Teste 28A - Auditoria Beta, Correlacao, Retorno Medio, Desvio Padrao e CV
+Periodo: 2024-01 a 2026-06 | linhas ativo-mes: 476
+Carteira 100% acoes T25 cap 7,5%: retorno=36.26%; alfa=5.04%; acerto=63.33%
+corr_beta_alpha_ativo: 0.012
+corr_correlacao_alpha_ativo: 0.003
+corr_retorno_medio_original_alpha_ativo: 0.014
+corr_desvio_alpha_ativo: 0.032
+corr_cv_alpha_ativo: -0.045
+
+beta:
+  <=0.6: n=81; alpha medio=0.02%; taxa=50.62%; contrib=-0.32%
+  0.6-0.9: n=112; alpha medio=-0.16%; taxa=44.64%; contrib=-4.72%
+  0.9-1.2: n=122; alpha medio=-0.11%; taxa=52.46%; contrib=1.72%
+  >1.2: n=161; alpha medio=0.68%; taxa=49.69%; contrib=8.48%
+
+correlacao_ibov:
+  <=0.2: n=28; alpha medio=1.67%; taxa=57.14%; contrib=3.03%
+  0.2-0.5: n=183; alpha medio=0.18%; taxa=50.27%; contrib=-0.41%
+  0.5-0.75: n=222; alpha medio=-0.18%; taxa=47.75%; contrib=-1.36%
+  >0.75: n=43; alpha medio=0.93%; taxa=48.84%; contrib=3.90%
+
+retorno_medio_sinal:
+  retorno_medio_negativo: n=10; alpha medio=-1.13%; taxa=70.00%; contrib=-0.35%
+  retorno_medio_positivo: n=466; alpha medio=0.19%; taxa=48.93%; contrib=5.53%
+
+desvio_padrao_tercil:
+  desvio_alto: n=159; alpha medio=0.79%; taxa=54.72%; contrib=8.96%
+  desvio_baixo: n=159; alpha medio=-0.27%; taxa=44.03%; contrib=-5.71%
+  desvio_medio: n=158; alpha medio=-0.02%; taxa=49.37%; contrib=1.92%
+
+cv_tercil:
+  cv_alto: n=155; alpha medio=-0.11%; taxa=46.45%; contrib=0.12%
+  cv_baixo: n=156; alpha medio=-0.11%; taxa=46.15%; contrib=-1.50%
+  cv_medio: n=155; alpha medio=0.80%; taxa=54.19%; contrib=6.91%
+  dados_insuficientes: n=10; alpha medio=-1.13%; taxa=70.00%; contrib=-0.35%
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste28a_auditoria_risco_resultado.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_teste28a_auditoria_risco_resultado.log

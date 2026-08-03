@@ -1,0 +1,7 @@
+Teste 34 - Retorno com Caixa/CDI no Residual de Exposicao
+Fonte primaria CDI: BCB/SGS serie 12; liquido de IR pela tabela regressiva, todos os meses <=180 dias => 22,5%.
+  base_28d: zero=61.25%; CDI=72.41%; IBOV=31.22%; alfa_zero=30.03%; alfa_cdi=41.19%; delta_CDI=11.15%; acerto_zero=20/30; acerto_cdi=22/30; drawdown_cdi=-8.78%; residual_medio=31.33%
+  restrita_virada_forca_sem_queda_leve_cap5_capefetivo25: zero=61.21%; CDI=72.46%; IBOV=31.22%; alfa_zero=29.99%; alfa_cdi=41.24%; delta_CDI=11.25%; acerto_zero=20/30; acerto_cdi=22/30; drawdown_cdi=-8.78%; residual_medio=31.58%
+  restrita_combinada_31_sem_queda_leve_cap5_capefetivo25: zero=61.21%; CDI=72.46%; IBOV=31.22%; alfa_zero=29.99%; alfa_cdi=41.24%; delta_CDI=11.25%; acerto_zero=20/30; acerto_cdi=22/30; drawdown_cdi=-8.78%; residual_medio=31.58%
+Maior peso residual em CDI: 94.50%
+Meses-cenario com residual > 0: 44/90

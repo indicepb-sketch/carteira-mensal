@@ -1,0 +1,15 @@
+Teste - modelos 100% investidos
+Resumo 100% em acoes:
+  13b_conservador: retorno=41.39%; IBOV=31.22%; alfa=10.17%; bateu=18/30; pior_mes=-6.59%; drawdown=-12.35%
+  risk_on_off_mm50: retorno=36.84%; IBOV=31.22%; alfa=5.62%; bateu=18/30; pior_mes=-6.59%; drawdown=-12.46%
+  risk_on_off_voto: retorno=37.96%; IBOV=31.22%; alfa=6.74%; bateu=18/30; pior_mes=-6.59%; drawdown=-12.46%
+  risk_on_off_confirmacao: retorno=38.14%; IBOV=31.22%; alfa=6.92%; bateu=17/30; pior_mes=-6.59%; drawdown=-12.35%
+Comparacao 100% vs defensivo:
+  13b_conservador: delta_alfa=0.39%; delta_drawdown=-3.57%
+  risk_on_off_mm50: delta_alfa=-19.63%; delta_drawdown=-3.69%
+  risk_on_off_voto: delta_alfa=-18.68%; delta_drawdown=-3.69%
+  risk_on_off_confirmacao: delta_alfa=-17.21%; delta_drawdown=-3.57%
+Julho parcial 100% em acoes:
+  oficial_13b: retorno=0.75%; IBOV=1.17%; alfa=-0.43%
+  regime17_mm50: retorno=0.75%; IBOV=1.17%; alfa=-0.43%
+  regime17_voto: retorno=0.75%; IBOV=1.17%; alfa=-0.43%

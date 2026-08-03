@@ -1,0 +1,6 @@
+Teste 22 - Forward-Test MM50 100/50/20
+Regra: alta=100% acoes; queda_leve=50% acoes; queda_forte=20% acoes; restante defensivo/CDI.
+Historico 2024-01 a 2026-06: retorno=59.36%; IBOV=31.22%; alfa=28.14%; bateu=19/30; exposicao_media=69.67%
+Julho parcial (2026-06-30 a 2026-07-26): regime=queda_forte; exposicao=20.00%; retorno=0.74%; IBOV=1.17%; alfa=-0.43%
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_regime_22_forward_mm50_100_50_20.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_regime_22_forward_mm50_100_50_20.log

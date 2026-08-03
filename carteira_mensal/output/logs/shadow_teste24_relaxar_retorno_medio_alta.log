@@ -1,0 +1,7 @@
+Teste 24 - Relaxar retorno_medio_negativo em regime de alta
+Comparacao: retorno_medio_rigido vs relaxa_retorno_medio_so_alta, com exposicao 100/50/20.
+  retorno_medio_rigido: retorno=51.86%; IBOV=31.22%; alfa=20.64%; bateu=20/30
+  relaxa_retorno_medio_so_alta: retorno=58.70%; IBOV=31.22%; alfa=27.48%; bateu=19/30
+Delta relaxado vs rigido: alfa=6.84%; retorno=6.84%
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste24_relaxar_retorno_medio_alta.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_teste24_relaxar_retorno_medio_alta.log

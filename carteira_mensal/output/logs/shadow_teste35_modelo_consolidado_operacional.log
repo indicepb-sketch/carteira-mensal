@@ -1,0 +1,12 @@
+Teste 35 - Modelo Consolidado Operacional
+Configuracao: Base 28D + cap efetivo rigido + residual em CDI liquido de IR. Sem recuperacao de restritas.
+Retorno operacional: 72.41%
+Retorno IBOV: 31.22%
+Alfa operacional: 41.19%
+Acerto operacional: 22/30 (73.33%)
+Ganho do CDI no residual vs zero: 11.15%
+Drawdown operacional: -8.78%
+Exposicao media em acoes: 68.67%; peso medio em CDI: 31.33%
+Validacao: meses com pesos != 100%: 0; meses com retorno != soma contribuicoes: 0
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste35_modelo_consolidado_operacional.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_teste35_modelo_consolidado_operacional.log

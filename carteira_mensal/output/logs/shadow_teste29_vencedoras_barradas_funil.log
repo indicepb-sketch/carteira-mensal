@@ -1,0 +1,45 @@
+Teste 29 - Auditoria de Vencedoras Barradas no Funil Inicial
+Modo leitura/medicao: cruza Analise Preliminar das planilhas mensais com expost_universo.
+Total acoes-mes analisadas: 2340
+Acoes-mes que bateram o IBOV: 1099
+Vencedoras selecionadas: 5
+Vencedoras barradas/nao selecionadas: 1094
+Vencedoras barradas no funil inicial: 501
+Ranking por custo de vencedoras barradas:
+  candidata_com_restricao_nao_selecionada: n=332; rel_total=1896.76%; rel_medio=5.71%; maior=AZZA3.SA (37.52%)
+  candidata_limpa_nao_selecionada: n=261; rel_total=1592.15%; rel_medio=6.10%; maior=CEAB3.SA (33.57%)
+  descartar_tecnico: n=217; rel_total=1324.86%; rel_medio=6.11%; maior=USIM5.SA (26.39%)
+  descartar_fundamentalista: n=103; rel_total=939.38%; rel_medio=9.12%; maior=USIM5.SA (40.88%)
+  watchlist_qualificada: n=86; rel_total=530.33%; rel_medio=6.17%; maior=COGN3.SA (31.43%)
+  descartar_dados_insuficientes: n=95; rel_total=429.11%; rel_medio=4.52%; maior=ASAI3.SA (20.95%)
+Resumo mensal de vazamento de vencedoras:
+  2024-01: bateram=44; barradas_total=44; barradas_funil=14; maior=RECV3.SA (14.70%)
+  2024-02: bateram=38; barradas_total=38; barradas_funil=21; maior=CEAB3.SA (26.89%)
+  2024-03: bateram=43; barradas_total=43; barradas_funil=18; maior=EMBJ3.SA (29.54%)
+  2024-04: bateram=18; barradas_total=18; barradas_funil=4; maior=PETR3.SA (18.68%)
+  2024-05: bateram=41; barradas_total=41; barradas_funil=23; maior=MBRF3.SA (22.56%)
+  2024-06: bateram=28; barradas_total=28; barradas_funil=11; maior=SUZB3.SA (19.48%)
+  2024-07: bateram=34; barradas_total=34; barradas_funil=21; maior=WEGE3.SA (18.35%)
+  2024-08: bateram=33; barradas_total=33; barradas_funil=16; maior=LREN3.SA (23.42%)
+  2024-09: bateram=36; barradas_total=36; barradas_funil=17; maior=CMIN3.SA (23.19%)
+  2024-10: bateram=36; barradas_total=36; barradas_funil=18; maior=CEAB3.SA (28.60%)
+  2024-11: bateram=30; barradas_total=30; barradas_funil=16; maior=MBRF3.SA (24.04%)
+  2024-12: bateram=29; barradas_total=29; barradas_funil=12; maior=BRAV3.SA (25.63%)
+  2025-01: bateram=47; barradas_total=47; barradas_funil=32; maior=CEAB3.SA (26.05%)
+  2025-02: bateram=39; barradas_total=39; barradas_funil=14; maior=EMBJ3.SA (19.85%)
+  2025-03: bateram=45; barradas_total=45; barradas_funil=20; maior=BRAV3.SA (33.97%)
+  2025-04: bateram=55; barradas_total=55; barradas_funil=15; maior=AZZA3.SA (25.92%)
+  2025-05: bateram=48; barradas_total=48; barradas_funil=14; maior=AZZA3.SA (37.52%)
+  2025-06: bateram=40; barradas_total=40; barradas_funil=10; maior=CSMG3.SA (18.08%)
+  2025-07: bateram=26; barradas_total=26; barradas_funil=12; maior=BRAV3.SA (17.77%)
+  2025-08: bateram=41; barradas_total=41; barradas_funil=15; maior=RADL3.SA (21.32%)
+  2025-09: bateram=37; barradas_total=37; barradas_funil=15; maior=CSMG3.SA (15.27%)
+  2025-10: bateram=34; barradas_total=34; barradas_funil=14; maior=USIM5.SA (26.39%)
+  2025-11: bateram=41; barradas_total=41; barradas_funil=18; maior=MGLU3.SA (17.53%)
+  2025-12: bateram=32; barradas_total=32; barradas_funil=17; maior=BRAV3.SA (21.78%)
+  2026-01: bateram=25; barradas_total=24; barradas_funil=12; maior=COGN3.SA (31.43%)
+  2026-02: bateram=39; barradas_total=39; barradas_funil=21; maior=MRVE3.SA (22.80%)
+  2026-03: bateram=24; barradas_total=24; barradas_funil=11; maior=PETR3.SA (26.87%)
+  2026-04: bateram=30; barradas_total=30; barradas_funil=12; maior=USIM5.SA (23.07%)
+  2026-05: bateram=43; barradas_total=43; barradas_funil=28; maior=USIM5.SA (40.88%)
+  2026-06: bateram=43; barradas_total=39; barradas_funil=30; maior=CURY3.SA (11.78%)

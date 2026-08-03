@@ -1,0 +1,19 @@
+Universo customizado informado: 53 tickers.
+Meses: 2026-01, 2026-02, 2026-03, 2026-04, 2026-05, 2026-06
+TESTE-ANCORA original, sem filtro de universo:
+  2026-01: PASSOU | reproduz carteira real
+  2026-02: PASSOU | sem carteira como no real
+  2026-03: PASSOU | sem carteira como no real
+  2026-04: PASSOU | sem carteira como no real
+  2026-05: PASSOU | sem carteira como no real
+  2026-06: PASSOU | junho reproduz carteira real exatamente
+Rodando universo customizado com config consolidada.
+  2026-01: status=valida | sinal=V3_MOMENTUM | beta_alvo=1.10 | beta=0.90 | retorno=7.64% | IBOV=12.56% | alfa=-4.92% | pesos=ABEV3.SA: 17.08%; BBSE3.SA: 11.52%; EGIE3.SA: 18.54%; SBSP3.SA: 21.13%; BPAC11.SA: 10.15%; FLRY3.SA: 6.37%; PETR4.SA: 1.95%; B3SA3.SA: 4.33%; WEGE3.SA: 8.62%; TOTS3.SA: 0.30%
+  2026-02: status=valida | sinal=V3_MOMENTUM | beta_alvo=1.10 | beta=1.21 | retorno=0.77% | IBOV=4.09% | alfa=-3.32% | pesos=SLCE3.SA: 10.43%; YDUQ3.SA: 11.55%; HYPE3.SA: 8.36%; ABEV3.SA: 7.74%; GOAU4.SA: 10.05%; MGLU3.SA: 4.99%; SBSP3.SA: 7.52%; SANB11.SA: 9.43%; BBAS3.SA: 10.81%; B3SA3.SA: 10.37%; RENT3.SA: 8.52%; FLRY3.SA: 0.23%
+  2026-03: status=valida | sinal=SINAL_A_DEFENSIVO | beta_alvo=0.95 | beta=0.83 | retorno=-0.41% | IBOV=-0.70% | alfa=0.29% | pesos=SLCE3.SA: 19.86%; ABEV3.SA: 23.85%; SBSP3.SA: 25.00%; MULT3.SA: 11.54%; ITSA4.SA: 9.95%; RENT3.SA: 0.43%; BBAS3.SA: 9.38%
+  2026-04: status=valida | sinal=SINAL_A_DEFENSIVO | beta_alvo=0.75 | beta=0.94 | retorno=-0.15% | IBOV=-0.08% | alfa=-0.07% | pesos=SLCE3.SA: 25.00%; SBSP3.SA: 25.00%; MULT3.SA: 16.19%; ITSA4.SA: 19.51%; B3SA3.SA: 3.35%; ENEV3.SA: 10.95%
+  2026-05: status=valida | sinal=SINAL_A_DEFENSIVO | beta_alvo=0.75 | beta=0.91 | retorno=-9.02% | IBOV=-7.22% | alfa=-1.79% | pesos=SLCE3.SA: 22.68%; EGIE3.SA: 17.28%; MULT3.SA: 14.81%; ITSA4.SA: 10.43%; B3SA3.SA: 2.66%; SBSP3.SA: 24.83%; ENEV3.SA: 7.31%
+  2026-06: status=valida | sinal=V3_MOMENTUM | beta_alvo=1.15 | beta=0.78 | retorno=-0.71% | IBOV=-0.28% | alfa=-0.43% | pesos=PETR4.SA: 7.05%; VALE3.SA: 18.25%; BBSE3.SA: 11.21%; EGIE3.SA: 14.77%; PRIO3.SA: 5.16%; GGBR4.SA: 15.13%; ABEV3.SA: 13.43%; ENEV3.SA: 8.79%; ITSA4.SA: 4.32%; SBSP3.SA: 0.25%; B3SA3.SA: 1.64%
+ACUMULADO JAN-JUN: retorno=-2.56% | IBOV=7.55% | alfa=-10.11%
+VALIDACAO RETORNO: maior diferenca peso x ativo = 0.0000000000
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_universo_custom_jan_jun.xlsx

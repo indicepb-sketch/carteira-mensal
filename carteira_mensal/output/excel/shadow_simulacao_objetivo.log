@@ -1,0 +1,34 @@
+TESTE-ANCORA: shadow_fixes=False
+2026-02: PASSOU | sem carteira como no real | tempo=1.2s
+2026-03: PASSOU | sem carteira como no real | tempo=1.3s
+2026-04: PASSOU | sem carteira como no real | tempo=0.9s
+2026-05: PASSOU | sem carteira como no real | tempo=1.2s
+2026-06: PASSOU | junho reproduz carteira real exatamente | tempo=3.1s
+ANCORA PASSOU. Executando objetivo-retorno em modo sombra: CV_ATUAL + V1/V2/V3.
+CV_ATUAL 2026-02: status=carteira invalida / restricoes inviaveis | beta=nan | retorno=nan% | IBOV=4.09% | alfa=nan% | pesos=
+CV_ATUAL 2026-03: status=carteira invalida / restricoes inviaveis | beta=nan | retorno=nan% | IBOV=-0.70% | alfa=nan% | pesos=
+CV_ATUAL 2026-04: status=carteira invalida / restricoes inviaveis | beta=nan | retorno=nan% | IBOV=-0.08% | alfa=nan% | pesos=
+CV_ATUAL 2026-05: status=carteira invalida / restricoes inviaveis | beta=nan | retorno=nan% | IBOV=-7.22% | alfa=nan% | pesos=
+CV_ATUAL 2026-06: status=valida | beta=0.9321079293068186 | retorno=1.58% | IBOV=-0.28% | alfa=1.86% | pesos=PETR3.SA: 10.00%; GGBR4.SA: 10.00%; ABEV3.SA: 10.00%; CPLE3.SA: 20.00%; GOAU4.SA: 10.00%; VALE3.SA: 10.00%; CSMG3.SA: 20.00%; IGTI11.SA: 10.00%
+Rodando variante V1 da objetivo-retorno.
+V1 2026-02: status=carteira invalida / restricoes inviaveis | beta=nan | retorno=nan% | IBOV=4.09% | alfa=nan% | pesos=
+V1 2026-03: status=carteira invalida / restricoes inviaveis | beta=nan | retorno=nan% | IBOV=-0.70% | alfa=nan% | pesos=
+V1 2026-04: status=carteira invalida / restricoes inviaveis | beta=nan | retorno=nan% | IBOV=-0.08% | alfa=nan% | pesos=
+V1 2026-05: status=carteira invalida / restricoes inviaveis | beta=nan | retorno=nan% | IBOV=-7.22% | alfa=nan% | pesos=
+V1 2026-06: status=valida | beta=0.9573150816378059 | retorno=0.11% | IBOV=-0.28% | alfa=0.39% | pesos=PETR3.SA: 10.00%; GGBR4.SA: 10.00%; ABEV3.SA: 10.00%; BRAV3.SA: 10.00%; CPLE3.SA: 20.00%; VALE3.SA: 10.00%; CSMG3.SA: 10.00%; ITSA4.SA: 10.00%; B3SA3.SA: 5.00%; IGTI11.SA: 5.00%
+Rodando variante V2 da objetivo-retorno.
+V2 2026-02: status=carteira invalida / restricoes inviaveis | beta=nan | retorno=nan% | IBOV=4.09% | alfa=nan% | pesos=
+V2 2026-03: status=carteira invalida / restricoes inviaveis | beta=nan | retorno=nan% | IBOV=-0.70% | alfa=nan% | pesos=
+V2 2026-04: status=carteira invalida / restricoes inviaveis | beta=nan | retorno=nan% | IBOV=-0.08% | alfa=nan% | pesos=
+V2 2026-05: status=carteira invalida / restricoes inviaveis | beta=nan | retorno=nan% | IBOV=-7.22% | alfa=nan% | pesos=
+V2 2026-06: status=valida | beta=0.9301911670401715 | retorno=2.40% | IBOV=-0.28% | alfa=2.69% | pesos=PETR3.SA: 10.00%; GGBR4.SA: 10.00%; ABEV3.SA: 10.00%; CPLE3.SA: 20.00%; GOAU4.SA: 10.00%; VALE3.SA: 10.00%; CSMG3.SA: 20.00%; ITSA4.SA: 10.00%
+Rodando variante V3 da objetivo-retorno.
+V3 2026-02: status=carteira invalida / restricoes inviaveis | beta=nan | retorno=nan% | IBOV=4.09% | alfa=nan% | pesos=
+V3 2026-03: status=carteira invalida / restricoes inviaveis | beta=nan | retorno=nan% | IBOV=-0.70% | alfa=nan% | pesos=
+V3 2026-04: status=carteira invalida / restricoes inviaveis | beta=nan | retorno=nan% | IBOV=-0.08% | alfa=nan% | pesos=
+V3 2026-05: status=carteira invalida / restricoes inviaveis | beta=nan | retorno=nan% | IBOV=-7.22% | alfa=nan% | pesos=
+V3 2026-06: status=valida | beta=0.8426268899822157 | retorno=2.83% | IBOV=-0.28% | alfa=3.11% | pesos=PETR3.SA: 10.00%; GGBR4.SA: 10.00%; ABEV3.SA: 10.00%; BRAV3.SA: 10.00%; CPLE3.SA: 10.00%; ENEV3.SA: 5.00%; VALE3.SA: 10.00%; BBSE3.SA: 10.00%; CSMG3.SA: 20.00%; ITSA4.SA: 5.00%
+VALIDACAO JUNHO NOTA: CV_ATUAL=26.0000 | V1=26.9000
+VALIDACAO JUNHO FORCA: CV_ATUAL=4.1000 | V2=4.2000
+FORCA_RELATIVA_SCORE JUNHO: PETR3.SA: 3 | GGBR4.SA: 5 | ABEV3.SA: 5
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_simulacao_objetivo.xlsx

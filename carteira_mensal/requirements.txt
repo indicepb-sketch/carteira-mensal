@@ -1,0 +1,16 @@
+pandas
+numpy
+yfinance
+requests
+beautifulsoup4
+lxml
+scipy
+openpyxl
+xlsxwriter
+matplotlib
+reportlab
+pyyaml
+python-dateutil
+pytest
+streamlit
+plotly

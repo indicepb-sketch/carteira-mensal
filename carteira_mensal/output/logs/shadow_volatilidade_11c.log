@@ -1,0 +1,172 @@
+Teste 11C: carteiras sombra com regra de volatilidade anormal.
+Producao nao sera alterada. Julho/2026 fica fora da calibracao; janela usada: 2024-01 a 2026-06.
+
+Cenario: baseline_consolidado | Sem ajuste por volatilidade/retorno.
+2024-01: bucket=alta | acoes=20 | ret_def=-2.91% | IBOV=-3.73% | alfa_def=0.81% | vol_alerta_peso=0.00%
+2024-02: bucket=alta | acoes=19 | ret_def=2.77% | IBOV=0.42% | alfa_def=2.35% | vol_alerta_peso=0.00%
+2024-03: bucket=alta | acoes=17 | ret_def=3.21% | IBOV=-0.83% | alfa_def=4.04% | vol_alerta_peso=0.00%
+2024-04: bucket=alta | acoes=19 | ret_def=-3.77% | IBOV=-0.84% | alfa_def=-2.93% | vol_alerta_peso=0.00%
+2024-05: bucket=queda_leve | acoes=18 | ret_def=-2.29% | IBOV=-3.95% | alfa_def=1.67% | vol_alerta_peso=0.00%
+2024-06: bucket=queda_leve | acoes=19 | ret_def=1.40% | IBOV=1.54% | alfa_def=-0.14% | vol_alerta_peso=0.00%
+2024-07: bucket=queda_leve | acoes=16 | ret_def=2.18% | IBOV=2.35% | alfa_def=-0.17% | vol_alerta_peso=0.00%
+2024-08: bucket=queda_leve | acoes=13 | ret_def=4.21% | IBOV=6.76% | alfa_def=-2.55% | vol_alerta_peso=0.00%
+2024-09: bucket=alta | acoes=20 | ret_def=-1.02% | IBOV=-2.34% | alfa_def=1.33% | vol_alerta_peso=0.00%
+2024-10: bucket=alta | acoes=23 | ret_def=-0.09% | IBOV=-2.10% | alfa_def=2.01% | vol_alerta_peso=0.00%
+2024-11: bucket=alta | acoes=21 | ret_def=-0.76% | IBOV=-1.91% | alfa_def=1.16% | vol_alerta_peso=0.00%
+2024-12: bucket=queda_leve | acoes=15 | ret_def=-2.77% | IBOV=-3.95% | alfa_def=1.19% | vol_alerta_peso=0.00%
+2025-01: bucket=queda_forte | acoes=12 | ret_def=1.69% | IBOV=5.00% | alfa_def=-3.31% | vol_alerta_peso=11.94%
+2025-02: bucket=queda_forte | acoes=15 | ret_def=-0.68% | IBOV=-2.52% | alfa_def=1.84% | vol_alerta_peso=0.00%
+2025-03: bucket=queda_leve | acoes=14 | ret_def=0.91% | IBOV=5.86% | alfa_def=-4.95% | vol_alerta_peso=0.00%
+2025-04: bucket=alta | acoes=18 | ret_def=11.71% | IBOV=2.99% | alfa_def=8.72% | vol_alerta_peso=0.00%
+2025-05: bucket=alta | acoes=18 | ret_def=6.33% | IBOV=1.40% | alfa_def=4.93% | vol_alerta_peso=0.00%
+2025-06: bucket=alta | acoes=18 | ret_def=1.14% | IBOV=1.51% | alfa_def=-0.37% | vol_alerta_peso=0.00%
+2025-07: bucket=alta | acoes=19 | ret_def=-8.78% | IBOV=-4.64% | alfa_def=-4.14% | vol_alerta_peso=0.00%
+2025-08: bucket=alta | acoes=19 | ret_def=8.43% | IBOV=6.78% | alfa_def=1.65% | vol_alerta_peso=4.90%
+2025-09: bucket=alta | acoes=20 | ret_def=4.96% | IBOV=3.62% | alfa_def=1.34% | vol_alerta_peso=0.00%
+2025-10: bucket=alta | acoes=20 | ret_def=3.24% | IBOV=2.76% | alfa_def=0.48% | vol_alerta_peso=0.00%
+2025-11: bucket=alta | acoes=20 | ret_def=5.61% | IBOV=5.73% | alfa_def=-0.12% | vol_alerta_peso=0.00%
+2025-12: bucket=alta | acoes=20 | ret_def=-5.00% | IBOV=1.59% | alfa_def=-6.59% | vol_alerta_peso=0.00%
+2026-01: bucket=alta | acoes=20 | ret_def=9.84% | IBOV=12.56% | alfa_def=-2.72% | vol_alerta_peso=10.48%
+2026-02: bucket=alta | acoes=23 | ret_def=4.17% | IBOV=4.09% | alfa_def=0.08% | vol_alerta_peso=0.00%
+2026-03: bucket=alta | acoes=18 | ret_def=-3.54% | IBOV=-0.70% | alfa_def=-2.84% | vol_alerta_peso=0.00%
+2026-04: bucket=alta | acoes=17 | ret_def=-2.28% | IBOV=-0.08% | alfa_def=-2.21% | vol_alerta_peso=18.62%
+2026-05: bucket=alta | acoes=12 | ret_def=-9.89% | IBOV=-7.22% | alfa_def=-2.67% | vol_alerta_peso=0.00%
+2026-06: bucket=alta | acoes=13 | ret_def=1.03% | IBOV=-0.34% | alfa_def=1.36% | vol_alerta_peso=0.00%
+
+Cenario: alerta_combo | Apenas alerta quando vol_ratio_21 > 1.5 e ha retorno/sinal recente negativo.
+2024-01: bucket=alta | acoes=20 | ret_def=-2.91% | IBOV=-3.73% | alfa_def=0.81% | vol_alerta_peso=0.00%
+2024-02: bucket=alta | acoes=19 | ret_def=2.77% | IBOV=0.42% | alfa_def=2.35% | vol_alerta_peso=0.00%
+2024-03: bucket=alta | acoes=17 | ret_def=3.21% | IBOV=-0.83% | alfa_def=4.04% | vol_alerta_peso=0.00%
+2024-04: bucket=alta | acoes=19 | ret_def=-3.77% | IBOV=-0.84% | alfa_def=-2.93% | vol_alerta_peso=0.00%
+2024-05: bucket=queda_leve | acoes=18 | ret_def=-2.29% | IBOV=-3.95% | alfa_def=1.67% | vol_alerta_peso=0.00%
+2024-06: bucket=queda_leve | acoes=19 | ret_def=1.40% | IBOV=1.54% | alfa_def=-0.14% | vol_alerta_peso=0.00%
+2024-07: bucket=queda_leve | acoes=16 | ret_def=2.18% | IBOV=2.35% | alfa_def=-0.17% | vol_alerta_peso=0.00%
+2024-08: bucket=queda_leve | acoes=13 | ret_def=4.21% | IBOV=6.76% | alfa_def=-2.55% | vol_alerta_peso=0.00%
+2024-09: bucket=alta | acoes=20 | ret_def=-1.02% | IBOV=-2.34% | alfa_def=1.33% | vol_alerta_peso=0.00%
+2024-10: bucket=alta | acoes=23 | ret_def=-0.09% | IBOV=-2.10% | alfa_def=2.01% | vol_alerta_peso=0.00%
+2024-11: bucket=alta | acoes=21 | ret_def=-0.76% | IBOV=-1.91% | alfa_def=1.16% | vol_alerta_peso=0.00%
+2024-12: bucket=queda_leve | acoes=15 | ret_def=-2.77% | IBOV=-3.95% | alfa_def=1.19% | vol_alerta_peso=0.00%
+2025-01: bucket=queda_forte | acoes=12 | ret_def=1.69% | IBOV=5.00% | alfa_def=-3.31% | vol_alerta_peso=11.94%
+2025-02: bucket=queda_forte | acoes=15 | ret_def=-0.68% | IBOV=-2.52% | alfa_def=1.84% | vol_alerta_peso=0.00%
+2025-03: bucket=queda_leve | acoes=14 | ret_def=0.91% | IBOV=5.86% | alfa_def=-4.95% | vol_alerta_peso=0.00%
+2025-04: bucket=alta | acoes=18 | ret_def=11.71% | IBOV=2.99% | alfa_def=8.72% | vol_alerta_peso=0.00%
+2025-05: bucket=alta | acoes=18 | ret_def=6.33% | IBOV=1.40% | alfa_def=4.93% | vol_alerta_peso=0.00%
+2025-06: bucket=alta | acoes=18 | ret_def=1.14% | IBOV=1.51% | alfa_def=-0.37% | vol_alerta_peso=0.00%
+2025-07: bucket=alta | acoes=19 | ret_def=-8.78% | IBOV=-4.64% | alfa_def=-4.14% | vol_alerta_peso=0.00%
+2025-08: bucket=alta | acoes=19 | ret_def=8.43% | IBOV=6.78% | alfa_def=1.65% | vol_alerta_peso=4.90%
+2025-09: bucket=alta | acoes=20 | ret_def=4.96% | IBOV=3.62% | alfa_def=1.34% | vol_alerta_peso=0.00%
+2025-10: bucket=alta | acoes=20 | ret_def=3.24% | IBOV=2.76% | alfa_def=0.48% | vol_alerta_peso=0.00%
+2025-11: bucket=alta | acoes=20 | ret_def=5.61% | IBOV=5.73% | alfa_def=-0.12% | vol_alerta_peso=0.00%
+2025-12: bucket=alta | acoes=20 | ret_def=-5.00% | IBOV=1.59% | alfa_def=-6.59% | vol_alerta_peso=0.00%
+2026-01: bucket=alta | acoes=20 | ret_def=9.84% | IBOV=12.56% | alfa_def=-2.72% | vol_alerta_peso=10.48%
+2026-02: bucket=alta | acoes=23 | ret_def=4.17% | IBOV=4.09% | alfa_def=0.08% | vol_alerta_peso=0.00%
+2026-03: bucket=alta | acoes=18 | ret_def=-3.54% | IBOV=-0.70% | alfa_def=-2.84% | vol_alerta_peso=0.00%
+2026-04: bucket=alta | acoes=17 | ret_def=-2.28% | IBOV=-0.08% | alfa_def=-2.21% | vol_alerta_peso=18.62%
+2026-05: bucket=alta | acoes=12 | ret_def=-9.89% | IBOV=-7.22% | alfa_def=-2.67% | vol_alerta_peso=0.00%
+2026-06: bucket=alta | acoes=13 | ret_def=1.03% | IBOV=-0.34% | alfa_def=1.36% | vol_alerta_peso=0.00%
+
+Cenario: penalizacao_leve_combo | Gatilho combinado reduz o sinal V3 em 10%.
+2024-01: bucket=alta | acoes=20 | ret_def=-2.91% | IBOV=-3.73% | alfa_def=0.81% | vol_alerta_peso=0.00%
+2024-02: bucket=alta | acoes=19 | ret_def=2.77% | IBOV=0.42% | alfa_def=2.35% | vol_alerta_peso=0.00%
+2024-03: bucket=alta | acoes=17 | ret_def=3.21% | IBOV=-0.83% | alfa_def=4.04% | vol_alerta_peso=0.00%
+2024-04: bucket=alta | acoes=19 | ret_def=-3.77% | IBOV=-0.84% | alfa_def=-2.93% | vol_alerta_peso=0.00%
+2024-05: bucket=queda_leve | acoes=18 | ret_def=-2.29% | IBOV=-3.95% | alfa_def=1.67% | vol_alerta_peso=0.00%
+2024-06: bucket=queda_leve | acoes=19 | ret_def=1.40% | IBOV=1.54% | alfa_def=-0.14% | vol_alerta_peso=0.00%
+2024-07: bucket=queda_leve | acoes=16 | ret_def=2.18% | IBOV=2.35% | alfa_def=-0.17% | vol_alerta_peso=0.00%
+2024-08: bucket=queda_leve | acoes=13 | ret_def=4.21% | IBOV=6.76% | alfa_def=-2.55% | vol_alerta_peso=0.00%
+2024-09: bucket=alta | acoes=20 | ret_def=-1.02% | IBOV=-2.34% | alfa_def=1.33% | vol_alerta_peso=0.00%
+2024-10: bucket=alta | acoes=23 | ret_def=-0.09% | IBOV=-2.10% | alfa_def=2.01% | vol_alerta_peso=0.00%
+2024-11: bucket=alta | acoes=21 | ret_def=-0.76% | IBOV=-1.91% | alfa_def=1.16% | vol_alerta_peso=0.00%
+2024-12: bucket=queda_leve | acoes=15 | ret_def=-2.77% | IBOV=-3.95% | alfa_def=1.19% | vol_alerta_peso=0.00%
+2025-01: bucket=queda_forte | acoes=12 | ret_def=1.70% | IBOV=5.00% | alfa_def=-3.30% | vol_alerta_peso=10.89%
+2025-02: bucket=queda_forte | acoes=15 | ret_def=-0.68% | IBOV=-2.52% | alfa_def=1.84% | vol_alerta_peso=0.00%
+2025-03: bucket=queda_leve | acoes=14 | ret_def=0.91% | IBOV=5.86% | alfa_def=-4.95% | vol_alerta_peso=0.00%
+2025-04: bucket=alta | acoes=18 | ret_def=11.71% | IBOV=2.99% | alfa_def=8.72% | vol_alerta_peso=0.00%
+2025-05: bucket=alta | acoes=18 | ret_def=6.33% | IBOV=1.40% | alfa_def=4.93% | vol_alerta_peso=0.00%
+2025-06: bucket=alta | acoes=18 | ret_def=1.14% | IBOV=1.51% | alfa_def=-0.37% | vol_alerta_peso=0.00%
+2025-07: bucket=alta | acoes=19 | ret_def=-8.78% | IBOV=-4.64% | alfa_def=-4.14% | vol_alerta_peso=0.00%
+2025-08: bucket=alta | acoes=19 | ret_def=8.49% | IBOV=6.78% | alfa_def=1.71% | vol_alerta_peso=4.44%
+2025-09: bucket=alta | acoes=20 | ret_def=4.96% | IBOV=3.62% | alfa_def=1.34% | vol_alerta_peso=0.00%
+2025-10: bucket=alta | acoes=20 | ret_def=3.24% | IBOV=2.76% | alfa_def=0.48% | vol_alerta_peso=0.00%
+2025-11: bucket=alta | acoes=20 | ret_def=5.61% | IBOV=5.73% | alfa_def=-0.12% | vol_alerta_peso=0.00%
+2025-12: bucket=alta | acoes=20 | ret_def=-5.00% | IBOV=1.59% | alfa_def=-6.59% | vol_alerta_peso=0.00%
+2026-01: bucket=alta | acoes=20 | ret_def=9.81% | IBOV=12.56% | alfa_def=-2.75% | vol_alerta_peso=9.57%
+2026-02: bucket=alta | acoes=23 | ret_def=4.17% | IBOV=4.09% | alfa_def=0.08% | vol_alerta_peso=0.00%
+2026-03: bucket=alta | acoes=18 | ret_def=-3.54% | IBOV=-0.70% | alfa_def=-2.84% | vol_alerta_peso=0.00%
+2026-04: bucket=alta | acoes=17 | ret_def=-2.34% | IBOV=-0.08% | alfa_def=-2.26% | vol_alerta_peso=17.18%
+2026-05: bucket=alta | acoes=12 | ret_def=-9.89% | IBOV=-7.22% | alfa_def=-2.67% | vol_alerta_peso=0.00%
+2026-06: bucket=alta | acoes=13 | ret_def=1.03% | IBOV=-0.34% | alfa_def=1.36% | vol_alerta_peso=0.00%
+
+Cenario: penalizacao_forte_combo | Gatilho combinado reduz o sinal V3 em 25%.
+2024-01: bucket=alta | acoes=20 | ret_def=-2.91% | IBOV=-3.73% | alfa_def=0.81% | vol_alerta_peso=0.00%
+2024-02: bucket=alta | acoes=19 | ret_def=2.77% | IBOV=0.42% | alfa_def=2.35% | vol_alerta_peso=0.00%
+2024-03: bucket=alta | acoes=17 | ret_def=3.21% | IBOV=-0.83% | alfa_def=4.04% | vol_alerta_peso=0.00%
+2024-04: bucket=alta | acoes=19 | ret_def=-3.77% | IBOV=-0.84% | alfa_def=-2.93% | vol_alerta_peso=0.00%
+2024-05: bucket=queda_leve | acoes=18 | ret_def=-2.29% | IBOV=-3.95% | alfa_def=1.67% | vol_alerta_peso=0.00%
+2024-06: bucket=queda_leve | acoes=19 | ret_def=1.40% | IBOV=1.54% | alfa_def=-0.14% | vol_alerta_peso=0.00%
+2024-07: bucket=queda_leve | acoes=16 | ret_def=2.18% | IBOV=2.35% | alfa_def=-0.17% | vol_alerta_peso=0.00%
+2024-08: bucket=queda_leve | acoes=13 | ret_def=4.21% | IBOV=6.76% | alfa_def=-2.55% | vol_alerta_peso=0.00%
+2024-09: bucket=alta | acoes=20 | ret_def=-1.02% | IBOV=-2.34% | alfa_def=1.33% | vol_alerta_peso=0.00%
+2024-10: bucket=alta | acoes=23 | ret_def=-0.09% | IBOV=-2.10% | alfa_def=2.01% | vol_alerta_peso=0.00%
+2024-11: bucket=alta | acoes=21 | ret_def=-0.76% | IBOV=-1.91% | alfa_def=1.16% | vol_alerta_peso=0.00%
+2024-12: bucket=queda_leve | acoes=15 | ret_def=-2.77% | IBOV=-3.95% | alfa_def=1.19% | vol_alerta_peso=0.00%
+2025-01: bucket=queda_forte | acoes=12 | ret_def=1.73% | IBOV=5.00% | alfa_def=-3.28% | vol_alerta_peso=9.27%
+2025-02: bucket=queda_forte | acoes=15 | ret_def=-0.68% | IBOV=-2.52% | alfa_def=1.84% | vol_alerta_peso=0.00%
+2025-03: bucket=queda_leve | acoes=14 | ret_def=0.91% | IBOV=5.86% | alfa_def=-4.95% | vol_alerta_peso=0.00%
+2025-04: bucket=alta | acoes=18 | ret_def=11.71% | IBOV=2.99% | alfa_def=8.72% | vol_alerta_peso=0.00%
+2025-05: bucket=alta | acoes=18 | ret_def=6.33% | IBOV=1.40% | alfa_def=4.93% | vol_alerta_peso=0.00%
+2025-06: bucket=alta | acoes=18 | ret_def=1.14% | IBOV=1.51% | alfa_def=-0.37% | vol_alerta_peso=0.00%
+2025-07: bucket=alta | acoes=19 | ret_def=-8.78% | IBOV=-4.64% | alfa_def=-4.14% | vol_alerta_peso=0.00%
+2025-08: bucket=alta | acoes=19 | ret_def=8.58% | IBOV=6.78% | alfa_def=1.79% | vol_alerta_peso=3.75%
+2025-09: bucket=alta | acoes=20 | ret_def=4.96% | IBOV=3.62% | alfa_def=1.34% | vol_alerta_peso=0.00%
+2025-10: bucket=alta | acoes=20 | ret_def=3.24% | IBOV=2.76% | alfa_def=0.48% | vol_alerta_peso=0.00%
+2025-11: bucket=alta | acoes=20 | ret_def=5.61% | IBOV=5.73% | alfa_def=-0.12% | vol_alerta_peso=0.00%
+2025-12: bucket=alta | acoes=20 | ret_def=-5.00% | IBOV=1.59% | alfa_def=-6.59% | vol_alerta_peso=0.00%
+2026-01: bucket=alta | acoes=20 | ret_def=9.77% | IBOV=12.56% | alfa_def=-2.79% | vol_alerta_peso=8.18%
+2026-02: bucket=alta | acoes=23 | ret_def=4.17% | IBOV=4.09% | alfa_def=0.08% | vol_alerta_peso=0.00%
+2026-03: bucket=alta | acoes=18 | ret_def=-3.54% | IBOV=-0.70% | alfa_def=-2.84% | vol_alerta_peso=0.00%
+2026-04: bucket=alta | acoes=17 | ret_def=-2.42% | IBOV=-0.08% | alfa_def=-2.34% | vol_alerta_peso=14.93%
+2026-05: bucket=alta | acoes=12 | ret_def=-9.89% | IBOV=-7.22% | alfa_def=-2.67% | vol_alerta_peso=0.00%
+2026-06: bucket=alta | acoes=13 | ret_def=1.03% | IBOV=-0.34% | alfa_def=1.36% | vol_alerta_peso=0.00%
+
+Cenario: teto_10pct_combo | Gatilho combinado limita peso individual a 10%.
+2024-01: bucket=alta | acoes=20 | ret_def=-2.91% | IBOV=-3.73% | alfa_def=0.81% | vol_alerta_peso=0.00%
+2024-02: bucket=alta | acoes=19 | ret_def=2.77% | IBOV=0.42% | alfa_def=2.35% | vol_alerta_peso=0.00%
+2024-03: bucket=alta | acoes=17 | ret_def=3.21% | IBOV=-0.83% | alfa_def=4.04% | vol_alerta_peso=0.00%
+2024-04: bucket=alta | acoes=19 | ret_def=-3.77% | IBOV=-0.84% | alfa_def=-2.93% | vol_alerta_peso=0.00%
+2024-05: bucket=queda_leve | acoes=18 | ret_def=-2.29% | IBOV=-3.95% | alfa_def=1.67% | vol_alerta_peso=0.00%
+2024-06: bucket=queda_leve | acoes=19 | ret_def=1.40% | IBOV=1.54% | alfa_def=-0.14% | vol_alerta_peso=0.00%
+2024-07: bucket=queda_leve | acoes=16 | ret_def=2.18% | IBOV=2.35% | alfa_def=-0.17% | vol_alerta_peso=0.00%
+2024-08: bucket=queda_leve | acoes=13 | ret_def=4.21% | IBOV=6.76% | alfa_def=-2.55% | vol_alerta_peso=0.00%
+2024-09: bucket=alta | acoes=20 | ret_def=-1.02% | IBOV=-2.34% | alfa_def=1.33% | vol_alerta_peso=0.00%
+2024-10: bucket=alta | acoes=23 | ret_def=-0.09% | IBOV=-2.10% | alfa_def=2.01% | vol_alerta_peso=0.00%
+2024-11: bucket=alta | acoes=21 | ret_def=-0.76% | IBOV=-1.91% | alfa_def=1.16% | vol_alerta_peso=0.00%
+2024-12: bucket=queda_leve | acoes=15 | ret_def=-2.77% | IBOV=-3.95% | alfa_def=1.19% | vol_alerta_peso=0.00%
+2025-01: bucket=queda_forte | acoes=12 | ret_def=1.72% | IBOV=5.00% | alfa_def=-3.29% | vol_alerta_peso=10.00%
+2025-02: bucket=queda_forte | acoes=15 | ret_def=-0.68% | IBOV=-2.52% | alfa_def=1.84% | vol_alerta_peso=0.00%
+2025-03: bucket=queda_leve | acoes=14 | ret_def=0.91% | IBOV=5.86% | alfa_def=-4.95% | vol_alerta_peso=0.00%
+2025-04: bucket=alta | acoes=18 | ret_def=11.71% | IBOV=2.99% | alfa_def=8.72% | vol_alerta_peso=0.00%
+2025-05: bucket=alta | acoes=18 | ret_def=6.33% | IBOV=1.40% | alfa_def=4.93% | vol_alerta_peso=0.00%
+2025-06: bucket=alta | acoes=18 | ret_def=1.14% | IBOV=1.51% | alfa_def=-0.37% | vol_alerta_peso=0.00%
+2025-07: bucket=alta | acoes=19 | ret_def=-8.78% | IBOV=-4.64% | alfa_def=-4.14% | vol_alerta_peso=0.00%
+2025-08: bucket=alta | acoes=19 | ret_def=8.43% | IBOV=6.78% | alfa_def=1.65% | vol_alerta_peso=4.90%
+2025-09: bucket=alta | acoes=20 | ret_def=4.96% | IBOV=3.62% | alfa_def=1.34% | vol_alerta_peso=0.00%
+2025-10: bucket=alta | acoes=20 | ret_def=3.24% | IBOV=2.76% | alfa_def=0.48% | vol_alerta_peso=0.00%
+2025-11: bucket=alta | acoes=20 | ret_def=5.61% | IBOV=5.73% | alfa_def=-0.12% | vol_alerta_peso=0.00%
+2025-12: bucket=alta | acoes=20 | ret_def=-5.00% | IBOV=1.59% | alfa_def=-6.59% | vol_alerta_peso=0.00%
+2026-01: bucket=alta | acoes=20 | ret_def=9.84% | IBOV=12.56% | alfa_def=-2.72% | vol_alerta_peso=10.48%
+2026-02: bucket=alta | acoes=23 | ret_def=4.17% | IBOV=4.09% | alfa_def=0.08% | vol_alerta_peso=0.00%
+2026-03: bucket=alta | acoes=18 | ret_def=-3.54% | IBOV=-0.70% | alfa_def=-2.84% | vol_alerta_peso=0.00%
+2026-04: bucket=alta | acoes=17 | ret_def=-2.28% | IBOV=-0.08% | alfa_def=-2.21% | vol_alerta_peso=18.62%
+2026-05: bucket=alta | acoes=12 | ret_def=-9.89% | IBOV=-7.22% | alfa_def=-2.67% | vol_alerta_peso=0.00%
+2026-06: bucket=alta | acoes=13 | ret_def=1.03% | IBOV=-0.34% | alfa_def=1.36% | vol_alerta_peso=0.00%
+
+Resumo acumulado defensivo:
+  baseline_consolidado: retorno=28.98% | IBOV=31.22% | alfa=-2.24% | delta_vs_baseline=0.00%
+  alerta_combo: retorno=28.98% | IBOV=31.22% | alfa=-2.24% | delta_vs_baseline=0.00%
+  penalizacao_leve_combo: retorno=28.96% | IBOV=31.22% | alfa=-2.26% | delta_vs_baseline=-0.02%
+  penalizacao_forte_combo: retorno=28.93% | IBOV=31.22% | alfa=-2.29% | delta_vs_baseline=-0.05%
+  teto_10pct_combo: retorno=29.01% | IBOV=31.22% | alfa=-2.21% | delta_vs_baseline=0.03%
+Validacao retorno: maior diferenca peso x retorno = 0.0000000000
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_volatilidade_11c.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_volatilidade_11c.log

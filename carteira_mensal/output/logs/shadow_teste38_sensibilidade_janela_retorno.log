@@ -1,0 +1,42 @@
+Teste 38 - Sensibilidade da Janela de Retorno Acumulado
+Escopo: mesmos ativos mensais do T36C; recalcula pesos da parte em acoes por nota_final + retorno relativo ao IBOV na janela N.
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste38_sensibilidade_janela_retorno.xlsx
+
+Resumo geral:
+cenario_t38  retorno_modelo  retorno_ibov  alfa_vs_ibov  taxa_acerto  drawdown  delta_alfa_vs_base
+  BASE_T36C        1.180069      0.603587      0.576482     0.703704 -0.132509            0.000000
+  JANELA_2M        1.122883      0.603587      0.519296     0.648148 -0.135200           -0.057186
+  JANELA_3M        1.049922      0.603587      0.446335     0.685185 -0.134921           -0.130147
+  JANELA_4M        1.146290      0.603587      0.542704     0.685185 -0.118827           -0.033779
+  JANELA_5M        1.072533      0.603587      0.468946     0.685185 -0.123807           -0.107536
+
+Resumo por ano:
+cenario_t38  ano  retorno_modelo  retorno_ibov  alfa_vs_ibov  taxa_acerto  delta_alfa_vs_base
+  BASE_T36C 2022       -0.033207     -0.019433     -0.013774     0.583333            0.000000
+  BASE_T36C 2023        0.400535      0.246273      0.154262     0.750000            0.000000
+  BASE_T36C 2024        0.018117     -0.087559      0.105677     0.833333            0.000000
+  BASE_T36C 2025        0.378511      0.337827      0.040684     0.583333            0.000000
+  BASE_T36C 2026        0.147188      0.074973      0.072216     0.833333            0.000000
+  JANELA_2M 2022       -0.042980     -0.019433     -0.023547     0.416667           -0.009773
+  JANELA_2M 2023        0.452204      0.246273      0.205931     0.833333            0.051669
+  JANELA_2M 2024        0.040519     -0.087559      0.128079     0.833333            0.022402
+  JANELA_2M 2025        0.329378      0.337827     -0.008449     0.500000           -0.049133
+  JANELA_2M 2026        0.104279      0.074973      0.029306     0.666667           -0.042910
+  JANELA_3M 2022       -0.034850     -0.019433     -0.015417     0.583333           -0.001643
+  JANELA_3M 2023        0.379781      0.246273      0.133508     0.833333           -0.020754
+  JANELA_3M 2024        0.036109     -0.087559      0.123669     0.833333            0.017992
+  JANELA_3M 2025        0.341918      0.337827      0.004091     0.500000           -0.036593
+  JANELA_3M 2026        0.107135      0.074973      0.032162     0.666667           -0.040053
+  JANELA_4M 2022       -0.013615     -0.019433      0.005818     0.666667            0.019592
+  JANELA_4M 2023        0.389166      0.246273      0.142893     0.750000           -0.011369
+  JANELA_4M 2024        0.048583     -0.087559      0.136142     0.833333            0.030465
+  JANELA_4M 2025        0.353026      0.337827      0.015199     0.500000           -0.025485
+  JANELA_4M 2026        0.104025      0.074973      0.029052     0.666667           -0.043163
+  JANELA_5M 2022       -0.023438     -0.019433     -0.004005     0.666667            0.009769
+  JANELA_5M 2023        0.368597      0.246273      0.122325     0.750000           -0.031937
+  JANELA_5M 2024        0.054946     -0.087559      0.142505     0.833333            0.036829
+  JANELA_5M 2025        0.333425      0.337827     -0.004402     0.500000           -0.045086
+  JANELA_5M 2026        0.102370      0.074973      0.027397     0.666667           -0.044819
+
+Validacao pesos: OK
+Faltantes de preco para janelas: 41

@@ -1,0 +1,79 @@
+ticker_original,ticker_yfinance,nome,setor,subsetor,fonte,data_coleta,status_validacao
+ABEV3,ABEV3.SA,AMBEV S/A,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+ALOS3,ALOS3.SA,ALLOS,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+ASAI3,ASAI3.SA,ASSAI,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+AURE3,AURE3.SA,AUREN,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+AXIA3,AXIA3.SA,AXIA ENERGIA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+AZZA3,AZZA3.SA,AZZAS 2154,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+B3SA3,B3SA3.SA,B3,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+BBAS3,BBAS3.SA,BRASIL,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+BBDC3,BBDC3.SA,BRADESCO,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+BBDC4,BBDC4.SA,BRADESCO,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+BBSE3,BBSE3.SA,BBSEGURIDADE,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+BEEF3,BEEF3.SA,MINERVA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+BPAC11,BPAC11.SA,BTGP BANCO,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+BRAP4,BRAP4.SA,BRADESPAR,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+BRAV3,BRAV3.SA,BRAVA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+BRKM5,BRKM5.SA,BRASKEM,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+CEAB3,CEAB3.SA,CEA MODAS,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+CMIG4,CMIG4.SA,CEMIG,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+CMIN3,CMIN3.SA,CSNMINERACAO,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+COGN3,COGN3.SA,COGNA ON,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+CPFE3,CPFE3.SA,CPFL ENERGIA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+CPLE3,CPLE3.SA,COPEL,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+CSAN3,CSAN3.SA,COSAN,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+CSMG3,CSMG3.SA,COPASA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+CSNA3,CSNA3.SA,SID NACIONAL,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+CURY3,CURY3.SA,CURY S/A,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+CXSE3,CXSE3.SA,CAIXA SEGURI,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+CYRE3,CYRE3.SA,CYRELA REALT,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+DIRR3,DIRR3.SA,DIRECIONAL,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+EGIE3,EGIE3.SA,ENGIE BRASIL,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+EMBJ3,EMBJ3.SA,EMBRAER,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+ENEV3,ENEV3.SA,ENEVA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+ENGI11,ENGI11.SA,ENERGISA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+EQTL3,EQTL3.SA,EQUATORIAL,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+FLRY3,FLRY3.SA,FLEURY,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+GGBR4,GGBR4.SA,GERDAU,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+GOAU4,GOAU4.SA,GERDAU MET,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+HAPV3,HAPV3.SA,HAPVIDA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+HYPE3,HYPE3.SA,HYPERA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+IGTI11,IGTI11.SA,IGUATEMI S.A,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+ISAE4,ISAE4.SA,ISA ENERGIA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+ITSA4,ITSA4.SA,ITAUSA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+ITUB4,ITUB4.SA,ITAUUNIBANCO,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+KLBN11,KLBN11.SA,KLABIN S/A,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+LREN3,LREN3.SA,LOJAS RENNER,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+MBRF3,MBRF3.SA,MARFRIG,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+MGLU3,MGLU3.SA,MAGAZ LUIZA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+MOTV3,MOTV3.SA,MOTIVA SA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+MRVE3,MRVE3.SA,MRV,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+MULT3,MULT3.SA,MULTIPLAN,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+NATU3,NATU3.SA,NATURA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+PETR3,PETR3.SA,PETROBRAS,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+PETR4,PETR4.SA,PETROBRAS,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+POMO4,POMO4.SA,MARCOPOLO,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+PRIO3,PRIO3.SA,PRIO,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+PSSA3,PSSA3.SA,PORTO SEGURO,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+RADL3,RADL3.SA,RAIADROGASIL,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+RAIL3,RAIL3.SA,RUMO S.A.,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+RDOR3,RDOR3.SA,REDE D OR,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+RECV3,RECV3.SA,PETRORECSA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+RENT3,RENT3.SA,LOCALIZA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+SANB11,SANB11.SA,SANTANDER BR,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+SBSP3,SBSP3.SA,SABESP,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+SLCE3,SLCE3.SA,SLC AGRICOLA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+SMFT3,SMFT3.SA,SMART FIT,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+SUZB3,SUZB3.SA,SUZANO S.A.,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+TAEE11,TAEE11.SA,TAESA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+TIMS3,TIMS3.SA,TIM,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+TOTS3,TOTS3.SA,TOTVS,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+UGPA3,UGPA3.SA,ULTRAPAR,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+USIM5,USIM5.SA,USIMINAS,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+VALE3,VALE3.SA,VALE,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+VAMO3,VAMO3.SA,VAMOS,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+VBBR3,VBBR3.SA,VIBRA,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+VIVA3,VIVA3.SA,VIVARA S.A.,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+VIVT3,VIVT3.SA,TELEF BRASIL,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+WEGE3,WEGE3.SA,WEG,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado
+YDUQ3,YDUQ3.SA,YDUQS PART,,,B3 carteira teorica IBOV,2026-06-29T13:14:20,validado

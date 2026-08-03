@@ -1,0 +1,12 @@
+Teste 27A - Auditoria Estatistica de Conviccao
+Periodo: 2024-01 a 2026-06 | linhas ativo-mes: 476
+Carteira T25 cap 7,5%: retorno=36.26%; alfa=5.04%; taxa acerto=63.33%
+Conviccao alta/muito alta:
+  conviccao_alta: n=51; alpha medio=0.74%; taxa bateu=50.98%; contrib alpha=-0.15%
+  conviccao_muito_alta: n=63; alpha medio=1.98%; taxa bateu=61.90%; contrib alpha=8.92%
+Conviccao baixa: n=39; alpha medio=-1.74%; taxa bateu=33.33%; contrib alpha=-1.57%
+Correlacao nota vs alpha ativo: 0.088
+Correlacao forca vs alpha ativo: 0.118
+Correlacao peso atual vs alpha ativo: 0.001
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste27a_auditoria_conviccao.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_teste27a_auditoria_conviccao.log

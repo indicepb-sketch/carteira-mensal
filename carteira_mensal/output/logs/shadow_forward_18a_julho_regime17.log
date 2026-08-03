@@ -1,0 +1,10 @@
+Verificacao producao/flags shadow: OK
+Ancora junho Teste 14 / 13B conservador: PASSOU
+Base mensal existente reutilizada: carteira_recomendada_2026_07_v1.xlsx
+oficial_13b: bucket=queda_forte; exposicao=30%; pesos=EGIE3.SA: 16.33%; ENEV3.SA: 0.71%; PSSA3.SA: 21.24%; ABEV3.SA: 19.54%; BRAV3.SA: 12.32%; CSMG3.SA: 18.54%; GGBR4.SA: 11.31%
+regime17_mm50: bucket=queda_forte; exposicao=30%; pesos=EGIE3.SA: 16.33%; ENEV3.SA: 0.71%; PSSA3.SA: 21.24%; ABEV3.SA: 19.54%; BRAV3.SA: 12.32%; CSMG3.SA: 18.54%; GGBR4.SA: 11.31%
+regime17_voto: bucket=queda_forte; exposicao=30%; pesos=EGIE3.SA: 16.33%; ENEV3.SA: 0.71%; PSSA3.SA: 21.24%; ABEV3.SA: 19.54%; BRAV3.SA: 12.32%; CSMG3.SA: 18.54%; GGBR4.SA: 11.31%
+Resumo parcial:
+  oficial_13b: retorno=0.74%; IBOV=1.17%; alfa=-0.43%; delta_ret_vs_13B=0.00%
+  regime17_mm50: retorno=0.74%; IBOV=1.17%; alfa=-0.43%; delta_ret_vs_13B=0.00%
+  regime17_voto: retorno=0.74%; IBOV=1.17%; alfa=-0.43%; delta_ret_vs_13B=0.00%

@@ -1,0 +1,58 @@
+Teste 45 - Consolidacao Final T44A + Auditoria de Robustez
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste45_consolidacao_final_t44a.xlsx
+
+Resumo geral:
+              modelo  retorno_modelo  retorno_ibov  alfa_vs_ibov  taxa_acerto  drawdown  pior_mes_retorno  melhor_mes_retorno  meses_4m  delta_alfa_vs_36c
+            36C_BASE        1.180069      0.603587      0.576482     0.703704 -0.132509         -0.105051            0.117137         0           0.000000
+T42A_QUALIDADE_FORTE        1.292092      0.603587      0.688506     0.740741 -0.132509         -0.105051            0.120115        16           0.112023
+T44A_QUEDA_CONFIANCA        1.292092      0.603587      0.688506     0.740741 -0.132509         -0.105051            0.120115        16           0.112023
+   T39_4M_TODA_QUEDA        1.219121      0.603587      0.615534     0.722222 -0.132509         -0.105051            0.120115        22           0.039052
+
+Resumo ano a ano:
+              modelo  ano  retorno_modelo  retorno_ibov  alfa_vs_ibov  taxa_acerto  delta_alfa_vs_36c
+            36C_BASE 2022       -0.033207     -0.019433     -0.013774     0.583333           0.000000
+            36C_BASE 2023        0.400535      0.246273      0.154262     0.750000           0.000000
+            36C_BASE 2024        0.018117     -0.087559      0.105677     0.833333           0.000000
+            36C_BASE 2025        0.378511      0.337827      0.040684     0.583333           0.000000
+            36C_BASE 2026        0.147188      0.074973      0.072216     0.833333           0.000000
+T42A_QUALIDADE_FORTE 2022       -0.035651     -0.019433     -0.016218     0.666667          -0.002444
+T42A_QUALIDADE_FORTE 2023        0.443136      0.246273      0.196864     0.833333           0.042602
+T42A_QUALIDADE_FORTE 2024        0.041467     -0.087559      0.129026     0.833333           0.023350
+T42A_QUALIDADE_FORTE 2025        0.378511      0.337827      0.040684     0.583333           0.000000
+T42A_QUALIDADE_FORTE 2026        0.147188      0.074973      0.072216     0.833333           0.000000
+T44A_QUEDA_CONFIANCA 2022       -0.035651     -0.019433     -0.016218     0.666667          -0.002444
+T44A_QUEDA_CONFIANCA 2023        0.443136      0.246273      0.196864     0.833333           0.042602
+T44A_QUEDA_CONFIANCA 2024        0.041467     -0.087559      0.129026     0.833333           0.023350
+T44A_QUEDA_CONFIANCA 2025        0.378511      0.337827      0.040684     0.583333           0.000000
+T44A_QUEDA_CONFIANCA 2026        0.147188      0.074973      0.072216     0.833333           0.000000
+   T39_4M_TODA_QUEDA 2022       -0.035651     -0.019433     -0.016218     0.666667          -0.002444
+   T39_4M_TODA_QUEDA 2023        0.403548      0.246273      0.157275     0.750000           0.003013
+   T39_4M_TODA_QUEDA 2024        0.041467     -0.087559      0.129026     0.833333           0.023350
+   T39_4M_TODA_QUEDA 2025        0.378511      0.337827      0.040684     0.583333           0.000000
+   T39_4M_TODA_QUEDA 2026        0.141994      0.074973      0.067021     0.833333          -0.005194
+
+Robustez vs 36C:
+              modelo  meses_piorou_vs_36c  meses_melhorou_vs_36c  ganho_total_meses_melhorou  perda_total_meses_piorou  ganho_medio_quando_melhora  perda_media_quando_piora  pior_delta_alfa_vs_36c  melhor_delta_alfa_vs_36c
+            36C_BASE                    0                      0                    0.000000                  0.000000                         NaN                       NaN                0.000000                  0.000000
+T42A_QUALIDADE_FORTE                    6                     10                    0.123066                 -0.067391                    0.012307                 -0.011232               -0.022408                  0.034597
+T44A_QUEDA_CONFIANCA                    6                     10                    0.123066                 -0.067391                    0.012307                 -0.011232               -0.022408                  0.034597
+   T39_4M_TODA_QUEDA                   11                     11                    0.123486                 -0.099293                    0.011226                 -0.009027               -0.022408                  0.034597
+
+Resumo por tipo de erro:
+              modelo tipo_erro_diagnostico  meses  retorno_modelo  retorno_ibov  alfa_vs_ibov  taxa_acerto  meses_4m
+            36C_BASE    falso_alerta_queda      9        0.521130      0.531973     -0.010843     0.666667         0
+            36C_BASE   falso_positivo_alta     13       -0.375761     -0.380242      0.004480     0.615385         0
+            36C_BASE       acerto_ofensivo     19        1.671994      1.372983      0.299011     0.684211         0
+            36C_BASE      acerto_defensivo     13       -0.140753     -0.288255      0.147502     0.846154         0
+T42A_QUALIDADE_FORTE    falso_alerta_queda      9        0.626160      0.531973      0.094187     0.888889         8
+T42A_QUALIDADE_FORTE   falso_positivo_alta     13       -0.375761     -0.380242      0.004480     0.615385         0
+T42A_QUALIDADE_FORTE       acerto_ofensivo     19        1.671994      1.372983      0.299011     0.684211         0
+T42A_QUALIDADE_FORTE      acerto_defensivo     13       -0.154949     -0.288255      0.133306     0.846154         8
+T44A_QUEDA_CONFIANCA    falso_alerta_queda      9        0.626160      0.531973      0.094187     0.888889         8
+T44A_QUEDA_CONFIANCA   falso_positivo_alta     13       -0.375761     -0.380242      0.004480     0.615385         0
+T44A_QUEDA_CONFIANCA       acerto_ofensivo     19        1.671994      1.372983      0.299011     0.684211         0
+T44A_QUEDA_CONFIANCA      acerto_defensivo     13       -0.154949     -0.288255      0.133306     0.846154         8
+   T39_4M_TODA_QUEDA    falso_alerta_queda      9        0.614170      0.531973      0.082197     0.888889         9
+   T39_4M_TODA_QUEDA   falso_positivo_alta     13       -0.375761     -0.380242      0.004480     0.615385         0
+   T39_4M_TODA_QUEDA       acerto_ofensivo     19        1.671994      1.372983      0.299011     0.684211         0
+   T39_4M_TODA_QUEDA      acerto_defensivo     13       -0.175775     -0.288255      0.112480     0.769231        13

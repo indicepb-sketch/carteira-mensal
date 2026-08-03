@@ -1,0 +1,6 @@
+Teste 15 - 13B conservador 100% investido vs exposicao defensiva
+2024_2026_jun: 100%=41.39%; defensivo=41.00%; IBOV=31.22%; alfa100=10.17%; alfaDef=9.78%
+2025: 100%=37.83%; defensivo=34.83%; IBOV=33.78%; alfa100=4.04%; alfaDef=1.04%
+2026_jan_jun: 100%=1.99%; defensivo=9.73%; IBOV=7.50%; alfa100=-5.50%; alfaDef=2.23%
+Validacao retorno bruto pesos x retorno: max_diff=0.0000000000
+Arquivo gerado: carteira_mensal\output\excel\shadow_13b_100pct_vs_defensivo.xlsx

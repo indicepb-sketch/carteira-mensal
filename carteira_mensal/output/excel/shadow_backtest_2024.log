@@ -1,0 +1,28 @@
+Regimes inferidos para 2025:
+  2024-01: alta | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo | IBOV=-3.73%
+  2024-02: alta | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo | IBOV=0.42%
+  2024-03: alta | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo | IBOV=-0.83%
+  2024-04: alta | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo | IBOV=-0.84%
+  2024-05: queda_leve | mercado seletivo; tendencia favoravel 38.5% | IBOV=-3.95%
+  2024-06: queda_leve | mercado seletivo; tendencia favoravel 28.2% | IBOV=1.54%
+  2024-07: queda_leve | mercado seletivo; tendencia favoravel 26.9% | IBOV=2.35%
+  2024-08: queda_leve | mercado seletivo; tendencia favoravel 32.1% | IBOV=6.76%
+  2024-09: alta | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo | IBOV=-2.34%
+  2024-10: alta | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo | IBOV=-2.10%
+  2024-11: alta | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo | IBOV=-1.91%
+  2024-12: queda_leve | mercado seletivo; tendencia favoravel 26.9% | IBOV=-3.95%
+2024-01: bucket=alta | sinal=V3_MOMENTUM | acoes=20 | beta=0.95 | ret100=-2.91% | ret_def=-2.91% | IBOV=-3.73% | alfa_def=0.81%
+2024-02: bucket=alta | sinal=V3_MOMENTUM | acoes=19 | beta=1.08 | ret100=2.77% | ret_def=2.77% | IBOV=0.42% | alfa_def=2.35%
+2024-03: bucket=alta | sinal=V3_MOMENTUM | acoes=17 | beta=1.03 | ret100=3.21% | ret_def=3.21% | IBOV=-0.83% | alfa_def=4.04%
+2024-04: bucket=alta | sinal=V3_MOMENTUM | acoes=19 | beta=0.86 | ret100=-3.77% | ret_def=-3.77% | IBOV=-0.84% | alfa_def=-2.93%
+2024-05: bucket=queda_leve | sinal=SINAL_A_DEFENSIVO | acoes=18 | beta=0.69 | ret100=-3.81% | ret_def=-2.29% | IBOV=-3.95% | alfa_def=1.67%
+2024-06: bucket=queda_leve | sinal=SINAL_A_DEFENSIVO | acoes=19 | beta=0.84 | ret100=2.33% | ret_def=1.40% | IBOV=1.54% | alfa_def=-0.14%
+2024-07: bucket=queda_leve | sinal=SINAL_A_DEFENSIVO | acoes=16 | beta=0.75 | ret100=3.63% | ret_def=2.18% | IBOV=2.35% | alfa_def=-0.17%
+2024-08: bucket=queda_leve | sinal=SINAL_A_DEFENSIVO | acoes=13 | beta=0.82 | ret100=7.01% | ret_def=4.21% | IBOV=6.76% | alfa_def=-2.55%
+2024-09: bucket=alta | sinal=V3_MOMENTUM | acoes=20 | beta=0.99 | ret100=-1.02% | ret_def=-1.02% | IBOV=-2.34% | alfa_def=1.33%
+2024-10: bucket=alta | sinal=V3_MOMENTUM | acoes=23 | beta=0.86 | ret100=-0.09% | ret_def=-0.09% | IBOV=-2.10% | alfa_def=2.01%
+2024-11: bucket=alta | sinal=V3_MOMENTUM | acoes=21 | beta=0.92 | ret100=-0.76% | ret_def=-0.76% | IBOV=-1.91% | alfa_def=1.16%
+2024-12: bucket=queda_leve | sinal=SINAL_A_DEFENSIVO | acoes=15 | beta=0.69 | ret100=-4.61% | ret_def=-2.77% | IBOV=-3.95% | alfa_def=1.19%
+Resumo:
+  CONSOLIDADA_100: retorno=1.25% | IBOV=-8.76% | alfa=10.01%
+  CONSOLIDADA_EXPOSICAO_DEFENSIVA: retorno=-0.25% | IBOV=-8.76% | alfa=8.51%

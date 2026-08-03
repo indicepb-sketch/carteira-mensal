@@ -1,0 +1,20 @@
+2026-01: ativos=78 IBOV=12.56%
+2026-02: ativos=78 IBOV=4.09%
+2026-03: ativos=78 IBOV=-0.70%
+2026-04: ativos=78 IBOV=-0.08%
+2026-05: ativos=78 IBOV=-7.22%
+2026-06: ativos=78 IBOV=-0.28%
+RESUMO GERAL POR SAIDA
+watchlist_qualificada: n=193 ret_medio=-0.37% alfa_medio=-1.34% bateu_ibov=46.6% custo=542.71%
+candidata_com_restricao: n=170 ret_medio=1.59% alfa_medio=-0.37% bateu_ibov=45.3% custo=422.55%
+descartar_fundamentalista: n=48 ret_medio=-1.87% alfa_medio=-3.27% bateu_ibov=35.4% custo=210.62%
+candidata_para_risco: n=35 ret_medio=-2.14% alfa_medio=-3.15% bateu_ibov=28.6% custo=58.57%
+descartar_tecnico: n=22 ret_medio=0.72% alfa_medio=-0.66% bateu_ibov=50.0% custo=55.36%
+DIAGNOSTICO CONSISTENCIA
+descartar_tecnico: vaza_vencedoras_consistente meses_alfa_pos=3/4 alfa_medio_meses=0.18%
+candidata_com_restricao: misto_sem_consistencia meses_alfa_pos=3/6 alfa_medio_meses=0.60%
+watchlist_qualificada: protege_bem meses_alfa_pos=2/6 alfa_medio_meses=-1.50%
+descartar_fundamentalista: protege_bem meses_alfa_pos=2/6 alfa_medio_meses=-3.27%
+candidata_para_risco: protege_bem meses_alfa_pos=0/6 alfa_medio_meses=-3.19%
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_funil_medicao.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_funil_medicao.log

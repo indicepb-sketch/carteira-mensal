@@ -1,0 +1,28 @@
+Regimes inferidos para 2025:
+  2022-01: queda_leve | mercado seletivo; tendencia favoravel 29.5% | IBOV=8.15%
+  2022-02: alta | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo | IBOV=-0.00%
+  2022-03: alta | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo | IBOV=4.19%
+  2022-04: alta | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo | IBOV=-11.26%
+  2022-05: alta | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo | IBOV=4.42%
+  2022-06: alta | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo | IBOV=-11.51%
+  2022-07: queda_leve | mercado seletivo; tendencia favoravel 28.2% | IBOV=4.26%
+  2022-08: queda_forte | mercado fraco/desfavoravel; tendencia favoravel 14.1% | IBOV=7.14%
+  2022-09: alta | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo | IBOV=-0.33%
+  2022-10: alta | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo | IBOV=-0.08%
+  2022-11: alta | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo | IBOV=-3.80%
+  2022-12: alta | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo | IBOV=-0.81%
+2022-01: bucket=queda_leve | sinal=SINAL_A_DEFENSIVO | acoes=15 | beta=0.59 | ret100=3.00% | ret_def=1.80% | IBOV=8.15% | alfa_def=-6.34%
+2022-02: bucket=alta | sinal=V3_MOMENTUM | acoes=17 | beta=1.15 | ret100=-1.57% | ret_def=-1.57% | IBOV=-0.00% | alfa_def=-1.57%
+2022-03: bucket=alta | sinal=V3_MOMENTUM | acoes=17 | beta=0.98 | ret100=4.99% | ret_def=4.99% | IBOV=4.19% | alfa_def=0.80%
+2022-04: bucket=alta | sinal=V3_MOMENTUM | acoes=18 | beta=1.07 | ret100=-7.24% | ret_def=-7.24% | IBOV=-11.26% | alfa_def=4.03%
+2022-05: bucket=alta | sinal=V3_MOMENTUM | acoes=19 | beta=0.91 | ret100=4.49% | ret_def=4.49% | IBOV=4.42% | alfa_def=0.08%
+2022-06: bucket=alta | sinal=V3_MOMENTUM | acoes=17 | beta=0.90 | ret100=-10.51% | ret_def=-10.51% | IBOV=-11.51% | alfa_def=1.01%
+2022-07: bucket=queda_leve | sinal=SINAL_A_DEFENSIVO | acoes=11 | beta=0.72 | ret100=5.77% | ret_def=3.46% | IBOV=4.26% | alfa_def=-0.79%
+2022-08: bucket=queda_forte | sinal=SINAL_A_DEFENSIVO | acoes=12 | beta=0.74 | ret100=7.91% | ret_def=2.37% | IBOV=7.14% | alfa_def=-4.77%
+2022-09: bucket=alta | sinal=V3_MOMENTUM | acoes=18 | beta=0.89 | ret100=-1.70% | ret_def=-1.70% | IBOV=-0.33% | alfa_def=-1.37%
+2022-10: bucket=alta | sinal=V3_MOMENTUM | acoes=19 | beta=0.95 | ret100=2.72% | ret_def=2.72% | IBOV=-0.08% | alfa_def=2.80%
+2022-11: bucket=alta | sinal=V3_MOMENTUM | acoes=18 | beta=0.99 | ret100=-8.99% | ret_def=-8.99% | IBOV=-3.80% | alfa_def=-5.19%
+2022-12: bucket=alta | sinal=V3_MOMENTUM | acoes=18 | beta=0.90 | ret100=1.82% | ret_def=1.82% | IBOV=-0.81% | alfa_def=2.63%
+Resumo:
+  CONSOLIDADA_100: retorno=-1.39% | IBOV=-1.94% | alfa=0.55%
+  CONSOLIDADA_EXPOSICAO_DEFENSIVA: retorno=-9.56% | IBOV=-1.94% | alfa=-7.61%

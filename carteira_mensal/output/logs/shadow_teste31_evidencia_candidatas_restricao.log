@@ -1,0 +1,25 @@
+Teste 31 - Selecao por Evidencia Ex-Post das Candidatas com Restricao
+Somente leitura/medicao: avalia quais perfis de candidata_com_restricao bateram o IBOV.
+Restritas analisadas: 682; retorno medio=1.10%; alfa medio=-0.06%; bateu=48.83%
+Melhores regras candidatas:
+  queda_real_beta<0.9_cv_nao_alto: n=95; alfa_medio=0.72%; bateu=52.63%; cobertura=13.93%
+  virada_aceitavel_forca>=3: n=190; alfa_medio=0.46%; bateu=52.63%; cobertura=27.86%
+  alta_real_nota>=50_forca>=3: n=84; alfa_medio=0.25%; bateu=55.95%; cobertura=12.32%
+  nota>=50_forca>=3_rsi_45_70: n=100; alfa_medio=0.18%; bateu=51.00%; cobertura=14.66%
+  nota>=50_forca_forte_ou_moderada: n=194; alfa_medio=0.12%; bateu=51.55%; cobertura=28.45%
+  nota>=50_forca>=3_rsi<75: n=136; alfa_medio=0.08%; bateu=52.21%; cobertura=19.94%
+  retorno_medio_pos_nota>=50: n=189; alfa_medio=-0.07%; bateu=46.56%; cobertura=27.71%
+  timing_neutro_ou_favoravel_forca>=3: n=204; alfa_medio=-0.33%; bateu=47.06%; cobertura=29.91%
+Sinais favoraveis mais fortes:
+  faixas_numericas: retorno_medio=(-0.00584, -0.000488] | n=146; alfa_medio=0.82%; bateu=54.79%
+  faixas_numericas: forca_relativa_score=(1.25, 2.0] | n=171; alfa_medio=0.58%; bateu=54.39%
+  faixas_numericas: nota_final=(37.0, 47.0] | n=135; alfa_medio=0.31%; bateu=55.56%
+  faixas_numericas: rsi=(69.046, 86.623] | n=171; alfa_medio=0.25%; bateu=52.05%
+  faixas_numericas: desvio_padrao=(0.0214, 0.0488] | n=145; alfa_medio=0.17%; bateu=53.79%
+  faixas_numericas: cv=(2.519, 5.602] | n=92; alfa_medio=0.01%; bateu=52.17%
+  segmentos_categoricos: setor_expost=Energia Elétrica | n=32; alfa_medio=1.47%; bateu=56.25%
+  segmentos_categoricos: tipo_regime_expost=queda_forte | n=111; alfa_medio=0.60%; bateu=53.15%
+  segmentos_categoricos: classificacao_forca_relativa=moderada_contra_ibov | n=277; alfa_medio=0.58%; bateu=53.07%
+  segmentos_categoricos: tipo_timing=timing_esticado_sobrecompra | n=139; alfa_medio=0.56%; bateu=55.40%
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste31_evidencia_candidatas_restricao.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_teste31_evidencia_candidatas_restricao.log

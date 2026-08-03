@@ -1,0 +1,16 @@
+ticker,nome,setor,subsetor
+PETR4.SA,Petrobras PN,Energia,Petroleo e Gas
+VALE3.SA,Vale ON,Materiais,Mineracao
+ITUB4.SA,Itau Unibanco PN,Financeiro,Bancos
+BBDC4.SA,Bradesco PN,Financeiro,Bancos
+BBAS3.SA,Banco do Brasil ON,Financeiro,Bancos
+ABEV3.SA,Ambev ON,Consumo,Bebidas
+WEGE3.SA,Weg ON,Industria,Maquinas
+RENT3.SA,Localiza ON,Consumo,Servicos
+SUZB3.SA,Suzano ON,Materiais,Papel e Celulose
+EQTL3.SA,Equatorial ON,Energia,Eletricidade
+PRIO3.SA,Prio ON,Energia,Petroleo e Gas
+RADL3.SA,Raia Drogasil ON,Consumo,Varejo
+SBSP3.SA,Sabesp ON,Utilidade Publica,Saneamento
+ELET3.SA,Eletrobras ON,Energia,Eletricidade
+GGBR4.SA,Gerdau PN,Materiais,Siderurgia

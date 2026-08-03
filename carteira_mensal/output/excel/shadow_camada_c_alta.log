@@ -1,0 +1,42 @@
+Datas/retornos ex-post carregados:
+  2026-01: linhas=78 IBOV=12.56%
+  2026-02: linhas=78 IBOV=4.09%
+  2026-03: linhas=78 IBOV=-0.70%
+  2026-04: linhas=78 IBOV=-0.08%
+  2026-05: linhas=78 IBOV=-7.22%
+  2026-06: linhas=78 IBOV=-0.28%
+TESTE-ANCORA (flags sombra desligadas):
+  2026-01: PASSOU - reproduz carteira real
+  2026-02: PASSOU - sem carteira como no real
+  2026-03: PASSOU - sem carteira como no real
+  2026-04: PASSOU - sem carteira como no real
+  2026-05: PASSOU - sem carteira como no real
+  2026-06: PASSOU - junho reproduz carteira real exatamente
+CENARIO BASELINE_C_ATIVA: baseline consolidado atual, Camada C ativa
+  2026-01: grupo=alta relaxC=0 ret=9.84% ibov=12.56% alfa=-2.72% tickers=ABEV3.SA,BBSE3.SA,EGIE3.SA,SBSP3.SA,VIVT3.SA,EMBJ3.SA,BPAC11.SA,BBDC3.SA,FLRY3.SA,RDOR3.SA,CPLE3.SA,COGN3.SA,PETR4.SA,B3SA3.SA,IGTI11.SA,MOTV3.SA,WEGE3.SA,VIVA3.SA,TOTS3.SA,CURY3.SA pesos=9.1%,6.2%,10.0%,11.3%,6.0%,4.4%,5.4%,8.8%,3.4%,3.6%,10.0%,4.7%,1.1%,2.3%,2.5%,2.5%,4.6%,3.7%,0.2%,0.2%
+  2026-02: grupo=alta relaxC=0 ret=4.17% ibov=4.09% alfa=0.08% tickers=CURY3.SA,SLCE3.SA,YDUQ3.SA,EMBJ3.SA,CPLE3.SA,HYPE3.SA,ABEV3.SA,GOAU4.SA,MGLU3.SA,CMIN3.SA,BRAV3.SA,RDOR3.SA,VAMO3.SA,SBSP3.SA,SANB11.SA,ALOS3.SA,PETR3.SA,TIMS3.SA,VIVT3.SA,BBAS3.SA,MOTV3.SA,B3SA3.SA,FLRY3.SA pesos=10.4%,4.1%,4.9%,5.2%,7.3%,3.3%,3.3%,4.3%,2.0%,7.0%,0.8%,3.2%,6.2%,3.0%,4.2%,4.1%,5.4%,3.3%,6.2%,4.9%,1.9%,4.9%,0.1%
+  2026-03: grupo=baixa relaxC=0 ret=-0.97% ibov=-0.70% alfa=-0.27% tickers=CURY3.SA,BRAV3.SA,SLCE3.SA,ABEV3.SA,SBSP3.SA,TIMS3.SA,ASAI3.SA,MULT3.SA,ENGI11.SA,VBBR3.SA,ITSA4.SA,ALOS3.SA,RENT3.SA,BBAS3.SA pesos=7.8%,5.5%,8.7%,9.9%,13.9%,11.3%,0.2%,7.0%,5.6%,8.2%,5.8%,7.1%,3.0%,6.1%
+  2026-04: grupo=baixa relaxC=0 ret=-2.56% ibov=-0.08% alfa=-2.48% tickers=BRAV3.SA,VIVT3.SA,TIMS3.SA,SLCE3.SA,SBSP3.SA,MULT3.SA,CURY3.SA,ITSA4.SA,ASAI3.SA,B3SA3.SA,VBBR3.SA,CMIG4.SA,ENEV3.SA pesos=7.5%,16.6%,14.8%,10.8%,11.6%,4.9%,3.9%,5.6%,0.2%,1.7%,5.9%,12.1%,4.4%
+  2026-05: grupo=baixa relaxC=0 ret=-9.80% ibov=-7.22% alfa=-2.58% tickers=VIVT3.SA,SLCE3.SA,TIMS3.SA,CSMG3.SA,EGIE3.SA,MULT3.SA,ITSA4.SA,ISAE4.SA,B3SA3.SA,UGPA3.SA,SBSP3.SA,VBBR3.SA pesos=14.7%,9.8%,10.0%,9.7%,7.5%,6.4%,4.5%,8.7%,1.2%,11.3%,10.8%,5.3%
+  2026-06: grupo=jun_oportunidade relaxC=0 ret=1.13% ibov=-0.28% alfa=1.41% tickers=PETR4.SA,VALE3.SA,BBSE3.SA,EGIE3.SA,GGBR4.SA,ABEV3.SA,BRAV3.SA,CPLE3.SA,ITSA4.SA,SBSP3.SA,CSMG3.SA,B3SA3.SA,IGTI11.SA pesos=5.7%,14.1%,8.8%,11.7%,11.8%,10.5%,10.5%,9.4%,4.3%,1.6%,9.6%,1.9%,0.2%
+CENARIO C_AFROUXADA_ALTA: Camada C afrouxada somente nos meses de alta
+  2026-01: grupo=alta relaxC=5 ret=9.84% ibov=12.56% alfa=-2.72% tickers=ABEV3.SA,BBSE3.SA,EGIE3.SA,SBSP3.SA,VIVT3.SA,EMBJ3.SA,BPAC11.SA,BBDC3.SA,FLRY3.SA,RDOR3.SA,CPLE3.SA,COGN3.SA,PETR4.SA,B3SA3.SA,IGTI11.SA,MOTV3.SA,WEGE3.SA,VIVA3.SA,TOTS3.SA,CURY3.SA pesos=9.1%,6.2%,10.0%,11.3%,6.0%,4.4%,5.4%,8.8%,3.4%,3.6%,10.0%,4.7%,1.1%,2.3%,2.5%,2.5%,4.6%,3.7%,0.2%,0.2%
+  2026-02: grupo=alta relaxC=23 ret=4.17% ibov=4.09% alfa=0.08% tickers=CURY3.SA,SLCE3.SA,YDUQ3.SA,EMBJ3.SA,CPLE3.SA,HYPE3.SA,ABEV3.SA,GOAU4.SA,MGLU3.SA,CMIN3.SA,BRAV3.SA,RDOR3.SA,VAMO3.SA,SBSP3.SA,SANB11.SA,ALOS3.SA,PETR3.SA,TIMS3.SA,VIVT3.SA,BBAS3.SA,MOTV3.SA,B3SA3.SA,FLRY3.SA pesos=10.4%,4.1%,4.9%,5.2%,7.3%,3.3%,3.3%,4.3%,2.0%,7.0%,0.8%,3.2%,6.2%,3.0%,4.2%,4.1%,5.4%,3.3%,6.2%,4.9%,1.9%,4.9%,0.1%
+  2026-03: grupo=baixa relaxC=0 ret=-0.97% ibov=-0.70% alfa=-0.27% tickers=CURY3.SA,BRAV3.SA,SLCE3.SA,ABEV3.SA,SBSP3.SA,TIMS3.SA,ASAI3.SA,MULT3.SA,ENGI11.SA,VBBR3.SA,ITSA4.SA,ALOS3.SA,RENT3.SA,BBAS3.SA pesos=7.8%,5.5%,8.7%,9.9%,13.9%,11.3%,0.2%,7.0%,5.6%,8.2%,5.8%,7.1%,3.0%,6.1%
+  2026-04: grupo=baixa relaxC=0 ret=-2.56% ibov=-0.08% alfa=-2.48% tickers=BRAV3.SA,VIVT3.SA,TIMS3.SA,SLCE3.SA,SBSP3.SA,MULT3.SA,CURY3.SA,ITSA4.SA,ASAI3.SA,B3SA3.SA,VBBR3.SA,CMIG4.SA,ENEV3.SA pesos=7.5%,16.6%,14.8%,10.8%,11.6%,4.9%,3.9%,5.6%,0.2%,1.7%,5.9%,12.1%,4.4%
+  2026-05: grupo=baixa relaxC=0 ret=-9.80% ibov=-7.22% alfa=-2.58% tickers=VIVT3.SA,SLCE3.SA,TIMS3.SA,CSMG3.SA,EGIE3.SA,MULT3.SA,ITSA4.SA,ISAE4.SA,B3SA3.SA,UGPA3.SA,SBSP3.SA,VBBR3.SA pesos=14.7%,9.8%,10.0%,9.7%,7.5%,6.4%,4.5%,8.7%,1.2%,11.3%,10.8%,5.3%
+  2026-06: grupo=jun_oportunidade relaxC=0 ret=1.13% ibov=-0.28% alfa=1.41% tickers=PETR4.SA,VALE3.SA,BBSE3.SA,EGIE3.SA,GGBR4.SA,ABEV3.SA,BRAV3.SA,CPLE3.SA,ITSA4.SA,SBSP3.SA,CSMG3.SA,B3SA3.SA,IGTI11.SA pesos=5.7%,14.1%,8.8%,11.7%,11.8%,10.5%,10.5%,9.4%,4.3%,1.6%,9.6%,1.9%,0.2%
+RESUMO:
+  BASELINE_C_ATIVA ACUMULADO_6_MESES: ret=0.72% ibov=7.55% alfa=-6.84%
+  BASELINE_C_ATIVA ACUMULADO_ALTA: ret=14.43% ibov=17.17% alfa=-2.74%
+  BASELINE_C_ATIVA ACUMULADO_BAIXA: ret=-12.97% ibov=-7.94% alfa=-5.02%
+  BASELINE_C_ATIVA ACUMULADO_JUN_OPORTUNIDADE: ret=1.13% ibov=-0.28% alfa=1.41%
+  C_AFROUXADA_ALTA ACUMULADO_6_MESES: ret=0.72% ibov=7.55% alfa=-6.84%
+  C_AFROUXADA_ALTA ACUMULADO_ALTA: ret=14.43% ibov=17.17% alfa=-2.74%
+  C_AFROUXADA_ALTA ACUMULADO_BAIXA: ret=-12.97% ibov=-7.94% alfa=-5.02%
+  C_AFROUXADA_ALTA ACUMULADO_JUN_OPORTUNIDADE: ret=1.13% ibov=-0.28% alfa=1.41%
+CHECK_QUEDA_IDENTICA 2026-03: delta_retorno=0.00000000
+CHECK_QUEDA_IDENTICA 2026-04: delta_retorno=0.00000000
+CHECK_QUEDA_IDENTICA 2026-05: delta_retorno=0.00000000
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_camada_c_alta.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_camada_c_alta.log

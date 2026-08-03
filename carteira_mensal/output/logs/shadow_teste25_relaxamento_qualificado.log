@@ -1,0 +1,14 @@
+Teste 25 - Relaxamento Qualificado de Retorno Medio Negativo
+Cenarios: rigido, relaxamento amplo so em alta, qualificado cap 5%, qualificado cap 7,5%.
+  retorno_medio_rigido: retorno=51.86%; IBOV=31.22%; alfa=20.64%; bateu=20/30; drawdown=-8.78%
+  relaxa_amplo_so_alta: retorno=58.70%; IBOV=31.22%; alfa=27.48%; bateu=19/30; drawdown=-8.78%
+  relaxa_qualificado_cap5: retorno=57.63%; IBOV=31.22%; alfa=26.41%; bateu=20/30; drawdown=-8.78%
+  relaxa_qualificado_cap7_5: retorno=58.23%; IBOV=31.22%; alfa=27.01%; bateu=20/30; drawdown=-8.78%
+  Delta relaxa_amplo_so_alta vs rigido: alfa=6.84%; retorno=6.84%
+  Delta relaxa_qualificado_cap5 vs rigido: alfa=5.77%; retorno=5.77%
+  Delta relaxa_qualificado_cap7_5 vs rigido: alfa=6.38%; retorno=6.38%
+  Ativos ticker-mes relaxados em relaxa_amplo_so_alta: 68
+  Ativos ticker-mes relaxados em relaxa_qualificado_cap5: 12
+  Ativos ticker-mes relaxados em relaxa_qualificado_cap7_5: 12
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste25_relaxamento_qualificado.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_teste25_relaxamento_qualificado.log

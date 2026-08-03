@@ -1,0 +1,12 @@
+Teste 17 - Robustez da Camada Risk-On/Risk-Off
+Fonte: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_regime_16_risk_on_off.xlsx
+Resumo geral:
+  13b_conservador: alfa=9.78% | meses_bateu=17/30 (56.67%) | pior_mes=-6.59% | dd_rel=-10.98% | mudancas_vs_13b=0
+  risk_on_off_mm50: alfa=25.26% | meses_bateu=19/30 (63.33%) | pior_mes=-6.59% | dd_rel=-10.24% | mudancas_vs_13b=14
+  risk_on_off_voto: alfa=25.41% | meses_bateu=19/30 (63.33%) | pior_mes=-6.59% | dd_rel=-10.24% | mudancas_vs_13b=11
+  risk_on_off_confirmacao: alfa=24.14% | meses_bateu=19/30 (63.33%) | pior_mes=-6.59% | dd_rel=-10.98% | mudancas_vs_13b=9
+Decisao:
+  13b_conservador: baseline atual | delta_alfa_vs_13b=0.00%
+  risk_on_off_mm50: candidata forte: melhora alfa sem piorar muito o pior mes e preserva 2026 | delta_alfa_vs_13b=15.48%
+  risk_on_off_voto: candidata forte: melhora alfa sem piorar muito o pior mes e preserva 2026 | delta_alfa_vs_13b=15.63%
+  risk_on_off_confirmacao: candidata forte: melhora alfa sem piorar muito o pior mes e preserva 2026 | delta_alfa_vs_13b=14.36%

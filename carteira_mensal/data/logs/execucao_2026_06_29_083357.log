@@ -1,0 +1,59 @@
+2026-06-29 08:34:02,784 INFO __main__ - Iniciando carteira mensal para 78 ativos
+2026-06-29 08:34:12,350 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: IEEX.SA"}}}
+2026-06-29 08:34:12,965 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-29 08:34:12,966 ERROR yfinance - 
+1 Failed download:
+2026-06-29 08:34:12,966 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-29 08:34:14,400 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: IEEX.SA"}}}
+2026-06-29 08:34:14,765 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-29 08:34:14,766 ERROR yfinance - 
+1 Failed download:
+2026-06-29 08:34:14,766 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-29 08:34:15,774 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-29 08:34:15,775 ERROR yfinance - 
+1 Failed download:
+2026-06-29 08:34:15,775 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-29 08:34:18,907 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-29 08:34:18,908 ERROR yfinance - 
+1 Failed download:
+2026-06-29 08:34:18,909 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-29 08:34:19,414 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-29 08:34:19,414 ERROR yfinance - 
+1 Failed download:
+2026-06-29 08:34:19,415 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-29 08:34:20,419 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-29 08:34:20,420 ERROR yfinance - 
+1 Failed download:
+2026-06-29 08:34:20,420 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-29 08:35:16,565 INFO __main__ - Data-base: formacao=2026-05-04 limite_selecao=2026-05-04 avaliacao=2026-05-29
+2026-06-29 08:35:23,403 INFO __main__ - AUDITORIA_RSI_PRIO3: timeframe=1W periodo=14 ultimo_fechamento=2026-05-08 00:00:00 fechamento=70.1600 rsi=71.9712
+2026-06-29 08:35:23,409 INFO __main__ - AUDITORIA_RSI_PRIO3_ULTIMAS_20_SEMANAS:
+data_fechamento  fechamento  variacao     ganho     perda  media_ganho_wilder  media_perda_wilder       rs       rsi
+     2025-12-26   40.599998  2.389999  2.389999 -0.000000            0.686852            0.551480 1.245469 55.465880
+     2026-01-02   41.759998  1.160000  1.160000 -0.000000            0.720648            0.512089 1.407272 58.459194
+     2026-01-09   42.680000  0.920002  0.920002 -0.000000            0.734888            0.475511 1.545469 60.714509
+     2026-01-16   44.169998  1.489998  1.489998 -0.000000            0.788824            0.441546 1.786505 64.112748
+     2026-01-23   48.520000  4.350002  4.350002 -0.000000            1.043194            0.410007 2.544332 71.785937
+     2026-01-30   50.990002  2.470001  2.470001 -0.000000            1.145109            0.380721 3.007739 75.048273
+     2026-02-06   50.630001 -0.360001  0.000000  0.360001            1.063315            0.379241 2.803800 73.710498
+     2026-02-13   52.560001  1.930000  1.930000 -0.000000            1.125221            0.352152 3.195270 76.163632
+     2026-02-20   55.020000  2.459999  2.459999 -0.000000            1.220563            0.326998 3.732625 78.870077
+     2026-02-27   54.490002 -0.529999  0.000000  0.529999            1.133380            0.341499 3.318842 76.845646
+     2026-03-06   59.389999  4.899998  4.899998 -0.000000            1.402424            0.317106 4.422574 81.558575
+     2026-03-13   57.799999 -1.590000  0.000000  1.590000            1.302251            0.408027 3.191581 76.142655
+     2026-03-20   67.889999 10.090000 10.090000 -0.000000            1.929947            0.378882 5.093794 83.589863
+     2026-03-27   70.820000  2.930000  2.930000 -0.000000            2.001379            0.351819 5.688662 85.049327
+     2026-04-03   67.769997 -3.050003  0.000000  3.050003            1.858424            0.544546 3.412792 77.338610
+     2026-04-10   67.650002 -0.119995  0.000000  0.119995            1.725679            0.514221 3.355907 77.042671
+     2026-04-17   61.660000 -5.990002  0.000000  5.990002            1.602416            0.905349 1.769944 63.898191
+     2026-04-24   62.630001  0.970001  0.970001 -0.000000            1.557244            0.840681 1.852361 64.941319
+     2026-05-01   66.410004  3.780003  3.780003 -0.000000            1.716012            0.780632 2.198234 68.732748
+     2026-05-08   70.160004  3.750000  3.750000 -0.000000            1.861297            0.724873 2.567757 71.971188
+2026-06-29 08:40:00,260 INFO __main__ - Auditoria beta/correlacao: janela_inicio=2026-01-06 janela_fim=2026-05-04 benchmark=^BVSP fonte=yfinance tipo_preco=adjusted_close observacoes_ibov=80 ativos_auditados=20 beta_ibov=1.0 correlacao_ibov=1.0 beta_batendo=20 beta_divergencias=0 beta_divergentes= correlacao_batendo=20 correlacao_divergencias=0 correlacao_divergentes=
+2026-06-29 08:40:00,261 INFO __main__ - Arquivos gerados: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\carteira_recomendada_2026_05_v1.xlsx, C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\pdf\relatorio_carteira_2026_05_v1.pdf
+2026-06-29 08:40:00,261 INFO __main__ - Resumo: analisados=78 preliminares=20 risco=20 liberados=18 selecionados=0 peso_zero=20 valida=False
+2026-06-29 08:40:00,265 INFO __main__ - Comparativo regime: [{'quantidade de acoes': 5, 'CV': nan, 'beta': nan, 'correlacao_carteira_ibov': nan, 'score_aderencia_regime': nan, 'maior_peso_setorial': nan, 'setor_mais_concentrado': '', 'quantidade_blocos_risco_duplicados': 0, 'carteira_elegivel_para_escolha_final': False, 'motivo de escolha ou rejeicao': 'limites individuais de peso tornam a carteira inviavel; maximo de acoes por setor violado: Energia Elétrica com 3 acoes; maximo de acoes por setor violado: Energia Elétrica com 4 acoes; maximo de acoes por setor violado: Petróleo, Gás e Biocombustíveis com 3 acoes; maximo de acoes por setor violado: Petróleo, Gás e Biocombustíveis com 4 acoes'}, {'quantidade de acoes': 6, 'CV': nan, 'beta': nan, 'correlacao_carteira_ibov': nan, 'score_aderencia_regime': nan, 'maior_peso_setorial': nan, 'setor_mais_concentrado': '', 'quantidade_blocos_risco_duplicados': 0, 'carteira_elegivel_para_escolha_final': False, 'motivo de escolha ou rejeicao': 'maximo de ativos em watchlist flexivel excedido; maximo de acoes por setor violado: Energia Elétrica com 3 acoes; limites individuais de peso tornam a carteira inviavel; maximo de acoes por setor violado: Energia Elétrica com 4 acoes; maximo de acoes por setor violado: Petróleo, Gás e Biocombustíveis com 3 acoes'}, {'quantidade de acoes': 8, 'CV': nan, 'beta': nan, 'correlacao_carteira_ibov': nan, 'score_aderencia_regime': nan, 'maior_peso_setorial': nan, 'setor_mais_concentrado': '', 'quantidade_blocos_risco_duplicados': 0, 'carteira_elegivel_para_escolha_final': False, 'motivo de escolha ou rejeicao': 'maximo de ativos em watchlist flexivel excedido; maximo de acoes por setor violado: Energia Elétrica com 3 acoes; maximo de acoes por setor violado: Energia Elétrica com 4 acoes; maximo de acoes por setor violado: Petróleo, Gás e Biocombustíveis com 3 acoes; maximo de acoes por setor violado: Energia Elétrica com 5 acoes'}, {'quantidade de acoes': 10, 'CV': nan, 'beta': nan, 'correlacao_carteira_ibov': nan, 'score_aderencia_regime': nan, 'maior_peso_setorial': nan, 'setor_mais_concentrado': '', 'quantidade_blocos_risco_duplicados': 0, 'carteira_elegivel_para_escolha_final': False, 'motivo de escolha ou rejeicao': 'maximo de ativos em watchlist flexivel excedido; maximo de acoes por setor violado: Energia Elétrica com 3 acoes; maximo de acoes por setor violado: Energia Elétrica com 4 acoes; maximo de acoes por setor violado: Petróleo, Gás e Biocombustíveis com 3 acoes; maximo de acoes por setor violado: Energia Elétrica com 5 acoes'}]
+2026-06-29 08:40:00,273 INFO __main__ - Ativos bloqueados por aderencia ao regime: [{'ticker': 'PETR3.SA', 'beta': 0.2705429892829942, 'correlacao_ibov': 0.16942659848514183, 'tipo_watchlist': 'watchlist_flexivel', 'grupo_economico_ou_bloco_risco': 'PETROBRAS', 'motivo_bloqueio_aderencia_regime': 'beta_e_correlacao_muito_baixos_em_mercado_favoravel_watchlist_flexivel'}, {'ticker': 'PRIO3.SA', 'beta': -0.0728279254311771, 'correlacao_ibov': -0.035884250296022054, 'tipo_watchlist': 'watchlist_flexivel', 'grupo_economico_ou_bloco_risco': 'PRIO', 'motivo_bloqueio_aderencia_regime': 'beta_negativo_em_mercado_favoravel_watchlist_flexivel; correlacao_negativa_em_mercado_favoravel_watchlist_flexivel; beta_e_correlacao_negativos_em_mercado_favoravel; beta_e_correlacao_muito_baixos_em_mercado_favoravel_watchlist_flexivel'}]
+2026-06-29 08:40:00,275 INFO __main__ - Ativos bloqueados por beta/correlacao negativa em mercado favoravel: [{'ticker': 'PRIO3.SA', 'beta': -0.0728279254311771, 'correlacao_ibov': -0.035884250296022054, 'tipo_watchlist': 'watchlist_flexivel', 'grupo_economico_ou_bloco_risco': 'PRIO', 'motivo_bloqueio_aderencia_regime': 'beta_negativo_em_mercado_favoravel_watchlist_flexivel; correlacao_negativa_em_mercado_favoravel_watchlist_flexivel; beta_e_correlacao_negativos_em_mercado_favoravel; beta_e_correlacao_muito_baixos_em_mercado_favoravel_watchlist_flexivel'}]
+2026-06-29 08:40:00,277 INFO __main__ - Ativos bloqueados por beta/correlacao muito baixos em mercado favoravel: [{'ticker': 'PETR3.SA', 'beta': 0.2705429892829942, 'correlacao_ibov': 0.16942659848514183, 'tipo_watchlist': 'watchlist_flexivel', 'grupo_economico_ou_bloco_risco': 'PETROBRAS', 'motivo_bloqueio_aderencia_regime': 'beta_e_correlacao_muito_baixos_em_mercado_favoravel_watchlist_flexivel'}, {'ticker': 'PRIO3.SA', 'beta': -0.0728279254311771, 'correlacao_ibov': -0.035884250296022054, 'tipo_watchlist': 'watchlist_flexivel', 'grupo_economico_ou_bloco_risco': 'PRIO', 'motivo_bloqueio_aderencia_regime': 'beta_negativo_em_mercado_favoravel_watchlist_flexivel; correlacao_negativa_em_mercado_favoravel_watchlist_flexivel; beta_e_correlacao_negativos_em_mercado_favoravel; beta_e_correlacao_muito_baixos_em_mercado_favoravel_watchlist_flexivel'}]
+2026-06-29 08:40:00,277 INFO __main__ - Carteira escolhida: motivo= ativos= pesos= retorno=nan risco=nan CV=nan beta=nan Sharpe=nan maior_peso_setorial=nan setor_concentrado= blocos_duplicados= perf_carteira=nan perf_ibov=-0.0722301113614282 alfa=nan

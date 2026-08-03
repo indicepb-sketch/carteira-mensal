@@ -1,0 +1,39 @@
+Teste 43 - Auditoria dos Erros do Diagnostico Inicial
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste43_auditoria_erros_diagnostico.xlsx
+Taxa de acerto direcional do diagnostico inicial: 59.26%
+
+Resumo por tipo de erro/acerto - BASE_T36C:
+tipo_erro_diagnostico  meses  retorno_modelo_composto  retorno_ibov_composto  alfa_composto  alfa_medio  taxa_bateu_ibov  peso_acoes_medio  nota_media_formacao  beta_medio_formacao
+   falso_alerta_queda      9                 0.521130               0.531973      -0.010843   -0.000985         0.666667          0.911111            64.749564             0.777272
+  falso_positivo_alta     13                -0.375761              -0.380242       0.004480    0.000655         0.615385          1.000000            65.049170             0.997210
+      acerto_ofensivo     19                 1.671994               1.372983       0.299011    0.006931         0.684211          1.000000            60.457064             1.047005
+     acerto_defensivo     13                -0.140753              -0.288255       0.147502    0.014237         0.846154          0.703846            56.122717             0.720973
+
+Impacto dos cenarios alternativos por tipo de erro:
+                 cenario_t42 tipo_erro_diagnostico  meses  delta_alfa_medio_vs_base  delta_alfa_total_simples_vs_base  taxa_melhora_vs_base  usa_4m_meses
+  T39_4M_TODA_QUEDA_PREVISTA      acerto_defensivo     13                 -0.003060                         -0.039777              0.461538            13
+  T39_4M_TODA_QUEDA_PREVISTA       acerto_ofensivo     19                  0.000000                          0.000000              0.000000             0
+  T39_4M_TODA_QUEDA_PREVISTA    falso_alerta_queda      9                  0.007108                          0.063969              0.555556             9
+  T39_4M_TODA_QUEDA_PREVISTA   falso_positivo_alta     13                  0.000000                          0.000000              0.000000             0
+        T42A_QUALIDADE_FORTE      acerto_defensivo     13                 -0.001230                         -0.015996              0.384615             8
+        T42A_QUALIDADE_FORTE       acerto_ofensivo     19                  0.000000                          0.000000              0.000000             0
+        T42A_QUALIDADE_FORTE    falso_alerta_queda      9                  0.007963                          0.071670              0.555556             8
+        T42A_QUALIDADE_FORTE   falso_positivo_alta     13                  0.000000                          0.000000              0.000000             0
+        T42B_QUALIDADE_MEDIA      acerto_defensivo     13                 -0.002708                         -0.035208              0.384615             9
+        T42B_QUALIDADE_MEDIA       acerto_ofensivo     19                  0.000000                          0.000000              0.000000             0
+        T42B_QUALIDADE_MEDIA    falso_alerta_queda      9                  0.007963                          0.071670              0.555556             8
+        T42B_QUALIDADE_MEDIA   falso_positivo_alta     13                  0.000000                          0.000000              0.000000             0
+   T42C_QUEDA_LEVE_QUALIDADE      acerto_defensivo     13                 -0.003087                         -0.040136              0.230769             7
+   T42C_QUEDA_LEVE_QUALIDADE       acerto_ofensivo     19                  0.000000                          0.000000              0.000000             0
+   T42C_QUEDA_LEVE_QUALIDADE    falso_alerta_queda      9                  0.005747                          0.051727              0.444444             6
+   T42C_QUEDA_LEVE_QUALIDADE   falso_positivo_alta     13                  0.000000                          0.000000              0.000000             0
+T42D_FALSO_ALERTA_BALANCEADO      acerto_defensivo     13                 -0.002708                         -0.035208              0.384615             9
+T42D_FALSO_ALERTA_BALANCEADO       acerto_ofensivo     19                  0.000000                          0.000000              0.000000             0
+T42D_FALSO_ALERTA_BALANCEADO    falso_alerta_queda      9                  0.007108                          0.063969              0.555556             9
+T42D_FALSO_ALERTA_BALANCEADO   falso_positivo_alta     13                  0.000000                          0.000000              0.000000             0
+
+Matriz de confusao direcional:
+direcao_prevista  alta  queda  All
+            alta    19     13   32
+           queda     9     13   22
+             All    28     26   54

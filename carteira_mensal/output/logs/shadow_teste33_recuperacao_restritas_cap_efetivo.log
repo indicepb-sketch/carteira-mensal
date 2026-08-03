@@ -1,0 +1,7 @@
+Teste 33 - Recuperacao de Restritas com Cap Efetivo e Filtro sem Queda Leve
+Base: 28D. Recupera virada+forca do Teste 31, evitando bucket previsto queda_leve e validando cap efetivo <=25%.
+  base_28d: retorno=61.25%; IBOV=31.22%; alfa=30.03%; bateu=20/30; drawdown=-8.78%; rec_pool=0; rec_cart=0
+  restrita_virada_forca_sem_queda_leve_cap5_capefetivo25: retorno=61.21%; IBOV=31.22%; alfa=29.99%; bateu=20/30; drawdown=-8.78%; rec_pool=24; rec_cart=19
+  restrita_combinada_31_sem_queda_leve_cap5_capefetivo25: retorno=61.21%; IBOV=31.22%; alfa=29.99%; bateu=20/30; drawdown=-8.78%; rec_pool=24; rec_cart=19
+  Delta restrita_virada_forca_sem_queda_leve_cap5_capefetivo25 vs base_28d: alfa=-0.04%; retorno=-0.04%; taxa_acerto_delta=0.00%
+  Delta restrita_combinada_31_sem_queda_leve_cap5_capefetivo25 vs base_28d: alfa=-0.04%; retorno=-0.04%; taxa_acerto_delta=0.00%

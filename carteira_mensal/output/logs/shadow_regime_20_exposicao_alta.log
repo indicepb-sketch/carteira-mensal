@@ -1,0 +1,22 @@
+Teste 20 - 100% investido apenas em alta e calibracao de exposicao nas quedas
+Meses avaliados: 30 (2024-01 a 2026-06)
+
+13b_conservador:
+  atual Teste16: retorno=41.00%; alfa=9.78%; drawdown=-8.78%
+  100% so em alta: retorno=42.06%; alfa=10.84%; delta_alfa=1.07%; drawdown=-9.68%
+  melhor perfil testado: 100_alta_0_quedas | retorno=42.06%; alfa=10.84%; delta_alfa=1.07%; drawdown=-9.68%; exposicao_media=66.67%
+risk_on_off_mm50:
+  atual Teste16: retorno=56.48%; alfa=25.26%; drawdown=-8.78%
+  100% so em alta: retorno=64.98%; alfa=33.76%; delta_alfa=8.50%; drawdown=-8.78%
+  melhor perfil testado: 100_alta_40_0 | retorno=65.26%; alfa=34.04%; delta_alfa=8.79%; drawdown=-8.78%; exposicao_media=62.67%
+risk_on_off_voto:
+  atual Teste16: retorno=56.63%; alfa=25.41%; drawdown=-8.78%
+  100% so em alta: retorno=64.82%; alfa=33.60%; delta_alfa=8.19%; drawdown=-8.78%
+  melhor perfil testado: 100_alta_40_0 | retorno=64.87%; alfa=33.65%; delta_alfa=8.24%; drawdown=-8.78%; exposicao_media=60.67%
+risk_on_off_confirmacao:
+  atual Teste16: retorno=55.36%; alfa=24.14%; drawdown=-8.78%
+  100% so em alta: retorno=64.82%; alfa=33.60%; delta_alfa=9.47%; drawdown=-8.78%
+  melhor perfil testado: 100_alta_0_quedas | retorno=64.82%; alfa=33.60%; delta_alfa=9.47%; drawdown=-8.78%; exposicao_media=56.67%
+
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_regime_20_exposicao_alta.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_regime_20_exposicao_alta.log

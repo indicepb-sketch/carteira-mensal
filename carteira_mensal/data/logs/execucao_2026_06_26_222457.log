@@ -1,0 +1,45 @@
+2026-06-26 22:27:02,756 INFO __main__ - Iniciando carteira mensal para 78 ativos
+2026-06-26 22:41:36,089 ERROR yfinance - $COGN3.SA: possibly delisted; no price data found  (1d 2021-06-26 -> 2026-06-27)
+2026-06-26 22:41:36,091 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:41:36,092 ERROR yfinance - ['COGN3.SA']: possibly delisted; no price data found  (1d 2021-06-26 -> 2026-06-27)
+2026-06-26 22:41:38,293 ERROR yfinance - $COGN3.SA: possibly delisted; no price data found  (1d 2021-06-26 -> 2026-06-27)
+2026-06-26 22:41:38,294 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:41:38,295 ERROR yfinance - ['COGN3.SA']: possibly delisted; no price data found  (1d 2021-06-26 -> 2026-06-27)
+2026-06-26 22:41:39,306 ERROR yfinance - $COGN3.SA: possibly delisted; no price data found  (1d 2021-06-26 -> 2026-06-27)
+2026-06-26 22:41:39,306 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:41:39,307 ERROR yfinance - ['COGN3.SA']: possibly delisted; no price data found  (1d 2021-06-26 -> 2026-06-27)
+2026-06-26 22:41:41,828 ERROR yfinance - $CSMG3.SA: possibly delisted; no price data found  (1d 2021-06-26 -> 2026-06-27)
+2026-06-26 22:41:41,829 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:41:41,830 ERROR yfinance - ['CSMG3.SA']: possibly delisted; no price data found  (1d 2021-06-26 -> 2026-06-27)
+2026-06-26 22:42:23,131 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: IEEX.SA"}}}
+2026-06-26 22:42:23,606 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-26 22:42:23,606 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:42:23,606 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-26 22:42:24,947 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: IEEX.SA"}}}
+2026-06-26 22:42:25,313 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-26 22:42:25,314 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:42:25,314 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-26 22:42:26,318 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-26 22:42:26,318 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:42:26,318 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-26 22:42:29,466 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-26 22:42:29,467 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:42:29,467 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-26 22:42:29,970 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-26 22:42:29,971 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:42:29,971 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-26 22:42:30,975 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-26 22:42:30,976 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:42:30,976 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-26 22:43:14,519 INFO __main__ - Arquivos gerados: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\carteira_recomendada_2026_06.xlsx, C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\csv\carteira_recomendada_2026_06.csv, C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\pdf\relatorio_carteira_2026_06.pdf
+2026-06-26 22:43:14,519 INFO __main__ - Resumo: analisados=78 excluidos=76 elegiveis=2 valida=False

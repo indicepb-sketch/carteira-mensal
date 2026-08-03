@@ -1,0 +1,12 @@
+Teste 48 - Top 15 com Regra de Resgate de Removidas Fortes
+Entrada: shadow_teste46_carteira_executavel.xlsx
+
+ATUAL_T46: retorno=122.03%; IBOV=60.36%; alfa=61.67%; acerto=70.37%; drawdown=-12.93%; qtd_media=15.4; resgates=0; meses_resgate=0
+TOP15_OPERACIONAL: retorno=121.66%; IBOV=60.36%; alfa=61.30%; acerto=66.67%; drawdown=-11.89%; qtd_media=14.1; resgates=0; meses_resgate=0
+RESGATE_SCORE_HIBRIDO: retorno=120.95%; IBOV=60.36%; alfa=60.59%; acerto=66.67%; drawdown=-11.89%; qtd_media=14.1; resgates=8; meses_resgate=8
+RESGATE_NOTA_FORTE: retorno=120.69%; IBOV=60.36%; alfa=60.33%; acerto=66.67%; drawdown=-11.89%; qtd_media=14.1; resgates=3; meses_resgate=3
+RESGATE_CONVICCAO_PESO: retorno=119.73%; IBOV=60.36%; alfa=59.37%; acerto=66.67%; drawdown=-11.89%; qtd_media=14.1; resgates=6; meses_resgate=6
+
+Principais resgatadas: RESGATE_CONVICCAO_PESO CYRE3.SA (1x); RESGATE_CONVICCAO_PESO MULT3.SA (1x); RESGATE_CONVICCAO_PESO VBBR3.SA (1x); RESGATE_CONVICCAO_PESO TOTS3.SA (1x); RESGATE_CONVICCAO_PESO WEGE3.SA (1x); RESGATE_CONVICCAO_PESO CMIN3.SA (1x); RESGATE_NOTA_FORTE VBBR3.SA (1x); RESGATE_NOTA_FORTE TOTS3.SA (1x); RESGATE_NOTA_FORTE WEGE3.SA (1x); RESGATE_SCORE_HIBRIDO VIVT3.SA (1x); RESGATE_SCORE_HIBRIDO CYRE3.SA (1x); RESGATE_SCORE_HIBRIDO SMFT3.SA (1x)
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste48_resgate_removidas_fortes.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_teste48_resgate_removidas_fortes.log

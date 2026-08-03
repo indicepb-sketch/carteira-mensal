@@ -1,0 +1,136 @@
+Teste 42 - Falso Alerta de Queda com Janela 4M
+Regra: comparar detectores que usam 4M apenas quando a queda prevista parece falso alerta/rotacao de qualidade.
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste42_falso_alerta_queda_4m.xlsx
+
+Resumo geral:
+                 cenario_t42  retorno_modelo  retorno_ibov  alfa_vs_ibov  taxa_acerto  drawdown  meses_usou_4m  delta_alfa_vs_base
+                   BASE_T36C        1.180069      0.603587      0.576482     0.703704 -0.132509              0            0.000000
+  T39_4M_TODA_QUEDA_PREVISTA        1.219121      0.603587      0.615534     0.722222 -0.132509             22            0.039052
+        T42A_QUALIDADE_FORTE        1.292092      0.603587      0.688506     0.740741 -0.132509             16            0.112023
+        T42B_QUALIDADE_MEDIA        1.245773      0.603587      0.642186     0.722222 -0.132509             17            0.065704
+   T42C_QUEDA_LEVE_QUALIDADE        1.193028      0.603587      0.589441     0.703704 -0.132509             13            0.012959
+T42D_FALSO_ALERTA_BALANCEADO        1.229214      0.603587      0.625628     0.722222 -0.132509             18            0.049145
+
+Resumo por ano:
+                 cenario_t42  ano  retorno_modelo  retorno_ibov  alfa_vs_ibov  taxa_acerto  meses_usou_4m  delta_alfa_vs_base
+                   BASE_T36C 2022       -0.033207     -0.019433     -0.013774     0.583333              0            0.000000
+                   BASE_T36C 2023        0.400535      0.246273      0.154262     0.750000              0            0.000000
+                   BASE_T36C 2024        0.018117     -0.087559      0.105677     0.833333              0            0.000000
+                   BASE_T36C 2025        0.378511      0.337827      0.040684     0.583333              0            0.000000
+                   BASE_T36C 2026        0.147188      0.074973      0.072216     0.833333              0            0.000000
+  T39_4M_TODA_QUEDA_PREVISTA 2022       -0.035651     -0.019433     -0.016218     0.666667              3           -0.002444
+  T39_4M_TODA_QUEDA_PREVISTA 2023        0.403548      0.246273      0.157275     0.750000              5            0.003013
+  T39_4M_TODA_QUEDA_PREVISTA 2024        0.041467     -0.087559      0.129026     0.833333             10            0.023350
+  T39_4M_TODA_QUEDA_PREVISTA 2025        0.378511      0.337827      0.040684     0.583333              0            0.000000
+  T39_4M_TODA_QUEDA_PREVISTA 2026        0.141994      0.074973      0.067021     0.833333              4           -0.005194
+        T42A_QUALIDADE_FORTE 2022       -0.035651     -0.019433     -0.016218     0.666667              3           -0.002444
+        T42A_QUALIDADE_FORTE 2023        0.443136      0.246273      0.196864     0.833333              3            0.042602
+        T42A_QUALIDADE_FORTE 2024        0.041467     -0.087559      0.129026     0.833333             10            0.023350
+        T42A_QUALIDADE_FORTE 2025        0.378511      0.337827      0.040684     0.583333              0            0.000000
+        T42A_QUALIDADE_FORTE 2026        0.147188      0.074973      0.072216     0.833333              0            0.000000
+        T42B_QUALIDADE_MEDIA 2022       -0.035651     -0.019433     -0.016218     0.666667              3           -0.002444
+        T42B_QUALIDADE_MEDIA 2023        0.413973      0.246273      0.167701     0.750000              4            0.013439
+        T42B_QUALIDADE_MEDIA 2024        0.041467     -0.087559      0.129026     0.833333             10            0.023350
+        T42B_QUALIDADE_MEDIA 2025        0.378511      0.337827      0.040684     0.583333              0            0.000000
+        T42B_QUALIDADE_MEDIA 2026        0.147188      0.074973      0.072216     0.833333              0            0.000000
+   T42C_QUEDA_LEVE_QUALIDADE 2022       -0.053744     -0.019433     -0.034311     0.583333              2           -0.020537
+   T42C_QUEDA_LEVE_QUALIDADE 2023        0.413973      0.246273      0.167701     0.750000              4            0.013439
+   T42C_QUEDA_LEVE_QUALIDADE 2024        0.036452     -0.087559      0.124011     0.833333              7            0.018335
+   T42C_QUEDA_LEVE_QUALIDADE 2025        0.378511      0.337827      0.040684     0.583333              0            0.000000
+   T42C_QUEDA_LEVE_QUALIDADE 2026        0.147188      0.074973      0.072216     0.833333              0            0.000000
+T42D_FALSO_ALERTA_BALANCEADO 2022       -0.035651     -0.019433     -0.016218     0.666667              3           -0.002444
+T42D_FALSO_ALERTA_BALANCEADO 2023        0.403548      0.246273      0.157275     0.750000              5            0.003013
+T42D_FALSO_ALERTA_BALANCEADO 2024        0.041467     -0.087559      0.129026     0.833333             10            0.023350
+T42D_FALSO_ALERTA_BALANCEADO 2025        0.378511      0.337827      0.040684     0.583333              0            0.000000
+T42D_FALSO_ALERTA_BALANCEADO 2026        0.147188      0.074973      0.072216     0.833333              0            0.000000
+
+Meses em que cada detector acionou 4M:
+                 cenario_t42     mes regime_previsto_norm tipo_regime_expost  retorno_total  retorno_expost_ibov  alfa_vs_ibov                                                                 motivo_acionamento_4m
+  T39_4M_TODA_QUEDA_PREVISTA 2022-01           queda_leve               alta       0.022784             0.081465     -0.058681                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2022-07           queda_leve               alta       0.042577             0.042555      0.000022                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2022-08          queda_forte               alta       0.078186             0.071392      0.006794                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2023-01           queda_leve               alta       0.096170             0.067271      0.028899                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2023-02           queda_leve        queda_forte      -0.068518            -0.065635     -0.002883                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2023-03           queda_leve         queda_leve      -0.020853            -0.023979      0.003126                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2023-04           queda_leve               alta       0.036763             0.028826      0.007937                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2023-11           queda_leve               alta       0.120115             0.106716      0.013399                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2024-02           queda_leve               alta       0.022539             0.004195      0.018344                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2024-03           queda_leve         queda_leve       0.031335            -0.008314      0.039649                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2024-04          queda_forte         queda_leve      -0.034109            -0.008394     -0.025714                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2024-05          queda_forte        queda_forte      -0.029374            -0.039521      0.010148                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2024-06          queda_forte               alta       0.025855             0.015365      0.010490                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2024-07           queda_leve               alta       0.051425             0.023525      0.027899                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2024-09           queda_leve         queda_leve      -0.010824            -0.023448      0.012624                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2024-10           queda_leve         queda_leve       0.013516            -0.020997      0.034513                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2024-11           queda_leve         queda_leve      -0.010426            -0.019146      0.008720                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2024-12           queda_leve        queda_forte      -0.057539            -0.039549     -0.017989                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2026-03          queda_forte         queda_leve       0.002605            -0.007018      0.009624                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2026-04          queda_forte         queda_leve       0.003263            -0.000768      0.004031                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2026-05          queda_forte        queda_forte      -0.013963            -0.072230      0.058267                                                                    t39_queda_prevista
+  T39_4M_TODA_QUEDA_PREVISTA 2026-06          queda_forte   jun_oportunidade       0.007834            -0.003355      0.011189                                                                    t39_queda_prevista
+        T42A_QUALIDADE_FORTE 2022-01           queda_leve               alta       0.022784             0.081465     -0.058681                                       qualidade_forte=sim; nota=64.5; n=15; beta=0.59
+        T42A_QUALIDADE_FORTE 2022-07           queda_leve               alta       0.042577             0.042555      0.000022                                       qualidade_forte=sim; nota=65.4; n=11; beta=0.72
+        T42A_QUALIDADE_FORTE 2022-08          queda_forte               alta       0.078186             0.071392      0.006794                                       qualidade_forte=sim; nota=62.5; n=12; beta=0.74
+        T42A_QUALIDADE_FORTE 2023-01           queda_leve               alta       0.096170             0.067271      0.028899                                       qualidade_forte=sim; nota=61.6; n=17; beta=0.74
+        T42A_QUALIDADE_FORTE 2023-03           queda_leve         queda_leve      -0.020853            -0.023979      0.003126                                       qualidade_forte=sim; nota=66.4; n=17; beta=0.87
+        T42A_QUALIDADE_FORTE 2023-11           queda_leve               alta       0.120115             0.106716      0.013399                                       qualidade_forte=sim; nota=62.8; n=13; beta=0.87
+        T42A_QUALIDADE_FORTE 2024-02           queda_leve               alta       0.022539             0.004195      0.018344                                       qualidade_forte=sim; nota=64.8; n=14; beta=0.92
+        T42A_QUALIDADE_FORTE 2024-03           queda_leve         queda_leve       0.031335            -0.008314      0.039649                                       qualidade_forte=sim; nota=63.7; n=15; beta=0.81
+        T42A_QUALIDADE_FORTE 2024-04          queda_forte         queda_leve      -0.034109            -0.008394     -0.025714                                       qualidade_forte=sim; nota=73.0; n=17; beta=0.67
+        T42A_QUALIDADE_FORTE 2024-05          queda_forte        queda_forte      -0.029374            -0.039521      0.010148                                       qualidade_forte=sim; nota=74.4; n=18; beta=0.65
+        T42A_QUALIDADE_FORTE 2024-06          queda_forte               alta       0.025855             0.015365      0.010490                                       qualidade_forte=sim; nota=73.4; n=15; beta=0.80
+        T42A_QUALIDADE_FORTE 2024-07           queda_leve               alta       0.051425             0.023525      0.027899                                       qualidade_forte=sim; nota=73.0; n=14; beta=0.68
+        T42A_QUALIDADE_FORTE 2024-09           queda_leve         queda_leve      -0.010824            -0.023448      0.012624                                       qualidade_forte=sim; nota=66.7; n=17; beta=0.79
+        T42A_QUALIDADE_FORTE 2024-10           queda_leve         queda_leve       0.013516            -0.020997      0.034513                                       qualidade_forte=sim; nota=75.7; n=19; beta=0.81
+        T42A_QUALIDADE_FORTE 2024-11           queda_leve         queda_leve      -0.010426            -0.019146      0.008720                                       qualidade_forte=sim; nota=74.9; n=16; beta=0.83
+        T42A_QUALIDADE_FORTE 2024-12           queda_leve        queda_forte      -0.057539            -0.039549     -0.017989                                       qualidade_forte=sim; nota=69.3; n=15; beta=0.69
+        T42B_QUALIDADE_MEDIA 2022-01           queda_leve               alta       0.022784             0.081465     -0.058681                                       qualidade_media=sim; nota=64.5; n=15; beta=0.59
+        T42B_QUALIDADE_MEDIA 2022-07           queda_leve               alta       0.042577             0.042555      0.000022                                       qualidade_media=sim; nota=65.4; n=11; beta=0.72
+        T42B_QUALIDADE_MEDIA 2022-08          queda_forte               alta       0.078186             0.071392      0.006794                                       qualidade_media=sim; nota=62.5; n=12; beta=0.74
+        T42B_QUALIDADE_MEDIA 2023-01           queda_leve               alta       0.096170             0.067271      0.028899                                       qualidade_media=sim; nota=61.6; n=17; beta=0.74
+        T42B_QUALIDADE_MEDIA 2023-02           queda_leve        queda_forte      -0.068518            -0.065635     -0.002883                                       qualidade_media=sim; nota=56.3; n=20; beta=1.08
+        T42B_QUALIDADE_MEDIA 2023-03           queda_leve         queda_leve      -0.020853            -0.023979      0.003126                                       qualidade_media=sim; nota=66.4; n=17; beta=0.87
+        T42B_QUALIDADE_MEDIA 2023-11           queda_leve               alta       0.120115             0.106716      0.013399                                       qualidade_media=sim; nota=62.8; n=13; beta=0.87
+        T42B_QUALIDADE_MEDIA 2024-02           queda_leve               alta       0.022539             0.004195      0.018344                                       qualidade_media=sim; nota=64.8; n=14; beta=0.92
+        T42B_QUALIDADE_MEDIA 2024-03           queda_leve         queda_leve       0.031335            -0.008314      0.039649                                       qualidade_media=sim; nota=63.7; n=15; beta=0.81
+        T42B_QUALIDADE_MEDIA 2024-04          queda_forte         queda_leve      -0.034109            -0.008394     -0.025714                                       qualidade_media=sim; nota=73.0; n=17; beta=0.67
+        T42B_QUALIDADE_MEDIA 2024-05          queda_forte        queda_forte      -0.029374            -0.039521      0.010148                                       qualidade_media=sim; nota=74.4; n=18; beta=0.65
+        T42B_QUALIDADE_MEDIA 2024-06          queda_forte               alta       0.025855             0.015365      0.010490                                       qualidade_media=sim; nota=73.4; n=15; beta=0.80
+        T42B_QUALIDADE_MEDIA 2024-07           queda_leve               alta       0.051425             0.023525      0.027899                                       qualidade_media=sim; nota=73.0; n=14; beta=0.68
+        T42B_QUALIDADE_MEDIA 2024-09           queda_leve         queda_leve      -0.010824            -0.023448      0.012624                                       qualidade_media=sim; nota=66.7; n=17; beta=0.79
+        T42B_QUALIDADE_MEDIA 2024-10           queda_leve         queda_leve       0.013516            -0.020997      0.034513                                       qualidade_media=sim; nota=75.7; n=19; beta=0.81
+        T42B_QUALIDADE_MEDIA 2024-11           queda_leve         queda_leve      -0.010426            -0.019146      0.008720                                       qualidade_media=sim; nota=74.9; n=16; beta=0.83
+        T42B_QUALIDADE_MEDIA 2024-12           queda_leve        queda_forte      -0.057539            -0.039549     -0.017989                                       qualidade_media=sim; nota=69.3; n=15; beta=0.69
+   T42C_QUEDA_LEVE_QUALIDADE 2022-01           queda_leve               alta       0.022784             0.081465     -0.058681                          queda_leve_qualidade=sim; regime=queda_leve; nota=64.5; n=15
+   T42C_QUEDA_LEVE_QUALIDADE 2022-07           queda_leve               alta       0.042577             0.042555      0.000022                          queda_leve_qualidade=sim; regime=queda_leve; nota=65.4; n=11
+   T42C_QUEDA_LEVE_QUALIDADE 2023-01           queda_leve               alta       0.096170             0.067271      0.028899                          queda_leve_qualidade=sim; regime=queda_leve; nota=61.6; n=17
+   T42C_QUEDA_LEVE_QUALIDADE 2023-02           queda_leve        queda_forte      -0.068518            -0.065635     -0.002883                          queda_leve_qualidade=sim; regime=queda_leve; nota=56.3; n=20
+   T42C_QUEDA_LEVE_QUALIDADE 2023-03           queda_leve         queda_leve      -0.020853            -0.023979      0.003126                          queda_leve_qualidade=sim; regime=queda_leve; nota=66.4; n=17
+   T42C_QUEDA_LEVE_QUALIDADE 2023-11           queda_leve               alta       0.120115             0.106716      0.013399                          queda_leve_qualidade=sim; regime=queda_leve; nota=62.8; n=13
+   T42C_QUEDA_LEVE_QUALIDADE 2024-02           queda_leve               alta       0.022539             0.004195      0.018344                          queda_leve_qualidade=sim; regime=queda_leve; nota=64.8; n=14
+   T42C_QUEDA_LEVE_QUALIDADE 2024-03           queda_leve         queda_leve       0.031335            -0.008314      0.039649                          queda_leve_qualidade=sim; regime=queda_leve; nota=63.7; n=15
+   T42C_QUEDA_LEVE_QUALIDADE 2024-07           queda_leve               alta       0.051425             0.023525      0.027899                          queda_leve_qualidade=sim; regime=queda_leve; nota=73.0; n=14
+   T42C_QUEDA_LEVE_QUALIDADE 2024-09           queda_leve         queda_leve      -0.010824            -0.023448      0.012624                          queda_leve_qualidade=sim; regime=queda_leve; nota=66.7; n=17
+   T42C_QUEDA_LEVE_QUALIDADE 2024-10           queda_leve         queda_leve       0.013516            -0.020997      0.034513                          queda_leve_qualidade=sim; regime=queda_leve; nota=75.7; n=19
+   T42C_QUEDA_LEVE_QUALIDADE 2024-11           queda_leve         queda_leve      -0.010426            -0.019146      0.008720                          queda_leve_qualidade=sim; regime=queda_leve; nota=74.9; n=16
+   T42C_QUEDA_LEVE_QUALIDADE 2024-12           queda_leve        queda_forte      -0.057539            -0.039549     -0.017989                          queda_leve_qualidade=sim; regime=queda_leve; nota=69.3; n=15
+T42D_FALSO_ALERTA_BALANCEADO 2022-01           queda_leve               alta       0.022784             0.081465     -0.058681  sinais=4/4; queda_leve=True; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2022-07           queda_leve               alta       0.042577             0.042555      0.000022  sinais=4/4; queda_leve=True; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2022-08          queda_forte               alta       0.078186             0.071392      0.006794 sinais=3/4; queda_leve=False; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2023-01           queda_leve               alta       0.096170             0.067271      0.028899  sinais=4/4; queda_leve=True; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2023-02           queda_leve        queda_forte      -0.068518            -0.065635     -0.002883  sinais=4/4; queda_leve=True; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2023-03           queda_leve         queda_leve      -0.020853            -0.023979      0.003126  sinais=4/4; queda_leve=True; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2023-04           queda_leve               alta       0.036763             0.028826      0.007937 sinais=3/4; queda_leve=True; nota_media_55=False; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2023-11           queda_leve               alta       0.120115             0.106716      0.013399  sinais=4/4; queda_leve=True; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2024-02           queda_leve               alta       0.022539             0.004195      0.018344  sinais=4/4; queda_leve=True; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2024-03           queda_leve         queda_leve       0.031335            -0.008314      0.039649  sinais=4/4; queda_leve=True; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2024-04          queda_forte         queda_leve      -0.034109            -0.008394     -0.025714 sinais=3/4; queda_leve=False; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2024-05          queda_forte        queda_forte      -0.029374            -0.039521      0.010148 sinais=3/4; queda_leve=False; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2024-06          queda_forte               alta       0.025855             0.015365      0.010490 sinais=3/4; queda_leve=False; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2024-07           queda_leve               alta       0.051425             0.023525      0.027899  sinais=4/4; queda_leve=True; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2024-09           queda_leve         queda_leve      -0.010824            -0.023448      0.012624  sinais=4/4; queda_leve=True; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2024-10           queda_leve         queda_leve       0.013516            -0.020997      0.034513  sinais=4/4; queda_leve=True; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2024-11           queda_leve         queda_leve      -0.010426            -0.019146      0.008720  sinais=4/4; queda_leve=True; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+T42D_FALSO_ALERTA_BALANCEADO 2024-12           queda_leve        queda_forte      -0.057539            -0.039549     -0.017989  sinais=4/4; queda_leve=True; nota_media_55=True; n_ativos_8=True; beta_ate_1_20=True
+
+Validacao: OK

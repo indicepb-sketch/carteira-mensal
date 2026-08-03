@@ -1,0 +1,8 @@
+Teste 28D - Modulacao defensiva de risco apenas em queda confirmada
+Base: Teste 25 cap 7,5%; compara 28C contra 28D com confirmacao adicional de queda.
+Regra 28D: queda_leve exige beta risk-off e MM50>MM100 >= 70%; queda_forte exige beta risk-off ou MM50>MM100 >= 75%.
+  t25_cap7_5_base: retorno=58.23%; IBOV=31.22%; alfa=27.01%; bateu=20/30; drawdown=-8.78%
+  modulacao_defensiva_so_quedas_28c: retorno=60.67%; IBOV=31.22%; alfa=29.45%; bateu=19/30; drawdown=-8.78%
+  modulacao_queda_confirmada_28d: retorno=60.57%; IBOV=31.22%; alfa=29.35%; bateu=20/30; drawdown=-8.78%
+  Delta modulacao_defensiva_so_quedas_28c vs base: alfa=2.43%; retorno=2.43%; taxa_acerto_delta=-3.33%
+  Delta modulacao_queda_confirmada_28d vs base: alfa=2.33%; retorno=2.33%; taxa_acerto_delta=0.00%

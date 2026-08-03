@@ -1,0 +1,24 @@
+Teste 12A - Diagnostico Historico Setorial
+Meses historicos analisados: 30 (2024-01 a 2026-06)
+Setores analisados: 28
+Top 5 setores por alfa mediano medio mensal:
+  Água e Saneamento: alfa_medio=2.81% | meses_bateu=50.00%
+  Bebidas: alfa_medio=1.95% | meses_bateu=50.00%
+  Petróleo, Gás e Biocombustíveis: alfa_medio=1.52% | meses_bateu=66.67%
+  Previdência e Seguros: alfa_medio=1.39% | meses_bateu=50.00%
+  Produtos de Uso Pessoal e de Limpeza: alfa_medio=1.09% | meses_bateu=50.00%
+Piores 5 setores por alfa mediano medio mensal:
+  Viagens e Lazer: alfa_medio=-4.00% | meses_bateu=33.33%
+  Madeira e Papel: alfa_medio=-4.03% | meses_bateu=33.33%
+  Alimentos Processados: alfa_medio=-5.34% | meses_bateu=33.33%
+  Tecidos, Vestuário e Calçados: alfa_medio=-6.71% | meses_bateu=33.33%
+  Programas e Serviços: alfa_medio=-7.17% | meses_bateu=16.67%
+Julho parcial - carteira vs setor:
+  EGIE3.SA: ativo=-15.62% | setor_mediano=-3.20% | ativo_vs_setor=-12.42% | diagnostico=queda_especifica_do_ativo
+  ENEV3.SA: ativo=-6.81% | setor_mediano=-3.20% | ativo_vs_setor=-3.62% | diagnostico=queda_maior_que_ibov
+  PSSA3.SA: ativo=3.51% | setor_mediano=5.92% | ativo_vs_setor=-2.41% | diagnostico=ativo_positivo
+  ABEV3.SA: ativo=-3.99% | setor_mediano=-3.99% | ativo_vs_setor=0.00% | diagnostico=queda_explicada_pelo_setor
+  BRAV3.SA: ativo=6.94% | setor_mediano=12.23% | ativo_vs_setor=-5.29% | diagnostico=ativo_positivo
+  CSMG3.SA: ativo=3.40% | setor_mediano=-0.42% | ativo_vs_setor=3.83% | diagnostico=ativo_positivo
+  GGBR4.SA: ativo=16.75% | setor_mediano=15.12% | ativo_vs_setor=1.63% | diagnostico=ativo_positivo
+  CAIXA.SA: ativo=n/a | setor_mediano=n/a | ativo_vs_setor=n/a | diagnostico=dados_insuficientes

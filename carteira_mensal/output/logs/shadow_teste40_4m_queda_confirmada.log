@@ -1,0 +1,42 @@
+Teste 40 - Retorno 4M Apenas com Queda Confirmada
+Regra: usa JANELA_4M somente quando regime previsto e queda_leve/queda_forte E queda_confirmada_28d=True; caso contrario mantem BASE_T36C.
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste40_4m_queda_confirmada.xlsx
+
+Resumo geral:
+            cenario_t40  retorno_modelo  retorno_ibov  alfa_vs_ibov  taxa_acerto  drawdown  delta_alfa_vs_base
+              BASE_T36C        1.180069      0.603587      0.576482     0.703704 -0.132509            0.000000
+T40_4M_QUEDA_CONFIRMADA        1.148848      0.603587      0.545261     0.722222 -0.132509           -0.031221
+
+Resumo por ano:
+            cenario_t40  ano  retorno_modelo  retorno_ibov  alfa_vs_ibov  taxa_acerto  delta_alfa_vs_base
+              BASE_T36C 2022       -0.033207     -0.019433     -0.013774     0.583333            0.000000
+              BASE_T36C 2023        0.400535      0.246273      0.154262     0.750000            0.000000
+              BASE_T36C 2024        0.018117     -0.087559      0.105677     0.833333            0.000000
+              BASE_T36C 2025        0.378511      0.337827      0.040684     0.583333            0.000000
+              BASE_T36C 2026        0.147188      0.074973      0.072216     0.833333            0.000000
+T40_4M_QUEDA_CONFIRMADA 2022       -0.035651     -0.019433     -0.016218     0.666667           -0.002444
+T40_4M_QUEDA_CONFIRMADA 2023        0.403548      0.246273      0.157275     0.750000            0.003013
+T40_4M_QUEDA_CONFIRMADA 2024        0.005701     -0.087559      0.093260     0.833333           -0.012416
+T40_4M_QUEDA_CONFIRMADA 2025        0.378511      0.337827      0.040684     0.583333            0.000000
+T40_4M_QUEDA_CONFIRMADA 2026        0.145157      0.074973      0.070185     0.833333           -0.002031
+
+Meses em que a regra trocou para 4M: 16
+    mes regime_previsto_norm  queda_confirmada_28d tipo_regime_expost  retorno_total  retorno_expost_ibov  alfa_vs_ibov
+2022-01           queda_leve                  True               alta       0.022784             0.081465     -0.058681
+2022-07           queda_leve                  True               alta       0.042577             0.042555      0.000022
+2022-08          queda_forte                  True               alta       0.078186             0.071392      0.006794
+2023-01           queda_leve                  True               alta       0.096170             0.067271      0.028899
+2023-02           queda_leve                  True        queda_forte      -0.068518            -0.065635     -0.002883
+2023-03           queda_leve                  True         queda_leve      -0.020853            -0.023979      0.003126
+2023-04           queda_leve                  True               alta       0.036763             0.028826      0.007937
+2023-11           queda_leve                  True               alta       0.120115             0.106716      0.013399
+2024-03           queda_leve                  True         queda_leve       0.031335            -0.008314      0.039649
+2024-04          queda_forte                  True         queda_leve      -0.034109            -0.008394     -0.025714
+2024-05          queda_forte                  True        queda_forte      -0.029374            -0.039521      0.010148
+2024-09           queda_leve                  True         queda_leve      -0.010824            -0.023448      0.012624
+2024-11           queda_leve                  True         queda_leve      -0.010426            -0.019146      0.008720
+2026-04          queda_forte                  True         queda_leve       0.003263            -0.000768      0.004031
+2026-05          queda_forte                  True        queda_forte      -0.013963            -0.072230      0.058267
+2026-06          queda_forte                  True   jun_oportunidade       0.007834            -0.003355      0.011189
+
+Validacao: OK

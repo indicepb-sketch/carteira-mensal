@@ -1,0 +1,59 @@
+2026-06-29 09:21:50,530 INFO __main__ - Iniciando carteira mensal para 78 ativos
+2026-06-29 09:22:02,060 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: IEEX.SA"}}}
+2026-06-29 09:22:02,535 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-29 09:22:02,536 ERROR yfinance - 
+1 Failed download:
+2026-06-29 09:22:02,536 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-29 09:22:03,889 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: IEEX.SA"}}}
+2026-06-29 09:22:04,274 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-29 09:22:04,275 ERROR yfinance - 
+1 Failed download:
+2026-06-29 09:22:04,275 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-29 09:22:05,283 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-29 09:22:05,284 ERROR yfinance - 
+1 Failed download:
+2026-06-29 09:22:05,284 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-29 09:22:08,759 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-29 09:22:08,760 ERROR yfinance - 
+1 Failed download:
+2026-06-29 09:22:08,761 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-29 09:22:09,268 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-29 09:22:09,270 ERROR yfinance - 
+1 Failed download:
+2026-06-29 09:22:09,270 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-29 09:22:10,278 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-29 09:22:10,279 ERROR yfinance - 
+1 Failed download:
+2026-06-29 09:22:10,279 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-29 09:23:20,573 INFO __main__ - Data-base: formacao=2026-06-01 limite_selecao=2026-06-01 avaliacao=2026-06-26
+2026-06-29 09:23:31,410 INFO __main__ - AUDITORIA_RSI_PRIO3: timeframe=1W periodo=14 ultimo_fechamento=2026-06-05 00:00:00 fechamento=62.8200 rsi=57.5271
+2026-06-29 09:23:31,420 INFO __main__ - AUDITORIA_RSI_PRIO3_ULTIMAS_20_SEMANAS:
+data_fechamento  fechamento  variacao     ganho     perda  media_ganho_wilder  media_perda_wilder       rs       rsi
+     2026-01-23   48.520000  4.350002  4.350002 -0.000000            1.043194            0.410007 2.544332 71.785937
+     2026-01-30   50.990002  2.470001  2.470001 -0.000000            1.145109            0.380721 3.007739 75.048273
+     2026-02-06   50.630001 -0.360001  0.000000  0.360001            1.063315            0.379241 2.803800 73.710498
+     2026-02-13   52.560001  1.930000  1.930000 -0.000000            1.125221            0.352152 3.195270 76.163632
+     2026-02-20   55.020000  2.459999  2.459999 -0.000000            1.220563            0.326998 3.732625 78.870077
+     2026-02-27   54.490002 -0.529999  0.000000  0.529999            1.133380            0.341499 3.318842 76.845646
+     2026-03-06   59.389999  4.899998  4.899998 -0.000000            1.402424            0.317106 4.422574 81.558575
+     2026-03-13   57.799999 -1.590000  0.000000  1.590000            1.302251            0.408027 3.191581 76.142655
+     2026-03-20   67.889999 10.090000 10.090000 -0.000000            1.929947            0.378882 5.093794 83.589863
+     2026-03-27   70.820000  2.930000  2.930000 -0.000000            2.001379            0.351819 5.688662 85.049327
+     2026-04-03   67.769997 -3.050003  0.000000  3.050003            1.858424            0.544546 3.412792 77.338610
+     2026-04-10   67.650002 -0.119995  0.000000  0.119995            1.725679            0.514221 3.355907 77.042671
+     2026-04-17   61.660000 -5.990002  0.000000  5.990002            1.602416            0.905349 1.769944 63.898191
+     2026-04-24   62.630001  0.970001  0.970001 -0.000000            1.557244            0.840681 1.852361 64.941319
+     2026-05-01   66.410004  3.780003  3.780003 -0.000000            1.716012            0.780632 2.198234 68.732748
+     2026-05-08   63.270000 -3.140003  0.000000  3.140003            1.593440            0.949159 1.678792 62.669743
+     2026-05-15   68.800003  5.530003  5.530003 -0.000000            1.874623            0.881362 2.126963 68.020084
+     2026-05-22   68.400002 -0.400002  0.000000  0.400002            1.740721            0.846979 2.055213 67.269055
+     2026-05-29   62.250000 -6.150002  0.000000  6.150002            1.616384            1.225766 1.318673 56.871877
+     2026-06-05   62.820000  0.570000  0.570000 -0.000000            1.541642            1.138211 1.354443 57.527110
+2026-06-29 09:24:05,332 INFO __main__ - Auditoria beta/correlacao: janela_inicio=2026-02-03 janela_fim=2026-06-01 benchmark=^BVSP fonte=yfinance tipo_preco=adjusted_close observacoes_ibov=80 ativos_auditados=20 beta_ibov=1.0000000000000002 correlacao_ibov=1.0 beta_batendo=20 beta_divergencias=0 beta_divergentes= correlacao_batendo=20 correlacao_divergencias=0 correlacao_divergentes=
+2026-06-29 09:24:05,333 INFO __main__ - Arquivos gerados: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\carteira_recomendada_2026_06_v3.xlsx, C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\pdf\relatorio_carteira_2026_06_v3.pdf
+2026-06-29 09:24:05,333 INFO __main__ - Resumo: analisados=78 preliminares=20 risco=20 liberados=10 selecionados=8 peso_zero=12 valida=True
+2026-06-29 09:24:05,338 INFO __main__ - Comparativo regime: [{'quantidade de acoes': 5, 'CV': 15.002901895660278, 'beta': 0.8584691977265267, 'correlacao_carteira_ibov': 0.49132974582945643, 'score_aderencia_regime': 92.0, 'maior_peso_setorial': 0.39999999999999813, 'setor_mais_concentrado': 'Petróleo, Gás e Biocombustíveis', 'quantidade_blocos_risco_duplicados': 0, 'carteira_elegivel_para_escolha_final': False, 'motivo de escolha ou rejeicao': 'rejeitada: diversificacao/CV/Sharpe inferior ao da carteira escolhida entre carteiras aderentes'}, {'quantidade de acoes': 6, 'CV': 19.70718719721278, 'beta': 1.0327106201291705, 'correlacao_carteira_ibov': 0.6034901091096903, 'score_aderencia_regime': 100.0, 'maior_peso_setorial': 0.2999999999933368, 'setor_mais_concentrado': 'Energia Elétrica', 'quantidade_blocos_risco_duplicados': 0, 'carteira_elegivel_para_escolha_final': True, 'motivo de escolha ou rejeicao': 'rejeitada: diversificacao/CV/Sharpe inferior ao da carteira escolhida entre carteiras aderentes'}, {'quantidade de acoes': 8, 'CV': 9.974140731737917, 'beta': 0.8253522082110272, 'correlacao_carteira_ibov': 0.48061974642886396, 'score_aderencia_regime': 100.0, 'maior_peso_setorial': 0.2999999999999956, 'setor_mais_concentrado': 'Petróleo, Gás e Biocombustíveis', 'quantidade_blocos_risco_duplicados': 1, 'carteira_elegivel_para_escolha_final': True, 'motivo de escolha ou rejeicao': 'escolhida entre carteiras elegiveis por regime/setor/bloco: 6/8 acoes preferida por diversificacao; CV dentro da tolerancia configurada'}, {'quantidade de acoes': 10, 'CV': nan, 'beta': nan, 'correlacao_carteira_ibov': nan, 'score_aderencia_regime': nan, 'maior_peso_setorial': nan, 'setor_mais_concentrado': '', 'quantidade_blocos_risco_duplicados': 0, 'carteira_elegivel_para_escolha_final': False, 'motivo de escolha ou rejeicao': 'maximo de acoes por setor violado: Petróleo, Gás e Biocombustíveis com 4 acoes'}]
+2026-06-29 09:24:05,350 INFO __main__ - Ativos bloqueados por aderencia ao regime: [{'ticker': 'PRIO3.SA', 'beta': -0.269961811162131, 'correlacao_ibov': -0.1214424174634741, 'tipo_watchlist': 'watchlist_monitoramento', 'grupo_economico_ou_bloco_risco': 'PRIO', 'motivo_bloqueio_aderencia_regime': 'beta_e_correlacao_negativos_em_mercado_favoravel'}]
+2026-06-29 09:24:05,352 INFO __main__ - Ativos bloqueados por beta/correlacao negativa em mercado favoravel: [{'ticker': 'PRIO3.SA', 'beta': -0.269961811162131, 'correlacao_ibov': -0.1214424174634741, 'tipo_watchlist': 'watchlist_monitoramento', 'grupo_economico_ou_bloco_risco': 'PRIO', 'motivo_bloqueio_aderencia_regime': 'beta_e_correlacao_negativos_em_mercado_favoravel'}]
+2026-06-29 09:24:05,352 INFO __main__ - Ativos bloqueados por beta/correlacao muito baixos em mercado favoravel: []
+2026-06-29 09:24:05,353 INFO __main__ - Carteira escolhida: motivo=escolhida entre carteiras elegiveis por regime/setor/bloco: 6/8 acoes preferida por diversificacao; CV dentro da tolerancia configurada ativos=PETR3.SA, CPLE3.SA, GGBR4.SA, ABEV3.SA, GOAU4.SA, ENEV3.SA, CSMG3.SA, VBBR3.SA pesos=PETR3.SA: 20.00%; CPLE3.SA: 10.00%; GGBR4.SA: 10.00%; ABEV3.SA: 10.00%; GOAU4.SA: 10.00%; ENEV3.SA: 20.00%; CSMG3.SA: 10.00%; VBBR3.SA: 10.00% retorno=0.0012348831677279116 risco=0.012316898502172508 CV=9.974140731737917 beta=0.8253522082110272 Sharpe=0.055218321407383676 maior_peso_setorial=0.2999999999999956 setor_concentrado=Petróleo, Gás e Biocombustíveis blocos_duplicados=GERDAU_GOAU: 2 ativos/20.00% perf_carteira=0.00764247979789711 perf_ibov=-0.002836789651759597 alfa=0.010479269449656707

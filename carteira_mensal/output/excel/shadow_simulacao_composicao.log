@@ -1,0 +1,17 @@
+TESTE-ANCORA: shadow_fixes=False
+2026-02: PASSOU | sem carteira como no real | tempo=1.5s
+2026-03: PASSOU | sem carteira como no real | tempo=1.3s
+2026-04: PASSOU | sem carteira como no real | tempo=1.0s
+2026-05: PASSOU | sem carteira como no real | tempo=1.3s
+2026-06: PASSOU | junho reproduz carteira real exatamente | tempo=3.4s
+ANCORA PASSOU. Executando composicao ampliada em modo sombra: V3 combinado, lambda_cv=0.5, lambda_beta=0.
+2026-02: status=carteira invalida / restricoes inviaveis | tamanho=0 | pesos= | retorno=nan% | IBOV=4.09% | alfa=nan% | beta=nan | tempo=3.2s
+FEVEREIRO COMPOSICAO: tamanho=0; pesos=; alfa=nan% contra IBOV 4.09%
+2026-03: status=carteira invalida / restricoes inviaveis | tamanho=0 | pesos= | retorno=nan% | IBOV=-0.70% | alfa=nan% | beta=nan | tempo=5.6s
+2026-04: status=carteira invalida / restricoes inviaveis | tamanho=0 | pesos= | retorno=nan% | IBOV=-0.08% | alfa=nan% | beta=nan | tempo=4.2s
+2026-05: status=carteira invalida / restricoes inviaveis | tamanho=0 | pesos= | retorno=nan% | IBOV=-7.22% | alfa=nan% | beta=nan | tempo=6.0s
+2026-06: status=valida | tamanho=8 | pesos=PETR3.SA: 20.00%; CPLE3.SA: 20.00%; GGBR4.SA: 5.00%; ABEV3.SA: 15.00%; GOAU4.SA: 5.00%; VALE3.SA: 20.00%; MULT3.SA: 10.00%; ITSA4.SA: 5.00% | retorno=-1.88% | IBOV=-0.28% | alfa=-1.59% | beta=0.80 | tempo=237.7s
+VALIDACAO RETORNO: maior diferenca manual vs reportado = 0.0000000000
+ALAVANCA 3: extras Top N 30 que entraram em carteiras finais = 1
+  2026-06: MULT3.SA nota=57 peso=10.00%
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_simulacao_composicao.xlsx

@@ -1,0 +1,33 @@
+TESTE-ANCORA: shadow_fixes=False
+2026-02: PASSOU | sem carteira como no real | tempo=1.3s
+2026-03: PASSOU | sem carteira como no real | tempo=1.4s
+2026-04: PASSOU | sem carteira como no real | tempo=1.2s
+2026-05: PASSOU | sem carteira como no real | tempo=1.4s
+2026-06: PASSOU | junho reproduz carteira real exatamente | tempo=3.5s
+ANCORA PASSOU. Executando sinais alternativos de queda: V3, Sinal A defensivo, Sinal B reversao+defensivo.
+Rodando cenario V3_MOMENTUM: V3 momentum atual
+V3_MOMENTUM 2026-02: subtipo=alta | beta=1.30 | retorno=5.38% | IBOV=4.09% | alfa=1.29% | pesos=CURY3.SA: 21.28%; YDUQ3.SA: 14.82%; ABEV3.SA: 3.80%; GOAU4.SA: 3.80%; CMIN3.SA: 7.64%; SANB11.SA: 0.21%; ALOS3.SA: 0.21%; PETR3.SA: 9.07%; TIMS3.SA: 1.89%; VIVT3.SA: 6.92%; BBAS3.SA: 5.48%; B3SA3.SA: 12.43%; RENT3.SA: 12.43%
+V3_MOMENTUM 2026-03: subtipo=queda_leve_lateral | beta=0.94 | retorno=-1.34% | IBOV=-0.70% | alfa=-0.64% | pesos=CURY3.SA: 12.47%; BRAV3.SA: 15.70%; SLCE3.SA: 3.79%; ABEV3.SA: 10.25%; SBSP3.SA: 3.79%; TIMS3.SA: 7.02%; ASAI3.SA: 5.93%; MULT3.SA: 5.20%; UGPA3.SA: 5.20%; ENGI11.SA: 1.97%; ITSA4.SA: 5.20%; ALOS3.SA: 8.43%; RENT3.SA: 9.85%; BBAS3.SA: 5.20%
+V3_MOMENTUM 2026-04: subtipo=queda_leve_lateral | beta=0.85 | retorno=-3.01% | IBOV=-0.08% | alfa=-2.94% | pesos=BRAV3.SA: 22.56%; VIVT3.SA: 7.74%; TIMS3.SA: 13.43%; SLCE3.SA: 13.43%; SBSP3.SA: 6.52%; MULT3.SA: 2.05%; CURY3.SA: 0.22%; ITSA4.SA: 10.38%; ASAI3.SA: 1.04%; B3SA3.SA: 7.34%; VBBR3.SA: 7.34%; CMIG4.SA: 3.68%; ENEV3.SA: 4.29%
+V3_MOMENTUM 2026-05: subtipo=queda_forte | beta=1.00 | retorno=-10.27% | IBOV=-7.22% | alfa=-3.04% | pesos=VIVT3.SA: 9.81%; SLCE3.SA: 9.81%; TIMS3.SA: 9.81%; CSMG3.SA: 9.81%; MULT3.SA: 7.44%; ITSA4.SA: 7.44%; AXIA3.SA: 13.08%; B3SA3.SA: 5.08%; UGPA3.SA: 8.35%; SBSP3.SA: 7.41%; ENEV3.SA: 5.99%; VBBR3.SA: 5.99%
+V3_MOMENTUM 2026-06: subtipo=alta | beta=0.83 | retorno=0.55% | IBOV=-0.28% | alfa=0.83% | pesos=PETR4.SA: 9.86%; VALE3.SA: 13.31%; BBSE3.SA: 11.06%; EGIE3.SA: 10.63%; GGBR4.SA: 11.18%; ABEV3.SA: 11.18%; BRAV3.SA: 11.18%; CPLE3.SA: 6.66%; ITSA4.SA: 3.46%; SBSP3.SA: 1.20%; CSMG3.SA: 7.76%; B3SA3.SA: 2.39%; IGTI11.SA: 0.13%
+Rodando cenario SINAL_A_DEFENSIVO: Defensivo puro
+SINAL_A_DEFENSIVO 2026-02: subtipo=alta | beta=1.30 | retorno=5.38% | IBOV=4.09% | alfa=1.29% | pesos=CURY3.SA: 21.28%; YDUQ3.SA: 14.82%; ABEV3.SA: 3.80%; GOAU4.SA: 3.80%; CMIN3.SA: 7.64%; SANB11.SA: 0.21%; ALOS3.SA: 0.21%; PETR3.SA: 9.07%; TIMS3.SA: 1.89%; VIVT3.SA: 6.92%; BBAS3.SA: 5.48%; B3SA3.SA: 12.43%; RENT3.SA: 12.43%
+SINAL_A_DEFENSIVO 2026-03: subtipo=queda_leve_lateral | beta=0.89 | retorno=-0.85% | IBOV=-0.70% | alfa=-0.15% | pesos=CURY3.SA: 6.00%; BRAV3.SA: 7.82%; SLCE3.SA: 9.46%; ABEV3.SA: 13.27%; SBSP3.SA: 10.59%; TIMS3.SA: 10.00%; ASAI3.SA: 0.13%; MULT3.SA: 6.51%; ENGI11.SA: 6.17%; VBBR3.SA: 7.09%; ITSA4.SA: 6.37%; ALOS3.SA: 6.61%; RENT3.SA: 3.84%; BBAS3.SA: 6.14%
+SINAL_A_DEFENSIVO 2026-04: subtipo=queda_leve_lateral | beta=0.88 | retorno=-2.48% | IBOV=-0.08% | alfa=-2.40% | pesos=BRAV3.SA: 7.48%; VIVT3.SA: 13.16%; TIMS3.SA: 12.18%; SLCE3.SA: 12.61%; SBSP3.SA: 11.81%; MULT3.SA: 6.26%; CURY3.SA: 4.75%; ITSA4.SA: 7.22%; ASAI3.SA: 0.16%; B3SA3.SA: 2.62%; VBBR3.SA: 6.97%; CMIG4.SA: 10.40%; ENEV3.SA: 4.37%
+SINAL_A_DEFENSIVO 2026-05: subtipo=queda_forte | beta=0.92 | retorno=-9.58% | IBOV=-7.22% | alfa=-2.36% | pesos=VIVT3.SA: 11.80%; SLCE3.SA: 10.98%; TIMS3.SA: 9.61%; CSMG3.SA: 9.99%; EGIE3.SA: 7.90%; MULT3.SA: 7.08%; ITSA4.SA: 6.06%; ISAE4.SA: 8.63%; B3SA3.SA: 1.75%; UGPA3.SA: 9.29%; SBSP3.SA: 10.78%; VBBR3.SA: 6.13%
+SINAL_A_DEFENSIVO 2026-06: subtipo=alta | beta=0.83 | retorno=0.55% | IBOV=-0.28% | alfa=0.83% | pesos=PETR4.SA: 9.86%; VALE3.SA: 13.31%; BBSE3.SA: 11.06%; EGIE3.SA: 10.63%; GGBR4.SA: 11.18%; ABEV3.SA: 11.18%; BRAV3.SA: 11.18%; CPLE3.SA: 6.66%; ITSA4.SA: 3.46%; SBSP3.SA: 1.20%; CSMG3.SA: 7.76%; B3SA3.SA: 2.39%; IGTI11.SA: 0.13%
+Rodando cenario SINAL_B_REVERSAO_DEFENSIVO: Reversao + defensivo
+SINAL_B_REVERSAO_DEFENSIVO 2026-02: subtipo=alta | beta=1.30 | retorno=5.38% | IBOV=4.09% | alfa=1.29% | pesos=CURY3.SA: 21.28%; YDUQ3.SA: 14.82%; ABEV3.SA: 3.80%; GOAU4.SA: 3.80%; CMIN3.SA: 7.64%; SANB11.SA: 0.21%; ALOS3.SA: 0.21%; PETR3.SA: 9.07%; TIMS3.SA: 1.89%; VIVT3.SA: 6.92%; BBAS3.SA: 5.48%; B3SA3.SA: 12.43%; RENT3.SA: 12.43%
+SINAL_B_REVERSAO_DEFENSIVO 2026-03: subtipo=queda_leve_lateral | beta=0.89 | retorno=-0.87% | IBOV=-0.70% | alfa=-0.17% | pesos=CURY3.SA: 6.03%; BRAV3.SA: 7.81%; SLCE3.SA: 9.39%; ABEV3.SA: 13.10%; SBSP3.SA: 10.49%; TIMS3.SA: 9.92%; ASAI3.SA: 0.33%; MULT3.SA: 6.53%; ENGI11.SA: 6.19%; VBBR3.SA: 7.10%; ITSA4.SA: 6.39%; ALOS3.SA: 6.63%; RENT3.SA: 3.93%; BBAS3.SA: 6.17%
+SINAL_B_REVERSAO_DEFENSIVO 2026-04: subtipo=queda_leve_lateral | beta=0.91 | retorno=-2.96% | IBOV=-0.08% | alfa=-2.88% | pesos=BRAV3.SA: 6.77%; VIVT3.SA: 13.08%; TIMS3.SA: 10.89%; SLCE3.SA: 11.27%; SBSP3.SA: 10.57%; MULT3.SA: 9.65%; CURY3.SA: 8.70%; ITSA4.SA: 6.54%; ASAI3.SA: 0.34%; B3SA3.SA: 2.50%; VBBR3.SA: 6.32%; CMIG4.SA: 9.33%; ENEV3.SA: 4.04%
+SINAL_B_REVERSAO_DEFENSIVO 2026-05: subtipo=queda_forte | beta=0.92 | retorno=-9.29% | IBOV=-7.22% | alfa=-2.06% | pesos=VIVT3.SA: 12.41%; SLCE3.SA: 13.29%; TIMS3.SA: 10.32%; CSMG3.SA: 12.22%; EGIE3.SA: 6.34%; MULT3.SA: 7.07%; ITSA4.SA: 6.50%; ISAE4.SA: 6.91%; B3SA3.SA: 3.94%; UGPA3.SA: 7.43%; SBSP3.SA: 8.60%; VBBR3.SA: 4.95%
+SINAL_B_REVERSAO_DEFENSIVO 2026-06: subtipo=alta | beta=0.83 | retorno=0.55% | IBOV=-0.28% | alfa=0.83% | pesos=PETR4.SA: 9.86%; VALE3.SA: 13.31%; BBSE3.SA: 11.06%; EGIE3.SA: 10.63%; GGBR4.SA: 11.18%; ABEV3.SA: 11.18%; BRAV3.SA: 11.18%; CPLE3.SA: 6.66%; ITSA4.SA: 3.46%; SBSP3.SA: 1.20%; CSMG3.SA: 7.76%; B3SA3.SA: 2.39%; IGTI11.SA: 0.13%
+FEVEREIRO: os 3 cenarios ficaram iguais, como esperado para regime de alta.
+VALIDACAO RETORNO: maior diferenca manual vs reportado = 0.0000000000
+AUDITORIA ANTI-RETROVISOR SINAL B: 2026-04 CURY3.SA RSI=56.98 ret1m=-4.23% ret4m=4.52% boll=favoravel | 2026-04 MULT3.SA RSI=59.85 ret1m=-3.85% ret4m=11.38% boll=favoravel | 2026-05 SLCE3.SA RSI=58.01 ret1m=-5.71% ret4m=18.37% boll=favoravel
+RESUMO ALFA ACUMULADO:
+  SINAL_A_DEFENSIVO: alfa_composto=-2.92%; alfa_soma=-2.80%
+  SINAL_B_REVERSAO_DEFENSIVO: alfa_composto=-3.09%; alfa_soma=-3.00%
+  V3_MOMENTUM: alfa_composto=-4.58%; alfa_soma=-4.50%
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_simulacao_sinal_quedas.xlsx

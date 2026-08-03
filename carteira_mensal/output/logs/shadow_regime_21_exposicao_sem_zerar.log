@@ -1,0 +1,21 @@
+Teste 21 - exposicao por regime sem zerar carteira
+Meses avaliados: 30 (2024-01 a 2026-06)
+
+13b_conservador:
+  atual: retorno=41.00%; alfa=9.78%; drawdown=-8.78%
+  melhor sem zerar: 100_alta_40_30 | retorno=41.81%; alfa=10.59%; delta_alfa=0.81%; bateu=17/30; drawdown=-8.78%
+
+risk_on_off_mm50:
+  atual: retorno=56.48%; alfa=25.26%; drawdown=-8.78%
+  melhor sem zerar: 100_alta_60_20 | retorno=59.41%; alfa=28.19%; delta_alfa=2.93%; bateu=19/30; drawdown=-8.78%
+
+risk_on_off_voto:
+  atual: retorno=56.63%; alfa=25.41%; drawdown=-8.78%
+  melhor sem zerar: 100_alta_60_20 | retorno=59.37%; alfa=28.15%; delta_alfa=2.74%; bateu=19/30; drawdown=-8.78%
+
+risk_on_off_confirmacao:
+  atual: retorno=55.36%; alfa=24.14%; drawdown=-8.78%
+  melhor sem zerar: 100_alta_40_20 | retorno=58.49%; alfa=27.26%; delta_alfa=3.13%; bateu=19/30; drawdown=-8.78%
+
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_regime_21_exposicao_sem_zerar.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_regime_21_exposicao_sem_zerar.log

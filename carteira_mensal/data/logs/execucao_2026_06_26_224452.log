@@ -1,0 +1,29 @@
+2026-06-26 22:44:56,172 INFO __main__ - Iniciando carteira mensal para 78 ativos
+2026-06-26 22:45:04,943 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: IEEX.SA"}}}
+2026-06-26 22:45:05,417 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-26 22:45:05,419 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:45:05,419 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-26 22:45:06,775 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: IEEX.SA"}}}
+2026-06-26 22:45:07,256 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-26 22:45:07,256 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:45:07,256 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-26 22:45:08,262 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-26 22:45:08,263 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:45:08,263 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-26 22:45:11,410 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-26 22:45:11,411 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:45:11,411 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-26 22:45:11,915 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-26 22:45:11,916 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:45:11,916 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-26 22:45:12,921 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-26 22:45:12,921 ERROR yfinance - 
+1 Failed download:
+2026-06-26 22:45:12,922 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-26 22:45:56,762 INFO __main__ - Arquivos gerados: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\carteira_recomendada_2026_06.xlsx, C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\csv\carteira_recomendada_2026_06.csv, C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\pdf\relatorio_carteira_2026_06.pdf
+2026-06-26 22:45:56,763 INFO __main__ - Resumo: analisados=78 excluidos=76 elegiveis=2 valida=False

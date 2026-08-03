@@ -1,0 +1,12 @@
+2026-06-26 21:38:48,560 INFO __main__ - Iniciando carteira mensal para 15 ativos
+2026-06-26 21:39:03,792 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ELET3.SA"}}}
+2026-06-26 21:39:04,459 ERROR yfinance - $ELET3.SA: possibly delisted; no timezone found
+2026-06-26 21:39:04,464 ERROR yfinance - 
+1 Failed download:
+2026-06-26 21:39:04,464 ERROR yfinance - ['ELET3.SA']: possibly delisted; no timezone found
+2026-06-26 21:39:09,526 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: IEEX.SA"}}}
+2026-06-26 21:39:10,447 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-26 21:39:10,458 ERROR yfinance - 
+1 Failed download:
+2026-06-26 21:39:10,458 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-26 21:39:24,907 INFO __main__ - Arquivos gerados: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\carteira_recomendada_2026_06.xlsx, C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\csv\carteira_recomendada_2026_06.csv, C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\pdf\relatorio_carteira_2026_06.pdf

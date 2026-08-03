@@ -1,0 +1,9 @@
+Teste 27B - Peso por Conviccao com Teto Conservador
+Base: Teste 25 cap 7,5%. Caps: muito alta 10%, alta 7,5%, media/media-alta 5%, baixa 2,5%.
+  t25_cap7_5_base: retorno=58.23%; IBOV=31.22%; alfa=27.01%; bateu=20/30; drawdown=-8.78%
+  conviccao_cap_conservador: retorno=57.33%; IBOV=31.22%; alfa=26.11%; bateu=18/30; drawdown=-8.75%
+  conviccao_remove_baixa: retorno=57.33%; IBOV=31.22%; alfa=26.11%; bateu=18/30; drawdown=-8.75%
+  Delta conviccao_cap_conservador vs base: alfa=-0.90%; retorno=-0.90%; taxa_acerto_delta=-6.67%
+  Delta conviccao_remove_baixa vs base: alfa=-0.91%; retorno=-0.91%; taxa_acerto_delta=-6.67%
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste27b_peso_conviccao.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_teste27b_peso_conviccao.log

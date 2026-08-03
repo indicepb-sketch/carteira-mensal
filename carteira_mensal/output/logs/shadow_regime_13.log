@@ -1,0 +1,143 @@
+Teste 13 - Auditoria e Recalibracao do Diagnostico de Regime
+Modo sombra; producao intacta; classificacao usa somente dados da data-base/formacao.
+
+Cenario: regime_atual | Classificacao atual inferida das planilhas/producao.
+  2024-01: bucket=alta | IBOV=-3.73% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2024-02: bucket=alta | IBOV=0.42% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2024-03: bucket=alta | IBOV=-0.83% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2024-04: bucket=alta | IBOV=-0.84% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2024-05: bucket=queda_leve | IBOV=-3.95% | mercado seletivo; tendencia favoravel 38.5%
+  2024-06: bucket=queda_leve | IBOV=1.54% | mercado seletivo; tendencia favoravel 28.2%
+  2024-07: bucket=queda_leve | IBOV=2.35% | mercado seletivo; tendencia favoravel 26.9%
+  2024-08: bucket=queda_leve | IBOV=6.76% | mercado seletivo; tendencia favoravel 32.1%
+  2024-09: bucket=alta | IBOV=-2.34% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2024-10: bucket=alta | IBOV=-2.10% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2024-11: bucket=alta | IBOV=-1.91% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2024-12: bucket=queda_leve | IBOV=-3.95% | mercado seletivo; tendencia favoravel 26.9%
+  2025-01: bucket=queda_forte | IBOV=5.00% | mercado fraco/desfavoravel; tendencia favoravel 19.2%
+  2025-02: bucket=queda_forte | IBOV=-2.52% | mercado fraco/desfavoravel; tendencia favoravel 17.9%
+  2025-03: bucket=queda_leve | IBOV=5.86% | mercado seletivo; tendencia favoravel 38.5%
+  2025-04: bucket=alta | IBOV=2.99% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2025-05: bucket=alta | IBOV=1.40% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2025-06: bucket=alta | IBOV=1.51% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2025-07: bucket=alta | IBOV=-4.64% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2025-08: bucket=alta | IBOV=6.78% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2025-09: bucket=alta | IBOV=3.62% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2025-10: bucket=alta | IBOV=2.76% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2025-11: bucket=alta | IBOV=5.73% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2025-12: bucket=alta | IBOV=1.59% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2026-01: bucket=alta | IBOV=12.56% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2026-02: bucket=alta | IBOV=4.09% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2026-03: bucket=alta | IBOV=-0.70% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2026-04: bucket=alta | IBOV=-0.08% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2026-05: bucket=alta | IBOV=-7.22% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2026-06: bucket=alta | IBOV=-0.34% | mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+
+Cenario: exaustao_simples | Alta sobrecomprada com amplitude 1m <70% vira queda_leve.
+  2024-01: bucket=alta | IBOV=-3.73% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2024-02: bucket=alta | IBOV=0.42% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2024-03: bucket=alta | IBOV=-0.83% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2024-04: bucket=alta | IBOV=-0.84% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2024-05: bucket=queda_leve | IBOV=-3.95% | mantem atual: mercado seletivo; tendencia favoravel 38.5%
+  2024-06: bucket=queda_leve | IBOV=1.54% | mantem atual: mercado seletivo; tendencia favoravel 28.2%
+  2024-07: bucket=queda_leve | IBOV=2.35% | mantem atual: mercado seletivo; tendencia favoravel 26.9%
+  2024-08: bucket=queda_leve | IBOV=6.76% | mantem atual: mercado seletivo; tendencia favoravel 32.1%
+  2024-09: bucket=alta | IBOV=-2.34% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2024-10: bucket=alta | IBOV=-2.10% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2024-11: bucket=alta | IBOV=-1.91% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2024-12: bucket=queda_leve | IBOV=-3.95% | mantem atual: mercado seletivo; tendencia favoravel 26.9%
+  2025-01: bucket=queda_forte | IBOV=5.00% | mantem atual: mercado fraco/desfavoravel; tendencia favoravel 19.2%
+  2025-02: bucket=queda_forte | IBOV=-2.52% | mantem atual: mercado fraco/desfavoravel; tendencia favoravel 17.9%
+  2025-03: bucket=queda_leve | IBOV=5.86% | mantem atual: mercado seletivo; tendencia favoravel 38.5%
+  2025-04: bucket=alta | IBOV=2.99% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2025-05: bucket=alta | IBOV=1.40% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2025-06: bucket=alta | IBOV=1.51% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2025-07: bucket=alta | IBOV=-4.64% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2025-08: bucket=alta | IBOV=6.78% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2025-09: bucket=alta | IBOV=3.62% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2025-10: bucket=alta | IBOV=2.76% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2025-11: bucket=alta | IBOV=5.73% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2025-12: bucket=alta | IBOV=1.59% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2026-01: bucket=alta | IBOV=12.56% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2026-02: bucket=alta | IBOV=4.09% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2026-03: bucket=queda_leve | IBOV=-0.70% | exaustao simples: IBOV sobrecomprado e amplitude positiva 1m <70% (69.2%)
+  2026-04: bucket=alta | IBOV=-0.08% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2026-05: bucket=alta | IBOV=-7.22% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+  2026-06: bucket=alta | IBOV=-0.34% | mantem atual: mercado favoravel; mercado_favoravel_indefinido; dados insuficientes ou sinais mistos para subtipo
+
+Cenario: duas_camadas | Camada 1 tendencia/amplitude; camada 2 exaustao por sobrecompra.
+  2024-01: bucket=alta | IBOV=-3.73% | duas camadas: tendencia e amplitude confirmadas
+  2024-02: bucket=alta | IBOV=0.42% | duas camadas: tendencia e amplitude confirmadas
+  2024-03: bucket=alta | IBOV=-0.83% | duas camadas: tendencia e amplitude confirmadas
+  2024-04: bucket=alta | IBOV=-0.84% | duas camadas: tendencia e amplitude confirmadas
+  2024-05: bucket=queda_leve | IBOV=-3.95% | duas camadas: tendencia favoravel <40% (38.5%)
+  2024-06: bucket=queda_leve | IBOV=1.54% | duas camadas: tendencia favoravel <40% (28.2%)
+  2024-07: bucket=queda_leve | IBOV=2.35% | duas camadas: tendencia favoravel <40% (26.9%)
+  2024-08: bucket=queda_leve | IBOV=6.76% | duas camadas: tendencia favoravel <40% (32.1%)
+  2024-09: bucket=alta | IBOV=-2.34% | duas camadas: tendencia e amplitude confirmadas
+  2024-10: bucket=alta | IBOV=-2.10% | duas camadas: tendencia e amplitude confirmadas
+  2024-11: bucket=alta | IBOV=-1.91% | duas camadas: tendencia e amplitude confirmadas
+  2024-12: bucket=queda_leve | IBOV=-3.95% | duas camadas: tendencia favoravel <40% (26.9%)
+  2025-01: bucket=queda_forte | IBOV=5.00% | duas camadas: tendencia favoravel <20% (19.2%)
+  2025-02: bucket=queda_forte | IBOV=-2.52% | duas camadas: tendencia favoravel <20% (17.9%)
+  2025-03: bucket=queda_leve | IBOV=5.86% | duas camadas: tendencia favoravel <40% (38.5%)
+  2025-04: bucket=alta | IBOV=2.99% | duas camadas: tendencia e amplitude confirmadas
+  2025-05: bucket=alta | IBOV=1.40% | duas camadas: tendencia e amplitude confirmadas
+  2025-06: bucket=alta | IBOV=1.51% | duas camadas: tendencia e amplitude confirmadas
+  2025-07: bucket=alta | IBOV=-4.64% | duas camadas: tendencia e amplitude confirmadas
+  2025-08: bucket=alta | IBOV=6.78% | duas camadas: tendencia e amplitude confirmadas
+  2025-09: bucket=alta | IBOV=3.62% | duas camadas: tendencia e amplitude confirmadas
+  2025-10: bucket=alta | IBOV=2.76% | duas camadas: tendencia e amplitude confirmadas
+  2025-11: bucket=alta | IBOV=5.73% | duas camadas: tendencia e amplitude confirmadas
+  2025-12: bucket=alta | IBOV=1.59% | duas camadas: tendencia e amplitude confirmadas
+  2026-01: bucket=queda_leve | IBOV=12.56% | duas camadas: amplitude positiva 1m <40% (35.9%)
+  2026-02: bucket=alta | IBOV=4.09% | duas camadas: tendencia e amplitude confirmadas
+  2026-03: bucket=queda_leve | IBOV=-0.70% | duas camadas: sobrecompra com amplitude positiva 1m insuficiente (69.2%)
+  2026-04: bucket=queda_leve | IBOV=-0.08% | duas camadas: amplitude positiva 1m <40% (34.6%)
+  2026-05: bucket=queda_leve | IBOV=-7.22% | duas camadas: amplitude positiva 1m <40% (33.3%)
+  2026-06: bucket=queda_leve | IBOV=-0.34% | duas camadas: amplitude positiva 1m <40% (23.1%)
+
+Cenario: conservador_virada | Versao mais cautelosa: toda sobrecompra vira queda_leve.
+  2024-01: bucket=alta | IBOV=-3.73% | conservador: sem sinais de exaustao/queda
+  2024-02: bucket=queda_leve | IBOV=0.42% | conservador: IBOV 1m negativo (-3.2%) com amplitude fraca (nan%)
+  2024-03: bucket=alta | IBOV=-0.83% | conservador: sem sinais de exaustao/queda
+  2024-04: bucket=queda_leve | IBOV=-0.84% | conservador: IBOV 1m negativo (-1.7%) com amplitude fraca (nan%)
+  2024-05: bucket=queda_leve | IBOV=-3.95% | conservador: IBOV 1m negativo (-0.3%) com amplitude fraca (nan%)
+  2024-06: bucket=queda_leve | IBOV=1.54% | conservador: IBOV 1m negativo (-5.0%) com amplitude fraca (nan%)
+  2024-07: bucket=alta | IBOV=2.35% | conservador: sem sinais de exaustao/queda
+  2024-08: bucket=alta | IBOV=6.76% | conservador: sem sinais de exaustao/queda
+  2024-09: bucket=alta | IBOV=-2.34% | conservador: sem sinais de exaustao/queda
+  2024-10: bucket=queda_leve | IBOV=-2.10% | conservador: IBOV 1m negativo (-1.8%) com amplitude fraca (nan%)
+  2024-11: bucket=queda_leve | IBOV=-1.91% | conservador: IBOV 1m negativo (-3.3%) com amplitude fraca (nan%)
+  2024-12: bucket=queda_leve | IBOV=-3.95% | conservador: IBOV 1m negativo (-4.0%) com amplitude fraca (nan%)
+  2025-01: bucket=queda_forte | IBOV=5.00% | conservador: tendencia favoravel <25% (19.2%)
+  2025-02: bucket=queda_forte | IBOV=-2.52% | conservador: tendencia favoravel <25% (17.9%)
+  2025-03: bucket=queda_leve | IBOV=5.86% | conservador: IBOV 1m negativo (-2.0%) com amplitude fraca (nan%)
+  2025-04: bucket=alta | IBOV=2.99% | conservador: sem sinais de exaustao/queda
+  2025-05: bucket=alta | IBOV=1.40% | conservador: sem sinais de exaustao/queda
+  2025-06: bucket=alta | IBOV=1.51% | conservador: sem sinais de exaustao/queda
+  2025-07: bucket=alta | IBOV=-4.64% | conservador: sem sinais de exaustao/queda
+  2025-08: bucket=queda_leve | IBOV=6.78% | conservador: IBOV 1m negativo (-5.1%) com amplitude fraca (nan%)
+  2025-09: bucket=alta | IBOV=3.62% | conservador: sem sinais de exaustao/queda
+  2025-10: bucket=alta | IBOV=2.76% | conservador: sem sinais de exaustao/queda
+  2025-11: bucket=alta | IBOV=5.73% | conservador: sem sinais de exaustao/queda
+  2025-12: bucket=alta | IBOV=1.59% | conservador: sem sinais de exaustao/queda
+  2026-01: bucket=queda_leve | IBOV=12.56% | conservador: IBOV 1m negativo (-0.3%) com amplitude fraca (35.9%)
+  2026-02: bucket=queda_leve | IBOV=4.09% | conservador: IBOV em sobrecompra vira queda_leve/cautela
+  2026-03: bucket=queda_leve | IBOV=-0.70% | conservador: IBOV em sobrecompra vira queda_leve/cautela
+  2026-04: bucket=queda_forte | IBOV=-0.08% | conservador: amplitude positiva 1m <35% (34.6%)
+  2026-05: bucket=queda_forte | IBOV=-7.22% | conservador: amplitude positiva 1m <35% (33.3%)
+  2026-06: bucket=queda_forte | IBOV=-0.34% | conservador: amplitude positiva 1m <35% (23.1%)
+
+Resumo acumulado:
+  conservador_virada: retorno=35.54% | IBOV=31.22% | alfa=4.32% | quedas_como_alta=4
+  duas_camadas: retorno=32.97% | IBOV=31.22% | alfa=1.75% | quedas_como_alta=7
+  exaustao_simples: retorno=32.93% | IBOV=31.22% | alfa=1.71% | quedas_como_alta=10
+  regime_atual: retorno=28.98% | IBOV=31.22% | alfa=-2.24% | quedas_como_alta=11
+
+Resumo 2026:
+  conservador_virada: retorno=3.39% | IBOV=7.50% | alfa=-4.11% | quedas_como_alta=0
+  duas_camadas: retorno=1.22% | IBOV=7.50% | alfa=-6.28% | quedas_como_alta=0
+  exaustao_simples: retorno=1.20% | IBOV=7.50% | alfa=-6.30% | quedas_como_alta=3
+  regime_atual: retorno=-1.81% | IBOV=7.50% | alfa=-9.31% | quedas_como_alta=4
+Validacao retorno: maior diferenca peso x retorno = nan

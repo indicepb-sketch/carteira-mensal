@@ -1,0 +1,73 @@
+Teste 44 - Diagnostico com Grau de Confianca
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste44_diagnostico_grau_confianca.xlsx
+
+Resumo geral:
+                         cenario_t44  retorno_modelo  retorno_ibov  alfa_vs_ibov  taxa_acerto  drawdown  peso_acoes_medio  meses_4m  meses_exposicao_reduzida  delta_alfa_vs_base
+                           BASE_T36C        1.180069      0.603587      0.576482     0.703704 -0.132509          0.913889         0                         0            0.000000
+                T42A_QUALIDADE_FORTE        1.292092      0.603587      0.688506     0.740741 -0.132509          0.913889        16                         0            0.112023
+                T44A_QUEDA_CONFIANCA        1.292092      0.603587      0.688506     0.740741 -0.132509          0.913889        16                         0            0.112023
+      T44B_QUEDA_CONF_ALTA_FRAGIL_80        1.247259      0.603587      0.643672     0.722222 -0.132509          0.884259        16                         8            0.067190
+T44C_QUEDA_CONF_ALTA_MUITO_FRAGIL_70        1.191572      0.603587      0.587985     0.703704 -0.132509          0.886111        16                         5            0.011503
+       T44D_QUEDA_CONF_ALTA_RISCO_85        1.292092      0.603587      0.688506     0.740741 -0.132509          0.913889        16                         0            0.112023
+
+Resumo por ano:
+                         cenario_t44  ano  retorno_modelo  retorno_ibov  alfa_vs_ibov  taxa_acerto  delta_alfa_vs_base
+                           BASE_T36C 2022       -0.033207     -0.019433     -0.013774     0.583333            0.000000
+                           BASE_T36C 2023        0.400535      0.246273      0.154262     0.750000            0.000000
+                           BASE_T36C 2024        0.018117     -0.087559      0.105677     0.833333            0.000000
+                           BASE_T36C 2025        0.378511      0.337827      0.040684     0.583333            0.000000
+                           BASE_T36C 2026        0.147188      0.074973      0.072216     0.833333            0.000000
+                T42A_QUALIDADE_FORTE 2022       -0.035651     -0.019433     -0.016218     0.666667           -0.002444
+                T42A_QUALIDADE_FORTE 2023        0.443136      0.246273      0.196864     0.833333            0.042602
+                T42A_QUALIDADE_FORTE 2024        0.041467     -0.087559      0.129026     0.833333            0.023350
+                T42A_QUALIDADE_FORTE 2025        0.378511      0.337827      0.040684     0.583333            0.000000
+                T42A_QUALIDADE_FORTE 2026        0.147188      0.074973      0.072216     0.833333            0.000000
+                T44A_QUEDA_CONFIANCA 2022       -0.035651     -0.019433     -0.016218     0.666667           -0.002444
+                T44A_QUEDA_CONFIANCA 2023        0.443136      0.246273      0.196864     0.833333            0.042602
+                T44A_QUEDA_CONFIANCA 2024        0.041467     -0.087559      0.129026     0.833333            0.023350
+                T44A_QUEDA_CONFIANCA 2025        0.378511      0.337827      0.040684     0.583333            0.000000
+                T44A_QUEDA_CONFIANCA 2026        0.147188      0.074973      0.072216     0.833333            0.000000
+      T44B_QUEDA_CONF_ALTA_FRAGIL_80 2022       -0.035651     -0.019433     -0.016218     0.666667           -0.002444
+      T44B_QUEDA_CONF_ALTA_FRAGIL_80 2023        0.443136      0.246273      0.196864     0.833333            0.042602
+      T44B_QUEDA_CONF_ALTA_FRAGIL_80 2024        0.041467     -0.087559      0.129026     0.833333            0.023350
+      T44B_QUEDA_CONF_ALTA_FRAGIL_80 2025        0.382420      0.337827      0.044593     0.583333            0.003909
+      T44B_QUEDA_CONF_ALTA_FRAGIL_80 2026        0.121569      0.074973      0.046596     0.666667           -0.025619
+T44C_QUEDA_CONF_ALTA_MUITO_FRAGIL_70 2022       -0.035651     -0.019433     -0.016218     0.666667           -0.002444
+T44C_QUEDA_CONF_ALTA_MUITO_FRAGIL_70 2023        0.443136      0.246273      0.196864     0.833333            0.042602
+T44C_QUEDA_CONF_ALTA_MUITO_FRAGIL_70 2024        0.041467     -0.087559      0.129026     0.833333            0.023350
+T44C_QUEDA_CONF_ALTA_MUITO_FRAGIL_70 2025        0.363630      0.337827      0.025803     0.500000           -0.014881
+T44C_QUEDA_CONF_ALTA_MUITO_FRAGIL_70 2026        0.108849      0.074973      0.033876     0.666667           -0.038340
+       T44D_QUEDA_CONF_ALTA_RISCO_85 2022       -0.035651     -0.019433     -0.016218     0.666667           -0.002444
+       T44D_QUEDA_CONF_ALTA_RISCO_85 2023        0.443136      0.246273      0.196864     0.833333            0.042602
+       T44D_QUEDA_CONF_ALTA_RISCO_85 2024        0.041467     -0.087559      0.129026     0.833333            0.023350
+       T44D_QUEDA_CONF_ALTA_RISCO_85 2025        0.378511      0.337827      0.040684     0.583333            0.000000
+       T44D_QUEDA_CONF_ALTA_RISCO_85 2026        0.147188      0.074973      0.072216     0.833333            0.000000
+
+Resumo por tipo de erro:
+                         cenario_t44 tipo_erro_diagnostico  meses  alfa_vs_ibov  taxa_acerto  meses_4m  meses_exposicao_reduzida
+                           BASE_T36C    falso_alerta_queda      9     -0.010843     0.666667         0                         0
+                           BASE_T36C   falso_positivo_alta     13      0.004480     0.615385         0                         0
+                           BASE_T36C       acerto_ofensivo     19      0.299011     0.684211         0                         0
+                           BASE_T36C      acerto_defensivo     13      0.147502     0.846154         0                         0
+                T42A_QUALIDADE_FORTE    falso_alerta_queda      9      0.094187     0.888889         8                         0
+                T42A_QUALIDADE_FORTE   falso_positivo_alta     13      0.004480     0.615385         0                         0
+                T42A_QUALIDADE_FORTE       acerto_ofensivo     19      0.299011     0.684211         0                         0
+                T42A_QUALIDADE_FORTE      acerto_defensivo     13      0.133306     0.846154         8                         0
+                T44A_QUEDA_CONFIANCA    falso_alerta_queda      9      0.094187     0.888889         8                         0
+                T44A_QUEDA_CONFIANCA   falso_positivo_alta     13      0.004480     0.615385         0                         0
+                T44A_QUEDA_CONFIANCA       acerto_ofensivo     19      0.299011     0.684211         0                         0
+                T44A_QUEDA_CONFIANCA      acerto_defensivo     13      0.133306     0.846154         8                         0
+      T44B_QUEDA_CONF_ALTA_FRAGIL_80    falso_alerta_queda      9      0.094187     0.888889         8                         0
+      T44B_QUEDA_CONF_ALTA_FRAGIL_80   falso_positivo_alta     13      0.019789     0.615385         0                         2
+      T44B_QUEDA_CONF_ALTA_FRAGIL_80       acerto_ofensivo     19      0.184038     0.631579         0                         6
+      T44B_QUEDA_CONF_ALTA_FRAGIL_80      acerto_defensivo     13      0.133306     0.846154         8                         0
+T44C_QUEDA_CONF_ALTA_MUITO_FRAGIL_70    falso_alerta_queda      9      0.094187     0.888889         8                         0
+T44C_QUEDA_CONF_ALTA_MUITO_FRAGIL_70   falso_positivo_alta     13      0.007421     0.615385         0                         1
+T44C_QUEDA_CONF_ALTA_MUITO_FRAGIL_70       acerto_ofensivo     19      0.169851     0.578947         0                         4
+T44C_QUEDA_CONF_ALTA_MUITO_FRAGIL_70      acerto_defensivo     13      0.133306     0.846154         8                         0
+       T44D_QUEDA_CONF_ALTA_RISCO_85    falso_alerta_queda      9      0.094187     0.888889         8                         0
+       T44D_QUEDA_CONF_ALTA_RISCO_85   falso_positivo_alta     13      0.004480     0.615385         0                         0
+       T44D_QUEDA_CONF_ALTA_RISCO_85       acerto_ofensivo     19      0.299011     0.684211         0                         0
+       T44D_QUEDA_CONF_ALTA_RISCO_85      acerto_defensivo     13      0.133306     0.846154         8                         0
+
+Validacao: OK

@@ -1,0 +1,27 @@
+2026-06-26 23:49:26,912 INFO __main__ - Iniciando carteira mensal para 78 ativos
+2026-06-26 23:49:35,786 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: IEEX.SA"}}}
+2026-06-26 23:49:36,262 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-26 23:49:36,264 ERROR yfinance - 
+1 Failed download:
+2026-06-26 23:49:36,264 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-26 23:49:37,620 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: IEEX.SA"}}}
+2026-06-26 23:49:38,001 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-26 23:49:38,002 ERROR yfinance - 
+1 Failed download:
+2026-06-26 23:49:38,002 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-26 23:49:39,012 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-06-26 23:49:39,013 ERROR yfinance - 
+1 Failed download:
+2026-06-26 23:49:39,013 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-06-26 23:49:42,194 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-26 23:49:42,195 ERROR yfinance - 
+1 Failed download:
+2026-06-26 23:49:42,195 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-26 23:49:42,699 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-26 23:49:42,700 ERROR yfinance - 
+1 Failed download:
+2026-06-26 23:49:42,701 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-06-26 23:49:43,707 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-06-26 23:49:43,708 ERROR yfinance - 
+1 Failed download:
+2026-06-26 23:49:43,708 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found

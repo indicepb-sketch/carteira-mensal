@@ -1,0 +1,15 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+carteira_mensal/.venv/
+carteira_mensal/.streamlit/credentials.toml
+carteira_mensal/tmp/
+
+.env
+.env.*
+secrets.toml

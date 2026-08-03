@@ -1,0 +1,9 @@
+Teste 32 - Recuperacao de Restritas por Evidencia do Teste 31
+Base: 28D. Regras seletivas: defensiva em queda confirmada, virada+forca, e combinada.
+  base_28d: retorno=60.57%; IBOV=31.22%; alfa=29.35%; bateu=20/30; drawdown=-8.78%; rec_pool=0; rec_cart=0
+  restrita_defensiva_queda_confirmada_cap5: retorno=60.57%; IBOV=31.22%; alfa=29.35%; bateu=20/30; drawdown=-8.78%; rec_pool=0; rec_cart=0
+  restrita_virada_forca_cap5: retorno=60.80%; IBOV=31.22%; alfa=29.58%; bateu=20/30; drawdown=-8.78%; rec_pool=36; rec_cart=30
+  restrita_combinada_31_cap5: retorno=60.80%; IBOV=31.22%; alfa=29.58%; bateu=20/30; drawdown=-8.78%; rec_pool=36; rec_cart=30
+  Delta restrita_defensiva_queda_confirmada_cap5 vs base_28d: alfa=0.00%; retorno=0.00%; taxa_acerto_delta=0.00%
+  Delta restrita_virada_forca_cap5 vs base_28d: alfa=0.23%; retorno=0.23%; taxa_acerto_delta=0.00%
+  Delta restrita_combinada_31_cap5 vs base_28d: alfa=0.23%; retorno=0.23%; taxa_acerto_delta=0.00%

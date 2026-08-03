@@ -1,0 +1,15 @@
+TESTE-ANCORA: shadow_fixes=False
+2026-02: PASSOU | sem carteira como no real | tempo=0.3s
+2026-03: PASSOU | sem carteira como no real | tempo=0.4s
+2026-04: PASSOU | sem carteira como no real | tempo=0.3s
+2026-05: PASSOU | sem carteira como no real | tempo=0.5s
+2026-06: PASSOU | junho reproduz carteira real exatamente | tempo=1.6s
+ANCORA PASSOU. Executando sombra com enable_partial_portfolio=True. Correcoes sombra anteriores desligadas para isolar carteira parcial.
+2026-02: status=carteira_parcial | parcial=True | carteira=True | investido=60.00% | caixa=40.00% | IBOV=4.09% | alfa_sombra=-4.55% | tempo=0.3s
+FEVEREIRO: parcial=True; pesos=CURY3.SA: 10.00%; YDUQ3.SA: 5.00%; ABEV3.SA: 10.00%; GOAU4.SA: 10.00%; GGBR4.SA: 10.00%; CMIN3.SA: 10.00%; SANB11.SA: 5.00%; alfa_expost_sombra=-4.55% contra IBOV 4.09%
+2026-03: status=carteira invalida / restricoes inviaveis | parcial=False | carteira=False | investido=nan% | caixa=nan% | IBOV=-0.70% | alfa_sombra=nan% | tempo=0.4s
+2026-04: status=carteira invalida / restricoes inviaveis | parcial=False | carteira=False | investido=nan% | caixa=nan% | IBOV=-0.08% | alfa_sombra=nan% | tempo=0.3s
+2026-05: status=carteira invalida / restricoes inviaveis | parcial=False | carteira=False | investido=nan% | caixa=nan% | IBOV=-7.22% | alfa_sombra=nan% | tempo=0.5s
+MAIO: partial_trigger_reason=rejeicoes_nao_peso_individual: setor=3119; watchlist_flexivel=1668
+2026-06: status=valida | parcial=False | carteira=True | investido=nan% | caixa=nan% | IBOV=-0.28% | alfa_sombra=0.30% | tempo=1.4s
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_simulacao_carteira_parcial.xlsx

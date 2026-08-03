@@ -1,0 +1,36 @@
+2026-01: ativos=78 ibov=12.56%
+2026-02: ativos=78 ibov=4.09%
+2026-03: ativos=78 ibov=-0.70%
+2026-04: ativos=78 ibov=-0.08%
+2026-05: ativos=78 ibov=-7.22%
+2026-06: ativos=78 ibov=-0.28%
+RESUMO MECANISMO CANDIDATA LIMPA
+n_candidata_limpa: 35
+n_candidata_com_restricao: 170
+limpa_alfa_medio: -0.0315
+restricao_alfa_medio: -0.0037
+limpa_pct_bateu_ibov: 0.2857
+restricao_pct_bateu_ibov: 0.4529
+limpa_rsi_medio: 59.6523
+restricao_rsi_medio: 59.0337
+limpa_ret1_medio: 0.0614
+restricao_ret1_medio: -0.0030
+limpa_pct_rsi_gt60: 0.5429
+restricao_pct_rsi_gt60: 0.4588
+limpa_pct_ret1_gt8: 0.2286
+restricao_pct_ret1_gt8: 0.1294
+limpa_pct_perto_banda_superior: 0.5143
+restricao_pct_perto_banda_superior: 0.3941
+TESTE ESTICADA VS CALMA
+calma_sem_sinal_extremo: n=11 alfa=-4.58% ret=-7.40% pct_bateu=18.2% rsi=56.4 ret1=3.26%
+esticada_rsi_gt60_e_ret1_gt8: n=5 alfa=-4.51% ret=-2.25% pct_bateu=40.0% rsi=62.7 ret1=16.42%
+alerta_parcial_rsi_ret1_ou_banda: n=19 alfa=-1.96% ret=0.93% pct_bateu=31.6% rsi=60.8 ret1=5.10%
+DISPERSAO MENSAL LIMPA
+2026-01: n=6 alfa_limpa=-4.25% ret_limpa=8.31% pct_bateu=16.7%
+2026-02: n=4 alfa_limpa=-2.34% ret_limpa=1.75% pct_bateu=50.0%
+2026-03: n=5 alfa_limpa=-3.91% ret_limpa=-4.61% pct_bateu=40.0%
+2026-04: n=6 alfa_limpa=-4.58% ret_limpa=-4.65% pct_bateu=16.7%
+2026-05: n=7 alfa_limpa=-2.34% ret_limpa=-9.56% pct_bateu=28.6%
+2026-06: n=7 alfa_limpa=-1.70% ret_limpa=-1.98% pct_bateu=28.6%
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_mecanismo_candidata_limpa.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_mecanismo_candidata_limpa.log

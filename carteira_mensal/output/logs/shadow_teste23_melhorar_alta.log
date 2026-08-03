@@ -1,0 +1,19 @@
+Teste 23 - Melhorar Selecao nos Meses de Alta
+Cenario auditado: risk_on_off_mm50
+Meses de alta real avaliados: 16
+Carteira 100% do modelo bateu IBOV em alta: 10/16 (62.5%)
+Media de top15 vencedoras capturadas por mes: 3.88 de 15
+Peso medio nas top15 vencedoras: 18.89%
+Retorno medio das selecionadas: 4.58%
+Retorno medio do universo nos meses de alta: 4.06%
+Principais motivos de perda das top15:
+  retorno_medio_negativo: ocorrencias=88; ret_medio=16.54%; alfa_medio=12.74%; selecionadas=0
+  entrou_na_carteira: ocorrencias=62; ret_medio=15.47%; alfa_medio=11.30%; selecionadas=62
+  risco_beta_cv: ocorrencias=32; ret_medio=13.41%; alfa_medio=10.33%; selecionadas=0
+  watchlist_timing: ocorrencias=28; ret_medio=14.65%; alfa_medio=10.85%; selecionadas=0
+  fundamentalista: ocorrencias=17; ret_medio=16.75%; alfa_medio=12.97%; selecionadas=0
+  tendencia_tecnica: ocorrencias=9; ret_medio=17.16%; alfa_medio=9.30%; selecionadas=0
+  sobrecompra_esticada: ocorrencias=2; ret_medio=18.41%; alfa_medio=5.85%; selecionadas=0
+  sem_motivo_claro: ocorrencias=2; ret_medio=13.91%; alfa_medio=5.58%; selecionadas=0
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste23_melhorar_alta.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_teste23_melhorar_alta.log

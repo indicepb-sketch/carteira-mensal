@@ -1,0 +1,11 @@
+Teste 47 - Sensibilidade ao Numero Maximo de Acoes
+Entrada: shadow_teste46_carteira_executavel.xlsx
+
+ADAPTATIVO_10_12_15: retorno=126.89%; IBOV=60.36%; alfa=66.53%; acerto=66.67%; drawdown=-11.89%; qtd_media=13.8
+ATUAL_T46: retorno=122.03%; IBOV=60.36%; alfa=61.67%; acerto=70.37%; drawdown=-12.93%; qtd_media=15.4
+TOP15: retorno=121.66%; IBOV=60.36%; alfa=61.30%; acerto=66.67%; drawdown=-11.89%; qtd_media=14.1
+TOP12: retorno=108.64%; IBOV=60.36%; alfa=48.29%; acerto=64.81%; drawdown=-13.54%; qtd_media=11.7
+TOP10: retorno=107.57%; IBOV=60.36%; alfa=47.21%; acerto=62.96%; drawdown=-12.86%; qtd_media=9.9
+
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste47_sensibilidade_numero_acoes.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_teste47_sensibilidade_numero_acoes.log

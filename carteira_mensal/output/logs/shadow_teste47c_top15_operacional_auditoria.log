@@ -1,0 +1,13 @@
+Teste 47C - Top 15 Operacional com Auditoria Mes a Mes
+Entrada: shadow_teste46_carteira_executavel.xlsx
+
+ATUAL_T46: retorno=122.03%; IBOV=60.36%; alfa=61.67%; acerto=70.37%; drawdown=-12.93%; qtd_media=15.4; qtd_min=6; qtd_max=21
+TOP15_OPERACIONAL: retorno=121.66%; IBOV=60.36%; alfa=61.30%; acerto=66.67%; drawdown=-11.89%; qtd_media=14.1; qtd_min=6; qtd_max=15
+
+Meses em que Top15 ajudou: 25; prejudicou: 29; neutro: 1
+Piores deltas Top15 vs atual: 2023-04 -0.69%; 2024-10 -0.69%; 2024-05 -0.68%; 2023-07 -0.56%; 2026-02 -0.46%
+Melhores deltas Top15 vs atual: 2023-02 1.32%; 2022-05 0.60%; 2025-05 0.46%; 2025-08 0.44%; 2022-09 0.43%
+Ativos mais removidos: TIMS3.SA (5x); ASAI3.SA (4x); CEAB3.SA (3x); BPAC11.SA (3x); MOTV3.SA (3x); B3SA3.SA (3x); CYRE3.SA (3x); ALOS3.SA (3x)
+
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste47c_top15_operacional_auditoria.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\logs\shadow_teste47c_top15_operacional_auditoria.log

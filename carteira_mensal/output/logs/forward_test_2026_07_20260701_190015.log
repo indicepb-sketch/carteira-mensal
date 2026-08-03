@@ -1,0 +1,9 @@
+Verificacao producao/flags shadow: OK
+Ancora junho consolidada: PASSOU
+Gerando base mensal 2026-07: formacao=2026-07-01 com series cortadas em 2026-06-30
+Base mensal usada: carteira_recomendada_2026_07_v1.xlsx
+Arquivo forward gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\carteira_forward_2026_07.xlsx
+Data formacao: 2026-07-01 | limite selecao/preco entrada: 2026-06-30
+Carteira forward: EGIE3.SA: 16.14%; ENEV3.SA: 0.73%; PSSA3.SA: 20.85%; ABEV3.SA: 19.24%; BRAV3.SA: 13.76%; CSMG3.SA: 18.08%; GGBR4.SA: 11.20%
+Regime=queda_forte; sinal=SINAL_A_DEFENSIVO; beta_alvo=0.7; beta_real=0.8830352624797486
+Comando mensal: .\.venv\Scripts\python.exe scripts\forward_test.py --mes YYYY-MM

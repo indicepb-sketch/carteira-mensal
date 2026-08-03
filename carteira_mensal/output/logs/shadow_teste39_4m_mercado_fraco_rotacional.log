@@ -1,0 +1,48 @@
+Teste 39 - Retorno 4M Apenas em Mercado Fraco/Rotacional
+Regra: usa JANELA_4M quando regime previsto e queda_leve/queda_forte; caso contrario mantem BASE_T36C.
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_teste39_4m_mercado_fraco_rotacional.xlsx
+
+Resumo geral:
+                    cenario_t39  retorno_modelo  retorno_ibov  alfa_vs_ibov  taxa_acerto  drawdown  delta_alfa_vs_base
+                      BASE_T36C        1.180069      0.603587      0.576482     0.703704 -0.132509            0.000000
+T39_4M_MERCADO_FRACO_ROTACIONAL        1.219121      0.603587      0.615534     0.722222 -0.132509            0.039052
+
+Resumo por ano:
+                    cenario_t39  ano  retorno_modelo  retorno_ibov  alfa_vs_ibov  taxa_acerto  delta_alfa_vs_base
+                      BASE_T36C 2022       -0.033207     -0.019433     -0.013774     0.583333            0.000000
+                      BASE_T36C 2023        0.400535      0.246273      0.154262     0.750000            0.000000
+                      BASE_T36C 2024        0.018117     -0.087559      0.105677     0.833333            0.000000
+                      BASE_T36C 2025        0.378511      0.337827      0.040684     0.583333            0.000000
+                      BASE_T36C 2026        0.147188      0.074973      0.072216     0.833333            0.000000
+T39_4M_MERCADO_FRACO_ROTACIONAL 2022       -0.035651     -0.019433     -0.016218     0.666667           -0.002444
+T39_4M_MERCADO_FRACO_ROTACIONAL 2023        0.403548      0.246273      0.157275     0.750000            0.003013
+T39_4M_MERCADO_FRACO_ROTACIONAL 2024        0.041467     -0.087559      0.129026     0.833333            0.023350
+T39_4M_MERCADO_FRACO_ROTACIONAL 2025        0.378511      0.337827      0.040684     0.583333            0.000000
+T39_4M_MERCADO_FRACO_ROTACIONAL 2026        0.141994      0.074973      0.067021     0.833333           -0.005194
+
+Meses em que a regra trocou para 4M: 22
+    mes regime_previsto_norm tipo_regime_expost  retorno_total  retorno_expost_ibov  alfa_vs_ibov
+2022-01           queda_leve               alta       0.022784             0.081465     -0.058681
+2022-07           queda_leve               alta       0.042577             0.042555      0.000022
+2022-08          queda_forte               alta       0.078186             0.071392      0.006794
+2023-01           queda_leve               alta       0.096170             0.067271      0.028899
+2023-02           queda_leve        queda_forte      -0.068518            -0.065635     -0.002883
+2023-03           queda_leve         queda_leve      -0.020853            -0.023979      0.003126
+2023-04           queda_leve               alta       0.036763             0.028826      0.007937
+2023-11           queda_leve               alta       0.120115             0.106716      0.013399
+2024-02           queda_leve               alta       0.022539             0.004195      0.018344
+2024-03           queda_leve         queda_leve       0.031335            -0.008314      0.039649
+2024-04          queda_forte         queda_leve      -0.034109            -0.008394     -0.025714
+2024-05          queda_forte        queda_forte      -0.029374            -0.039521      0.010148
+2024-06          queda_forte               alta       0.025855             0.015365      0.010490
+2024-07           queda_leve               alta       0.051425             0.023525      0.027899
+2024-09           queda_leve         queda_leve      -0.010824            -0.023448      0.012624
+2024-10           queda_leve         queda_leve       0.013516            -0.020997      0.034513
+2024-11           queda_leve         queda_leve      -0.010426            -0.019146      0.008720
+2024-12           queda_leve        queda_forte      -0.057539            -0.039549     -0.017989
+2026-03          queda_forte         queda_leve       0.002605            -0.007018      0.009624
+2026-04          queda_forte         queda_leve       0.003263            -0.000768      0.004031
+2026-05          queda_forte        queda_forte      -0.013963            -0.072230      0.058267
+2026-06          queda_forte   jun_oportunidade       0.007834            -0.003355      0.011189
+
+Validacao: OK

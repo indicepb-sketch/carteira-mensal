@@ -1,0 +1,14 @@
+Teste 7 - Detector de Exaustao / Virada Para Baixo
+BASELINE_ATUAL: retorno=32.63% | IBOV=43.89% | alfa=-11.26%
+EXAUSTAO_AGRESSIVO: retorno=35.39% | IBOV=43.89% | alfa=-8.50%
+EXAUSTAO_CONSERVADOR: retorno=39.85% | IBOV=43.89% | alfa=-4.04%
+EXAUSTAO_MODERADO: retorno=38.57% | IBOV=43.89% | alfa=-5.32%
+Meses favoraveis com exaustao_score >= 3:
+  2025-07: score=4 | carteira100=-8.78% | IBOV=-4.64% | sinais=rsi_mediano_estendido; muitos_rsi_sobrecomprados; bollinger_sobrecompra_disseminada; ret4_alto_ret1_fraco
+  2025-08: score=4 | carteira100=8.43% | IBOV=6.78% | sinais=queda_preco_acima_mm50_10pp; participacao_positiva_1m_fraca; divergencia_tendencia_alta_mes_fraco; retorno_1m_mediano_negativo
+  2025-12: score=3 | carteira100=-5.00% | IBOV=1.59% | sinais=rsi_mediano_estendido; muitos_rsi_sobrecomprados; bollinger_sobrecompra_disseminada
+  2026-01: score=3 | carteira100=9.84% | IBOV=12.56% | sinais=participacao_positiva_1m_fraca; divergencia_tendencia_alta_mes_fraco; retorno_1m_mediano_negativo
+  2026-02: score=3 | carteira100=4.17% | IBOV=4.09% | sinais=rsi_mediano_estendido; muitos_rsi_sobrecomprados; bollinger_sobrecompra_disseminada
+  2026-04: score=5 | carteira100=-2.56% | IBOV=-0.08% | sinais=queda_amplitude_tendencia_10pp; queda_mm9_mm21_10pp; participacao_positiva_1m_fraca; divergencia_tendencia_alta_mes_fraco; retorno_1m_mediano_negativo
+  2026-05: score=6 | carteira100=-9.80% | IBOV=-7.22% | sinais=queda_amplitude_tendencia_10pp; queda_mm9_mm21_10pp; queda_preco_acima_mm50_10pp; participacao_positiva_1m_fraca; divergencia_tendencia_alta_mes_fraco; retorno_1m_mediano_negativo
+  2026-06: score=4 | carteira100=1.13% | IBOV=-0.28% | sinais=queda_amplitude_tendencia_10pp; queda_preco_acima_mm50_10pp; participacao_positiva_1m_fraca; retorno_1m_mediano_negativo

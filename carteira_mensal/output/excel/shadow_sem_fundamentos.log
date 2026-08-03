@@ -1,0 +1,61 @@
+Datas/retornos ex-post carregados:
+  2026-01: linhas=78 | IBOV=12.56%
+  2026-02: linhas=78 | IBOV=4.09%
+  2026-03: linhas=78 | IBOV=-0.70%
+  2026-04: linhas=78 | IBOV=-0.08%
+  2026-05: linhas=78 | IBOV=-7.22%
+  2026-06: linhas=78 | IBOV=-0.28%
+TESTE-ANCORA (config sombra desligada):
+  2026-01: PASSOU - reproduz carteira real
+  2026-02: PASSOU - sem carteira como no real
+  2026-03: PASSOU - sem carteira como no real
+  2026-04: PASSOU - sem carteira como no real
+  2026-05: PASSOU - sem carteira como no real
+  2026-06: PASSOU - junho reproduz carteira real exatamente
+CENARIO BASELINE: score_fundamentos ativo + veto fundamental ativo
+  2026-01: status=valida | ret=9.84% | IBOV=12.56% | alfa=-2.72% | beta=1.06 | fund_ruim_na_carteira=0 | pesos=ABEV3.SA: 9.14%; BBSE3.SA: 6.19%; EGIE3.SA: 9.95%; SBSP3.SA: 11.34%; VIVT3.SA: 5.97%; EMBJ3.SA: 4.45%; BPAC11.SA: 5.44%; BBDC3.SA: 8.79%; FLRY3.SA: 3.44%; RDOR3.SA: 3.59%; CPLE3.SA: 9.96%; COGN3.SA: 4.72%; PETR4.SA: 1.05%; B3SA3.SA: 2.34%; IGTI11.SA: 2.49%; MOTV3.SA: 2.54%; WEGE3.SA: 4.59%; VIVA3.SA: 3.70%; TOTS3.SA: 0.16%; CURY3.SA: 0.16%
+  2026-02: status=valida | ret=4.17% | IBOV=4.09% | alfa=0.08% | beta=1.11 | fund_ruim_na_carteira=0 | pesos=CURY3.SA: 10.39%; SLCE3.SA: 4.12%; YDUQ3.SA: 4.95%; EMBJ3.SA: 5.18%; CPLE3.SA: 7.26%; HYPE3.SA: 3.31%; ABEV3.SA: 3.34%; GOAU4.SA: 4.32%; MGLU3.SA: 1.99%; CMIN3.SA: 6.98%; BRAV3.SA: 0.77%; RDOR3.SA: 3.24%; VAMO3.SA: 6.19%; SBSP3.SA: 2.98%; SANB11.SA: 4.16%; ALOS3.SA: 4.09%; PETR3.SA: 5.41%; TIMS3.SA: 3.33%; VIVT3.SA: 6.19%; BBAS3.SA: 4.86%; MOTV3.SA: 1.92%; B3SA3.SA: 4.90%; FLRY3.SA: 0.12%
+  2026-03: status=valida | ret=-0.97% | IBOV=-0.70% | alfa=-0.27% | beta=0.92 | fund_ruim_na_carteira=0 | pesos=CURY3.SA: 7.83%; BRAV3.SA: 5.47%; SLCE3.SA: 8.67%; ABEV3.SA: 9.91%; SBSP3.SA: 13.85%; TIMS3.SA: 11.33%; ASAI3.SA: 0.18%; MULT3.SA: 6.97%; ENGI11.SA: 5.57%; VBBR3.SA: 8.18%; ITSA4.SA: 5.83%; ALOS3.SA: 7.08%; RENT3.SA: 3.01%; BBAS3.SA: 6.11%
+  2026-04: status=valida | ret=-2.56% | IBOV=-0.08% | alfa=-2.48% | beta=0.86 | fund_ruim_na_carteira=0 | pesos=BRAV3.SA: 7.51%; VIVT3.SA: 16.64%; TIMS3.SA: 14.76%; SLCE3.SA: 10.80%; SBSP3.SA: 11.59%; MULT3.SA: 4.91%; CURY3.SA: 3.91%; ITSA4.SA: 5.62%; ASAI3.SA: 0.21%; B3SA3.SA: 1.65%; VBBR3.SA: 5.90%; CMIG4.SA: 12.11%; ENEV3.SA: 4.38%
+  2026-05: status=valida | ret=-9.80% | IBOV=-7.22% | alfa=-2.58% | beta=0.90 | fund_ruim_na_carteira=0 | pesos=VIVT3.SA: 14.70%; SLCE3.SA: 9.85%; TIMS3.SA: 10.03%; CSMG3.SA: 9.74%; EGIE3.SA: 7.51%; MULT3.SA: 6.43%; ITSA4.SA: 4.53%; ISAE4.SA: 8.66%; B3SA3.SA: 1.15%; UGPA3.SA: 11.30%; SBSP3.SA: 10.78%; VBBR3.SA: 5.32%
+  2026-06: status=valida | ret=1.13% | IBOV=-0.28% | alfa=1.41% | beta=0.88 | fund_ruim_na_carteira=0 | pesos=PETR4.SA: 5.68%; VALE3.SA: 14.05%; BBSE3.SA: 8.83%; EGIE3.SA: 11.67%; GGBR4.SA: 11.78%; ABEV3.SA: 10.46%; BRAV3.SA: 10.51%; CPLE3.SA: 9.35%; ITSA4.SA: 4.35%; SBSP3.SA: 1.59%; CSMG3.SA: 9.60%; B3SA3.SA: 1.94%; IGTI11.SA: 0.19%
+CENARIO SEM_SCORE_FUND: score_fundamentos removido da nota; veto fundamental mantido
+  2026-01: status=valida | ret=9.91% | IBOV=12.56% | alfa=-2.66% | beta=1.06 | fund_ruim_na_carteira=0 | pesos=ABEV3.SA: 8.74%; BBSE3.SA: 5.99%; EGIE3.SA: 9.63%; SBSP3.SA: 10.95%; VIVT3.SA: 5.91%; EMBJ3.SA: 4.41%; BPAC11.SA: 5.25%; BBDC3.SA: 8.47%; FLRY3.SA: 3.90%; RDOR3.SA: 3.79%; CPLE3.SA: 9.60%; COGN3.SA: 4.54%; PETR4.SA: 1.68%; MOTV3.SA: 2.99%; B3SA3.SA: 2.48%; IGTI11.SA: 2.64%; VIVA3.SA: 3.66%; WEGE3.SA: 4.29%; TOTS3.SA: 0.15%; CURY3.SA: 0.92%
+  2026-02: status=valida | ret=4.11% | IBOV=4.09% | alfa=0.01% | beta=1.11 | fund_ruim_na_carteira=0 | pesos=CURY3.SA: 10.46%; SLCE3.SA: 4.12%; EMBJ3.SA: 5.22%; YDUQ3.SA: 4.94%; CPLE3.SA: 7.26%; HYPE3.SA: 3.43%; ABEV3.SA: 3.28%; GOAU4.SA: 4.25%; MGLU3.SA: 2.06%; BRAV3.SA: 1.15%; CMIN3.SA: 7.14%; RDOR3.SA: 3.36%; VAMO3.SA: 6.20%; SBSP3.SA: 2.86%; SANB11.SA: 4.03%; ALOS3.SA: 3.96%; PETR3.SA: 5.34%; TIMS3.SA: 3.39%; VIVT3.SA: 6.08%; MOTV3.SA: 1.76%; BBAS3.SA: 4.75%; B3SA3.SA: 4.81%; FLRY3.SA: 0.12%
+  2026-03: status=valida | ret=-0.97% | IBOV=-0.70% | alfa=-0.27% | beta=0.92 | fund_ruim_na_carteira=0 | pesos=CURY3.SA: 7.83%; BRAV3.SA: 5.47%; SLCE3.SA: 8.67%; ABEV3.SA: 9.91%; SBSP3.SA: 13.85%; TIMS3.SA: 11.33%; ASAI3.SA: 0.18%; MULT3.SA: 6.97%; ENGI11.SA: 5.57%; VBBR3.SA: 8.18%; ITSA4.SA: 5.83%; ALOS3.SA: 7.08%; RENT3.SA: 3.01%; BBAS3.SA: 6.11%
+  2026-04: status=valida | ret=-2.56% | IBOV=-0.08% | alfa=-2.48% | beta=0.86 | fund_ruim_na_carteira=0 | pesos=BRAV3.SA: 7.51%; VIVT3.SA: 16.64%; TIMS3.SA: 14.76%; SLCE3.SA: 10.80%; SBSP3.SA: 11.59%; CURY3.SA: 3.91%; MULT3.SA: 4.91%; ASAI3.SA: 0.21%; ITSA4.SA: 5.62%; B3SA3.SA: 1.65%; VBBR3.SA: 5.90%; CMIG4.SA: 12.11%; ENEV3.SA: 4.38%
+  2026-05: status=valida | ret=-9.80% | IBOV=-7.22% | alfa=-2.58% | beta=0.90 | fund_ruim_na_carteira=0 | pesos=VIVT3.SA: 14.70%; SLCE3.SA: 9.85%; TIMS3.SA: 10.03%; CSMG3.SA: 9.74%; EGIE3.SA: 7.51%; MULT3.SA: 6.43%; ITSA4.SA: 4.53%; ISAE4.SA: 8.66%; B3SA3.SA: 1.15%; UGPA3.SA: 11.30%; SBSP3.SA: 10.78%; VBBR3.SA: 5.32%
+  2026-06: status=valida | ret=1.23% | IBOV=-0.28% | alfa=1.51% | beta=0.88 | fund_ruim_na_carteira=0 | pesos=PETR4.SA: 5.60%; VALE3.SA: 13.77%; BBSE3.SA: 8.68%; EGIE3.SA: 11.47%; GGBR4.SA: 11.96%; ABEV3.SA: 10.42%; BRAV3.SA: 10.47%; CPLE3.SA: 9.50%; CSMG3.SA: 10.25%; ITSA4.SA: 4.24%; SBSP3.SA: 1.58%; B3SA3.SA: 1.88%; IGTI11.SA: 0.19%
+CENARIO SEM_VETO: score_fundamentos mantido; veto fundamental desligado
+  2026-01: status=valida | ret=9.84% | IBOV=12.56% | alfa=-2.72% | beta=1.06 | fund_ruim_na_carteira=0 | pesos=ABEV3.SA: 9.14%; BBSE3.SA: 6.19%; EGIE3.SA: 9.95%; SBSP3.SA: 11.34%; VIVT3.SA: 5.97%; EMBJ3.SA: 4.45%; BPAC11.SA: 5.44%; BBDC3.SA: 8.79%; FLRY3.SA: 3.44%; RDOR3.SA: 3.59%; CPLE3.SA: 9.96%; COGN3.SA: 4.72%; PETR4.SA: 1.05%; B3SA3.SA: 2.34%; IGTI11.SA: 2.49%; MOTV3.SA: 2.54%; WEGE3.SA: 4.59%; VIVA3.SA: 3.70%; TOTS3.SA: 0.16%; CURY3.SA: 0.16%
+  2026-02: status=valida | ret=4.17% | IBOV=4.09% | alfa=0.08% | beta=1.11 | fund_ruim_na_carteira=0 | pesos=CURY3.SA: 10.39%; SLCE3.SA: 4.12%; YDUQ3.SA: 4.95%; EMBJ3.SA: 5.18%; CPLE3.SA: 7.26%; HYPE3.SA: 3.31%; ABEV3.SA: 3.34%; GOAU4.SA: 4.32%; MGLU3.SA: 1.99%; CMIN3.SA: 6.98%; BRAV3.SA: 0.77%; RDOR3.SA: 3.24%; VAMO3.SA: 6.19%; SBSP3.SA: 2.98%; SANB11.SA: 4.16%; ALOS3.SA: 4.09%; PETR3.SA: 5.41%; TIMS3.SA: 3.33%; VIVT3.SA: 6.19%; BBAS3.SA: 4.86%; MOTV3.SA: 1.92%; B3SA3.SA: 4.90%; FLRY3.SA: 0.12%
+  2026-03: status=valida | ret=-0.97% | IBOV=-0.70% | alfa=-0.27% | beta=0.92 | fund_ruim_na_carteira=0 | pesos=CURY3.SA: 7.83%; BRAV3.SA: 5.47%; SLCE3.SA: 8.67%; ABEV3.SA: 9.91%; SBSP3.SA: 13.85%; TIMS3.SA: 11.33%; ASAI3.SA: 0.18%; MULT3.SA: 6.97%; ENGI11.SA: 5.57%; VBBR3.SA: 8.18%; ITSA4.SA: 5.83%; ALOS3.SA: 7.08%; RENT3.SA: 3.01%; BBAS3.SA: 6.11%
+  2026-04: status=valida | ret=-2.56% | IBOV=-0.08% | alfa=-2.48% | beta=0.86 | fund_ruim_na_carteira=0 | pesos=BRAV3.SA: 7.51%; VIVT3.SA: 16.64%; TIMS3.SA: 14.76%; SLCE3.SA: 10.80%; SBSP3.SA: 11.59%; MULT3.SA: 4.91%; CURY3.SA: 3.91%; ITSA4.SA: 5.62%; ASAI3.SA: 0.21%; B3SA3.SA: 1.65%; VBBR3.SA: 5.90%; CMIG4.SA: 12.11%; ENEV3.SA: 4.38%
+  2026-05: status=valida | ret=-9.80% | IBOV=-7.22% | alfa=-2.58% | beta=0.90 | fund_ruim_na_carteira=0 | pesos=VIVT3.SA: 14.70%; SLCE3.SA: 9.85%; TIMS3.SA: 10.03%; CSMG3.SA: 9.74%; EGIE3.SA: 7.51%; MULT3.SA: 6.43%; ITSA4.SA: 4.53%; ISAE4.SA: 8.66%; B3SA3.SA: 1.15%; UGPA3.SA: 11.30%; SBSP3.SA: 10.78%; VBBR3.SA: 5.32%
+  2026-06: status=valida | ret=1.13% | IBOV=-0.28% | alfa=1.41% | beta=0.88 | fund_ruim_na_carteira=0 | pesos=PETR4.SA: 5.68%; VALE3.SA: 14.05%; BBSE3.SA: 8.83%; EGIE3.SA: 11.67%; GGBR4.SA: 11.78%; ABEV3.SA: 10.46%; BRAV3.SA: 10.51%; CPLE3.SA: 9.35%; ITSA4.SA: 4.35%; SBSP3.SA: 1.59%; CSMG3.SA: 9.60%; B3SA3.SA: 1.94%; IGTI11.SA: 0.19%
+CENARIO SEM_NADA: score_fundamentos removido + veto fundamental desligado
+  2026-01: status=valida | ret=9.91% | IBOV=12.56% | alfa=-2.66% | beta=1.06 | fund_ruim_na_carteira=0 | pesos=ABEV3.SA: 8.74%; BBSE3.SA: 5.99%; EGIE3.SA: 9.63%; SBSP3.SA: 10.95%; VIVT3.SA: 5.91%; EMBJ3.SA: 4.41%; BPAC11.SA: 5.25%; BBDC3.SA: 8.47%; FLRY3.SA: 3.90%; RDOR3.SA: 3.79%; CPLE3.SA: 9.60%; COGN3.SA: 4.54%; PETR4.SA: 1.68%; MOTV3.SA: 2.99%; B3SA3.SA: 2.48%; IGTI11.SA: 2.64%; VIVA3.SA: 3.66%; WEGE3.SA: 4.29%; TOTS3.SA: 0.15%; CURY3.SA: 0.92%
+  2026-02: status=valida | ret=4.11% | IBOV=4.09% | alfa=0.01% | beta=1.11 | fund_ruim_na_carteira=0 | pesos=CURY3.SA: 10.46%; SLCE3.SA: 4.12%; EMBJ3.SA: 5.22%; YDUQ3.SA: 4.94%; CPLE3.SA: 7.26%; HYPE3.SA: 3.43%; ABEV3.SA: 3.28%; GOAU4.SA: 4.25%; MGLU3.SA: 2.06%; BRAV3.SA: 1.15%; CMIN3.SA: 7.14%; RDOR3.SA: 3.36%; VAMO3.SA: 6.20%; SBSP3.SA: 2.86%; SANB11.SA: 4.03%; ALOS3.SA: 3.96%; PETR3.SA: 5.34%; TIMS3.SA: 3.39%; VIVT3.SA: 6.08%; MOTV3.SA: 1.76%; BBAS3.SA: 4.75%; B3SA3.SA: 4.81%; FLRY3.SA: 0.12%
+  2026-03: status=valida | ret=-0.97% | IBOV=-0.70% | alfa=-0.27% | beta=0.92 | fund_ruim_na_carteira=0 | pesos=CURY3.SA: 7.83%; BRAV3.SA: 5.47%; SLCE3.SA: 8.67%; ABEV3.SA: 9.91%; SBSP3.SA: 13.85%; TIMS3.SA: 11.33%; ASAI3.SA: 0.18%; MULT3.SA: 6.97%; ENGI11.SA: 5.57%; VBBR3.SA: 8.18%; ITSA4.SA: 5.83%; ALOS3.SA: 7.08%; RENT3.SA: 3.01%; BBAS3.SA: 6.11%
+  2026-04: status=valida | ret=-2.56% | IBOV=-0.08% | alfa=-2.48% | beta=0.86 | fund_ruim_na_carteira=0 | pesos=BRAV3.SA: 7.51%; VIVT3.SA: 16.64%; TIMS3.SA: 14.76%; SLCE3.SA: 10.80%; SBSP3.SA: 11.59%; CURY3.SA: 3.91%; MULT3.SA: 4.91%; ASAI3.SA: 0.21%; ITSA4.SA: 5.62%; B3SA3.SA: 1.65%; VBBR3.SA: 5.90%; CMIG4.SA: 12.11%; ENEV3.SA: 4.38%
+  2026-05: status=valida | ret=-9.80% | IBOV=-7.22% | alfa=-2.58% | beta=0.90 | fund_ruim_na_carteira=0 | pesos=VIVT3.SA: 14.70%; SLCE3.SA: 9.85%; TIMS3.SA: 10.03%; CSMG3.SA: 9.74%; EGIE3.SA: 7.51%; MULT3.SA: 6.43%; ITSA4.SA: 4.53%; ISAE4.SA: 8.66%; B3SA3.SA: 1.15%; UGPA3.SA: 11.30%; SBSP3.SA: 10.78%; VBBR3.SA: 5.32%
+  2026-06: status=valida | ret=1.23% | IBOV=-0.28% | alfa=1.51% | beta=0.88 | fund_ruim_na_carteira=0 | pesos=PETR4.SA: 5.60%; VALE3.SA: 13.77%; BBSE3.SA: 8.68%; EGIE3.SA: 11.47%; GGBR4.SA: 11.96%; ABEV3.SA: 10.42%; BRAV3.SA: 10.47%; CPLE3.SA: 9.50%; CSMG3.SA: 10.25%; ITSA4.SA: 4.24%; SBSP3.SA: 1.58%; B3SA3.SA: 1.88%; IGTI11.SA: 0.19%
+RESUMO ACUMULADO POR CENARIO:
+  BASELINE ACUMULADO_6_MESES: ret=0.72% | IBOV=7.55% | alfa=-6.84% | diff_vs_baseline=0.00%
+  BASELINE ACUMULADO_ALTA: ret=14.43% | IBOV=17.17% | alfa=-2.74% | diff_vs_baseline=0.00%
+  BASELINE ACUMULADO_BAIXA: ret=-12.97% | IBOV=-7.94% | alfa=-5.02% | diff_vs_baseline=0.00%
+  BASELINE ACUMULADO_JUN_OPORTUNIDADE: ret=1.13% | IBOV=-0.28% | alfa=1.41% | diff_vs_baseline=0.00%
+  SEM_SCORE_FUND ACUMULADO_6_MESES: ret=0.81% | IBOV=7.55% | alfa=-6.75% | diff_vs_baseline=0.09%
+  SEM_SCORE_FUND ACUMULADO_ALTA: ret=14.42% | IBOV=17.17% | alfa=-2.75% | diff_vs_baseline=-0.01%
+  SEM_SCORE_FUND ACUMULADO_BAIXA: ret=-12.97% | IBOV=-7.94% | alfa=-5.02% | diff_vs_baseline=0.00%
+  SEM_SCORE_FUND ACUMULADO_JUN_OPORTUNIDADE: ret=1.23% | IBOV=-0.28% | alfa=1.51% | diff_vs_baseline=0.10%
+  SEM_VETO ACUMULADO_6_MESES: ret=0.72% | IBOV=7.55% | alfa=-6.84% | diff_vs_baseline=0.00%
+  SEM_VETO ACUMULADO_ALTA: ret=14.43% | IBOV=17.17% | alfa=-2.74% | diff_vs_baseline=0.00%
+  SEM_VETO ACUMULADO_BAIXA: ret=-12.97% | IBOV=-7.94% | alfa=-5.02% | diff_vs_baseline=0.00%
+  SEM_VETO ACUMULADO_JUN_OPORTUNIDADE: ret=1.13% | IBOV=-0.28% | alfa=1.41% | diff_vs_baseline=0.00%
+  SEM_NADA ACUMULADO_6_MESES: ret=0.81% | IBOV=7.55% | alfa=-6.75% | diff_vs_baseline=0.09%
+  SEM_NADA ACUMULADO_ALTA: ret=14.42% | IBOV=17.17% | alfa=-2.75% | diff_vs_baseline=-0.01%
+  SEM_NADA ACUMULADO_BAIXA: ret=-12.97% | IBOV=-7.94% | alfa=-5.02% | diff_vs_baseline=0.00%
+  SEM_NADA ACUMULADO_JUN_OPORTUNIDADE: ret=1.23% | IBOV=-0.28% | alfa=1.51% | diff_vs_baseline=0.10%
+ACOES COM FUNDAMENTO RUIM QUE ENTRARAM: nenhuma nos cenarios sem veto.
+VALIDACAO RETORNO: maior diferenca peso x retorno = 0.0000000000

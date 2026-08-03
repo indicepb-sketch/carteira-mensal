@@ -1,0 +1,7 @@
+Teste 8 - Regime + Exaustao Conservadora Integrada
+BASELINE_100: retorno=36.39% | IBOV=43.89% | alfa=-7.49%
+TESTE5_EXPOSICAO_DEFENSIVA: retorno=44.79% | IBOV=43.89% | alfa=0.90%
+TESTE8_REGIME_EXAUSTAO_CONSERVADORA: retorno=44.79% | IBOV=43.89% | alfa=0.90%
+Meses alterados vs Teste 5: 0
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_regime_exaustao_integrada.xlsx
+Log gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\shadow_regime_exaustao_integrada.log

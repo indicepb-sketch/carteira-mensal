@@ -1,0 +1,10 @@
+Verificacao producao/flags shadow: OK
+Ancora junho Teste 14 / 13B conservador: PASSOU
+Base mensal existente reutilizada: carteira_recomendada_2026_07_v1.xlsx
+Base mensal usada: carteira_recomendada_2026_07_v1.xlsx
+Arquivo forward gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\carteira_forward_2026_07_v20260727_120253.xlsx
+Data formacao: 2026-07-01 | limite selecao/preco entrada: 2026-06-30
+Carteira forward modelo 100%: EGIE3.SA: 16.33%; ENEV3.SA: 0.71%; PSSA3.SA: 21.24%; ABEV3.SA: 19.54%; BRAV3.SA: 12.32%; CSMG3.SA: 18.54%; GGBR4.SA: 11.31%
+Exposicao aplicada: 30%; CDI/Tesouro Selic: 70%; motivo=queda_forte: 30% em acoes e 70% em CDI/Tesouro Selic liquido de IR
+Bucket13B=queda_forte; regime=queda_forte; sinal=SINAL_A_DEFENSIVO; beta_alvo=0.75; beta_real=0.8858094624494525
+Comando mensal: .\.venv\Scripts\python.exe scripts\forward_test.py --mes YYYY-MM
