@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
+import re
 from typing import Any
 import numpy as np
 import pandas as pd
@@ -21,8 +22,18 @@ st.set_page_config(page_title='Carteira Mensal', page_icon='CM', layout='wide', 
 @dataclass(frozen=True)
 class AppFiles:
     forward:Path|None; partial:Path|None; operational:Path|None
+def file_sort_key(path:Path):
+    month_match=re.search(r'(20\d{2})_(\d{2})', path.stem)
+    month_key=f"{month_match.group(1)}{month_match.group(2)}" if month_match else "000000"
+    version_match=re.search(r'v(\d{8}_\d{6})', path.stem)
+    version_key=version_match.group(1) if version_match else "00000000_000000"
+    try:
+        mtime=path.stat().st_mtime
+    except Exception:
+        mtime=0
+    return (month_key, version_key, mtime, path.name)
 def latest(pattern:str)->Path|None:
-    files=sorted(EXCEL_DIR.glob(pattern), key=lambda p:p.stat().st_mtime); return files[-1] if files else None
+    files=sorted(EXCEL_DIR.glob(pattern), key=file_sort_key); return files[-1] if files else None
 def files()->AppFiles:
     return AppFiles(latest('carteira_forward_2026_*.xlsx'), latest('parcial_carteira_forward_2026_*.xlsx'), latest('shadow_teste49_top15_regime_capital.xlsx') or latest('shadow_teste46_carteira_executavel.xlsx') or latest('shadow_teste45_consolidacao_final_t44a.xlsx'))
 @st.cache_data(show_spinner=False)
@@ -160,7 +171,7 @@ def historical_executable_portfolios(f):
             if not extra.empty: df=pd.concat([df,extra],ignore_index=True,sort=False)
     return df
 def finalized_partial_files()->list[Path]:
-    return sorted(EXCEL_DIR.glob('parcial_carteira_forward_2026_*.xlsx'), key=lambda p:p.stat().st_mtime)
+    return sorted(EXCEL_DIR.glob('parcial_carteira_forward_2026_*.xlsx'), key=file_sort_key)
 def finalized_partial_forward(ps:dict[str,Any],mes:str)->Path|None:
     name=str(ps.get('arquivo_forward_usado') or '').strip()
     if name:
