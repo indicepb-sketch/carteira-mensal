@@ -214,12 +214,12 @@ def all_finalized_partial_portfolio_rows(f)->pd.DataFrame:
     frames=[finalized_partial_portfolio_rows(f,p) for p in finalized_partial_files()]
     frames=[x for x in frames if not x.empty]
     return pd.concat(frames,ignore_index=True,sort=False) if frames else pd.DataFrame()
-def finalized_partial_month_row(f,partial_path:Path|None=None)->pd.DataFrame:
+def finalized_partial_month_row(f,partial_path:Path|None=None,require_finalized:bool=True)->pd.DataFrame:
     partial_path=partial_path or f.partial
     if not partial_path: return pd.DataFrame()
     ps=fields(partial_path,'Resumo Parcial')
     status=str(ps.get('status','')).lower()
-    if 'fechamento' not in status: return pd.DataFrame()
+    if require_finalized and 'fechamento' not in status: return pd.DataFrame()
     mes=str(ps.get('mes') or ps.get('mes_referencia') or '')[:7]
     if not mes: return pd.DataFrame()
     rows=finalized_partial_portfolio_rows(f,partial_path)
@@ -235,7 +235,7 @@ def finalized_partial_month_row(f,partial_path:Path|None=None)->pd.DataFrame:
         'retorno_cdi_liquido_periodo':fnum(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo']),np.nan),
         'peso_acoes_executavel':stock_value/HISTORY_CAPITAL if not np.isnan(stock_value) else fnum(first(ps,['exposicao_acoes','peso_acoes']),np.nan),
         'peso_cdi_executavel':cdi_value/HISTORY_CAPITAL if not np.isnan(cdi_value) else fnum(first(ps,['peso_defensivo_cdi','peso_cdi']),np.nan),
-        'tipo_regime_expost':'fechamento_mes',
+        'tipo_regime_expost':'fechamento_mes' if 'fechamento' in status else 'parcial_mes',
     }
     row['alfa']=row['retorno_modelo']-row['retorno_expost_ibov'] if not np.isnan(row['retorno_modelo']) and not np.isnan(row['retorno_expost_ibov']) else np.nan
     row['bateu_ibov']=bool(row['alfa']>0) if not np.isnan(row['alfa']) else False
@@ -270,6 +270,9 @@ def monthly(f):
         df['retorno_cdi_liquido_periodo']=df['retorno_cdi_liquido_calendario'].combine_first(df.get('retorno_cdi_liquido_periodo'))
         df=df.drop(columns=['retorno_cdi_liquido_calendario'])
     extra=all_finalized_partial_month_rows(f)
+    current=finalized_partial_month_row(f,f.partial,require_finalized=False)
+    if not current.empty:
+        extra=pd.concat([extra,current],ignore_index=True,sort=False) if not extra.empty else current
     if not extra.empty and 'mes' in df.columns:
         existing=set(df['mes'].astype(str).str[:7])
         extra=extra[~extra['mes'].astype(str).str[:7].isin(existing)]
