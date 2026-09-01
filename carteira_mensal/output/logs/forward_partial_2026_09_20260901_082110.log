@@ -1,0 +1,11 @@
+Parcial forward 2026-09
+Arquivo forward usado: carteira_forward_2026_09.xlsx
+Fonte precos: yfinance
+Data entrada: 2026-08-31
+CDI fonte: erro_bcb_sgs_12: HTTP Error 404: Not Found
+CDI bruto periodo: n/a
+IR CDI: 22.50%; CDI liquido periodo: n/a
+Retorno carteira aplicada: 0.00%
+Retorno IBOV parcial: 0.00%
+Alfa parcial: 0.00%
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\carteira_mensal\output\excel\parcial_carteira_forward_2026_09_v20260901_082110.xlsx
