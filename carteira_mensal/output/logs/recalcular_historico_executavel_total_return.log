@@ -1,0 +1,6 @@
+Reprocessamento de retorno total da carteira executavel
+Base: preco de entrada e saida na mesma serie yfinance Adj Close.
+Acoes processadas: 834; tickers: 74; meses: 54.
+Pontos de cotacao faltantes: 0.
+antes: retorno=122.03%; ibov=60.36%; alfa=61.67%; acerto=70.37%
+depois: retorno=122.02%; ibov=64.11%; alfa=57.91%; acerto=62.96%

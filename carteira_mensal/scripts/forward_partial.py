@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import re
@@ -216,6 +216,19 @@ def last_price(series: pd.Series, date: pd.Timestamp) -> tuple[float, pd.Timesta
     return float(clean.iloc[-1]), pd.Timestamp(clean.index[-1]).normalize()
 
 
+def return_from_single_adjusted_series(
+    series: pd.Series,
+    entry_date: pd.Timestamp,
+    evaluation_date: pd.Timestamp,
+) -> tuple[float, pd.Timestamp | None, float, pd.Timestamp | None, float]:
+    """Calcula retorno usando a mesma serie ajustada nas duas pontas."""
+    entry, entry_price_date = last_price(series, entry_date)
+    current, current_price_date = last_price(series, evaluation_date)
+    if pd.isna(entry) or pd.isna(current) or not entry:
+        return entry, entry_price_date, current, current_price_date, np.nan
+    return entry, entry_price_date, current, current_price_date, current / entry - 1.0
+
+
 def main() -> None:
     args = parse_args()
     year, month, mes_key = parse_month(args.mes)
@@ -283,21 +296,26 @@ def main() -> None:
                 }
             )
             continue
-        entry = row.get("preco_entrada_fechamento_mes_anterior", np.nan)
-        if pd.isna(entry) and ticker in prices:
-            entry, _ = last_price(prices[ticker], entry_date)
-        current, price_date = last_price(prices[ticker], today) if ticker in prices else (np.nan, None)
-        ret = (current / float(entry) - 1.0) if pd.notna(entry) and pd.notna(current) and float(entry) else np.nan
+        recommended_entry = row.get("preco_entrada_fechamento_mes_anterior", np.nan)
+        if ticker in prices:
+            entry, entry_price_date, current, price_date, ret = return_from_single_adjusted_series(
+                prices[ticker], entry_date, today
+            )
+        else:
+            entry, entry_price_date, current, price_date, ret = np.nan, None, np.nan, None, np.nan
         rows.append(
             {
                 "ticker": ticker,
                 "peso_recomendado": weight,
                 "preco_entrada": entry,
+                "preco_entrada_recomendado": recommended_entry,
+                "data_preco_entrada": entry_price_date.date().isoformat() if entry_price_date is not None else "",
                 "preco_atual": current,
                 "data_avaliacao": price_date.date().isoformat() if price_date is not None else "",
                 "retorno_periodo": ret,
                 "contribuicao": ret * weight if pd.notna(ret) else np.nan,
                 "fonte_preco": source,
+                "base_retorno": "mesma_serie_ajustada" if pd.notna(ret) else "cotacao_indisponivel",
                 "retorno_cdi_bruto_periodo": np.nan,
                 "aliquota_ir_cdi": np.nan,
                 "dias_corridos_cdi": np.nan,
@@ -313,7 +331,13 @@ def main() -> None:
         ibov_entry, _ = last_price(prices["^BVSP"], entry_date)
         ibov_current, ibov_date = last_price(prices["^BVSP"], today)
     ibov_return = (ibov_current / ibov_entry - 1.0) if pd.notna(ibov_entry) and pd.notna(ibov_current) and ibov_entry else np.nan
-    portfolio_return = pd.to_numeric(assets["contribuicao"], errors="coerce").fillna(0.0).sum()
+    stock_assets = assets.loc[~assets["ticker"].isin(defensive_tickers)].copy()
+    missing_stock_prices = stock_assets[stock_assets["retorno_periodo"].isna()]
+    portfolio_return = pd.to_numeric(assets["contribuicao"], errors="coerce").sum(min_count=len(assets))
+    if not missing_stock_prices.empty:
+        portfolio_return = np.nan
+        if period_status == "fechamento_mes":
+            period_status = "dados_incompletos_cotacao"
 
     summary = pd.DataFrame(
         [
@@ -333,6 +357,8 @@ def main() -> None:
             {"metrica": "aliquota_ir_cdi", "valor": cdi_ir_rate},
             {"metrica": "retorno_cdi_liquido_periodo", "valor": cdi_net},
             {"metrica": "fonte_cdi", "valor": cdi_source},
+            {"metrica": "acoes_sem_cotacao", "valor": ", ".join(missing_stock_prices["ticker"].astype(str).tolist())},
+            {"metrica": "base_retorno_acoes", "valor": "mesma serie ajustada yfinance para entrada e avaliacao"},
         ]
     )
 
@@ -352,7 +378,7 @@ def main() -> None:
         f"CDI fonte: {cdi_source}",
         f"CDI bruto periodo: {cdi_gross:.4%}" if pd.notna(cdi_gross) else "CDI bruto periodo: n/a",
         f"IR CDI: {cdi_ir_rate:.2%}; CDI liquido periodo: {cdi_net:.4%}" if pd.notna(cdi_net) else f"IR CDI: {cdi_ir_rate:.2%}; CDI liquido periodo: n/a",
-        f"Retorno carteira aplicada: {portfolio_return:.2%}",
+        f"Retorno carteira aplicada: {portfolio_return:.2%}" if pd.notna(portfolio_return) else "Retorno carteira aplicada: n/a (cotacao ausente)",
         f"Retorno IBOV parcial: {ibov_return:.2%}" if pd.notna(ibov_return) else "Retorno IBOV parcial: n/a",
         f"Alfa parcial: {portfolio_return - ibov_return:.2%}" if pd.notna(ibov_return) else "Alfa parcial: n/a",
         f"Arquivo gerado: {output}",
@@ -364,4 +390,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
 
