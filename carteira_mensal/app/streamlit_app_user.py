@@ -1,6 +1,7 @@
 ﻿from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
+from decimal import Decimal
 from pathlib import Path
 import re
 from typing import Any
@@ -74,6 +75,43 @@ def pct(x:Any,d:int=2)->str:
 def money(x:Any)->str:
     n=fnum(x)
     return '-' if np.isnan(n) else f'R$ {n:,.2f}'.replace(',','X').replace('.',',').replace('X','.')
+def format_brl_amount(value:float)->str:
+    return f'{value:,.2f}'.replace(',','X').replace('.',',').replace('X','.')
+def parse_brl_amount(text:str)->float:
+    value=text.strip().removeprefix('R$').strip()
+    if not re.fullmatch(r'(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d{1,2})?',value):
+        raise ValueError('Informe um valor como 10.000,00.')
+    amount=Decimal(value.replace('.','').replace(',','.'))
+    if amount<1000:
+        raise ValueError('O valor minimo e R$ 1.000,00.')
+    return float(amount)
+def update_simulated_capital()->None:
+    try:
+        st.session_state.simulated_capital=parse_brl_amount(st.session_state.simulated_capital_text)
+        st.session_state.simulated_capital_error=''
+    except ValueError as exc:
+        st.session_state.simulated_capital_error=str(exc)
+    st.session_state.simulated_capital_text=format_brl_amount(st.session_state.simulated_capital)
+def step_simulated_capital(amount:float)->None:
+    st.session_state.simulated_capital=round(max(1000.0,st.session_state.simulated_capital+amount),2)
+    st.session_state.simulated_capital_text=format_brl_amount(st.session_state.simulated_capital)
+    st.session_state.simulated_capital_error=''
+def simulated_capital_input()->float:
+    if 'simulated_capital' not in st.session_state:
+        st.session_state.simulated_capital=10000.0
+        st.session_state.simulated_capital_text=format_brl_amount(10000.0)
+    with st.sidebar:
+        st.markdown('Valor para simular')
+        amount_col,minus_col,plus_col=st.columns([5,1,1],gap='small')
+        with amount_col:
+            st.text_input('Valor para simular',key='simulated_capital_text',label_visibility='collapsed',on_change=update_simulated_capital)
+        with minus_col:
+            st.button('-',key='decrease_capital',help='Reduzir R$ 500,00',use_container_width=True,disabled=st.session_state.simulated_capital<=1000.0,on_click=step_simulated_capital,args=(-500.0,))
+        with plus_col:
+            st.button('+',key='increase_capital',help='Aumentar R$ 500,00',use_container_width=True,on_click=step_simulated_capital,args=(500.0,))
+        if st.session_state.get('simulated_capital_error'):
+            st.error(st.session_state.simulated_capital_error)
+    return st.session_state.simulated_capital
 def first(d:dict[str,Any],keys:list[str])->Any:
     for k in keys:
         v=d.get(k)
@@ -471,7 +509,7 @@ def render_history(f):
 def render_method():
     st.subheader('Como funciona'); st.markdown('<div class="note">A plataforma mostra a versao executavel do modelo: compras em quantidade inteira, posicoes pequenas removidas e sobra aplicada em CDI liquido com IR mensal de 22,5%.</div>',unsafe_allow_html=True)
 def main():
-    f=files(); port=portfolio(f); css(); st.sidebar.title('Minha carteira'); capital=st.sidebar.number_input('Valor para simular',min_value=1000.0,value=10000.0,step=500.0,format='%.2f'); frac=st.sidebar.toggle('Permitir compra fracionaria',value=True); min_w=st.sidebar.slider('Remover pesos menores que',0.0,0.05,0.01,0.005,format='%.3f'); auto=st.sidebar.toggle('Atualizar parcial automaticamente',value=True); mins=st.sidebar.select_slider('Intervalo da parcial',options=[5,10,15,30,60],value=15); autorefresh(auto,mins)
+    f=files(); port=portfolio(f); css(); st.sidebar.title('Minha carteira'); capital=simulated_capital_input(); frac=st.sidebar.toggle('Permitir compra fracionaria',value=True); min_w=st.sidebar.slider('Remover pesos menores que',0.0,0.05,0.01,0.005,format='%.3f'); auto=st.sidebar.toggle('Atualizar parcial automaticamente',value=True); mins=st.sidebar.select_slider('Intervalo da parcial',options=[5,10,15,30,60],value=15); autorefresh(auto,mins)
     ref=portfolio_reference(f)
     st.title('Carteira mensal executavel'); st.markdown(f'<div class="hero"><div class="portfolio-ref">{ref}</div><b>Modelo atual:</b> {SCENARIO_LABEL}<br><span class="note">Carteira Top 15 convertida para compras reais: quantidade inteira de acoes, posicoes irrelevantes removidas e sobra em CDI liquido.</span></div>',unsafe_allow_html=True)
     with st.expander('Arquivos carregados'): st.write({'Carteira do mes':f.forward.name if f.forward else 'nao encontrada','Parcial':f.partial.name if f.partial else 'nao encontrada','Historico executavel':f.operational.name if f.operational else 'nao encontrado'})
