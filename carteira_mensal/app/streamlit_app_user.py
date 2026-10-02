@@ -20,7 +20,7 @@ from production_registry import load_active
 EXCEL_DIR=ROOT/'output'/'excel'
 CDI_MONTHLY_PATH=ROOT/'data'/'processed'/'cdi_mensal_ipeadata.csv'
 IBOV_MONTHLY_PATH=ROOT/'data'/'processed'/'ibov_mensal_oficial.csv'
-SCENARIO='TOP15'; SCENARIO_LABEL='T49 - Top 15 operacional'; PLATFORM_MAX_STOCKS=15; HISTORY_CAPITAL=10000.0
+SCENARIO='TOP15'; SCENARIO_LABEL='Top 15 operacional'; PLATFORM_MAX_STOCKS=15; HISTORY_CAPITAL=10000.0
 SOURCE_CDI_IR=0.225; PLATFORM_CDI_IR=0.225
 st.set_page_config(page_title='Carteira Mensal', page_icon='CM', layout='wide', initial_sidebar_state='expanded')
 @dataclass(frozen=True)
@@ -221,11 +221,11 @@ def finalized_partial_forward(ps:dict[str,Any],mes:str)->Path|None:
         if p.exists(): return p
     key=mes.replace('-','_')
     return latest(f'carteira_forward_{key}*.xlsx')
-def finalized_partial_portfolio_rows(f,partial_path:Path|None=None)->pd.DataFrame:
+def finalized_partial_portfolio_rows(f,partial_path:Path|None=None,require_finalized:bool=True,capital:float=HISTORY_CAPITAL,min_weight:float=0.01,fractional:bool=True)->pd.DataFrame:
     partial_path=partial_path or f.partial
     if not partial_path: return pd.DataFrame()
     ps=fields(partial_path,'Resumo Parcial')
-    if 'fechamento' not in str(ps.get('status','')).lower(): return pd.DataFrame()
+    if require_finalized and 'fechamento' not in str(ps.get('status','')).lower(): return pd.DataFrame()
     mes=str(ps.get('mes') or ps.get('mes_referencia') or '')[:7]
     if not mes: return pd.DataFrame()
     fp=finalized_partial_forward(ps,mes)
@@ -233,9 +233,11 @@ def finalized_partial_portfolio_rows(f,partial_path:Path|None=None)->pd.DataFram
     base=sheet(str(fp),'Carteira Aplicada')
     if base.empty: base=sheet(str(fp),'Carteira Forward')
     if base.empty: return pd.DataFrame()
-    ex,_,_=executable_portfolio(base,HISTORY_CAPITAL,0.01,True)
+    ex,_,_=executable_portfolio(base,capital,min_weight,fractional)
     if ex.empty: return pd.DataFrame()
     assets=sheet(str(partial_path),'Ativos')
+    if not require_finalized and (assets.empty or not {'ticker','retorno_periodo'}.issubset(assets.columns)):
+        return pd.DataFrame()
     out=ex.copy(); out['ticker']=out['ticker'].astype(str).str.upper()
     if not assets.empty and 'ticker' in assets:
         src=assets.copy(); src['ticker_key']=src['ticker'].astype(str).str.upper()
@@ -244,6 +246,8 @@ def finalized_partial_portfolio_rows(f,partial_path:Path|None=None)->pd.DataFram
         out=out.merge(src[cols],on='ticker_key',how='left')
     cdi_ret=platform_cdi_return(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo']))
     out['retorno_periodo']=pd.to_numeric(out.get('retorno_periodo',pd.Series(index=out.index)),errors='coerce')
+    if not require_finalized and out.loc[~out.apply(is_cdi,axis=1),'retorno_periodo'].isna().any():
+        return pd.DataFrame()
     out.loc[out.apply(is_cdi,axis=1),'retorno_periodo']=cdi_ret
     out['contribuicao_executavel']=pd.to_numeric(out.get('peso_executavel',pd.Series(index=out.index)),errors='coerce').fillna(0)*out['retorno_periodo'].fillna(0)
     out['mes']=mes
@@ -256,7 +260,7 @@ def all_finalized_partial_portfolio_rows(f)->pd.DataFrame:
     frames=[finalized_partial_portfolio_rows(f,p) for p in finalized_partial_files()]
     frames=[x for x in frames if not x.empty]
     return pd.concat(frames,ignore_index=True,sort=False) if frames else pd.DataFrame()
-def finalized_partial_month_row(f,partial_path:Path|None=None,require_finalized:bool=True)->pd.DataFrame:
+def finalized_partial_month_row(f,partial_path:Path|None=None,require_finalized:bool=True,capital:float=HISTORY_CAPITAL,min_weight:float=0.01,fractional:bool=True)->pd.DataFrame:
     partial_path=partial_path or f.partial
     if not partial_path: return pd.DataFrame()
     ps=fields(partial_path,'Resumo Parcial')
@@ -264,7 +268,8 @@ def finalized_partial_month_row(f,partial_path:Path|None=None,require_finalized:
     if require_finalized and 'fechamento' not in status: return pd.DataFrame()
     mes=str(ps.get('mes') or ps.get('mes_referencia') or '')[:7]
     if not mes: return pd.DataFrame()
-    rows=finalized_partial_portfolio_rows(f,partial_path)
+    rows=finalized_partial_portfolio_rows(f,partial_path,require_finalized,capital,min_weight,fractional)
+    if rows.empty and not require_finalized: return pd.DataFrame()
     stock_value=float(pd.to_numeric(rows.loc[~rows.apply(is_cdi,axis=1),'valor_estimado'],errors='coerce').sum()) if not rows.empty and 'valor_estimado' in rows.columns else np.nan
     cdi_value=float(pd.to_numeric(rows.loc[rows.apply(is_cdi,axis=1),'valor_estimado'],errors='coerce').sum()) if not rows.empty and 'valor_estimado' in rows.columns else np.nan
     ret_pratico=np.nan
@@ -275,8 +280,8 @@ def finalized_partial_month_row(f,partial_path:Path|None=None,require_finalized:
         'retorno_modelo':ret_pratico if not np.isnan(ret_pratico) else fnum(first(ps,['retorno_carteira_parcial_aplicada','retorno_carteira_periodo']),np.nan),
         'retorno_expost_ibov':fnum(first(ps,['retorno_ibov_parcial','retorno_ibov_periodo']),np.nan),
         'retorno_cdi_liquido_periodo':fnum(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo']),np.nan),
-        'peso_acoes_executavel':stock_value/HISTORY_CAPITAL if not np.isnan(stock_value) else fnum(first(ps,['exposicao_acoes','peso_acoes']),np.nan),
-        'peso_cdi_executavel':cdi_value/HISTORY_CAPITAL if not np.isnan(cdi_value) else fnum(first(ps,['peso_defensivo_cdi','peso_cdi']),np.nan),
+        'peso_acoes_executavel':stock_value/capital if capital and not np.isnan(stock_value) else fnum(first(ps,['exposicao_acoes','peso_acoes']),np.nan),
+        'peso_cdi_executavel':cdi_value/capital if capital and not np.isnan(cdi_value) else fnum(first(ps,['peso_defensivo_cdi','peso_cdi']),np.nan),
         'tipo_regime_expost':'fechamento_mes' if 'fechamento' in status else 'parcial_mes',
     }
     row['alfa']=row['retorno_modelo']-row['retorno_expost_ibov'] if not np.isnan(row['retorno_modelo']) and not np.isnan(row['retorno_expost_ibov']) else np.nan
@@ -288,7 +293,7 @@ def all_finalized_partial_month_rows(f)->pd.DataFrame:
     if not frames: return pd.DataFrame()
     out=pd.concat(frames,ignore_index=True,sort=False)
     return out.drop_duplicates(subset=['mes'],keep='last') if 'mes' in out.columns else out
-def monthly(f):
+def monthly(f,current_capital:float=HISTORY_CAPITAL,current_min_weight:float=0.01,current_fractional:bool=True):
     if not f.operational: return pd.DataFrame()
     df=sheet(str(f.operational),'Mes a Mes')
     if df.empty: df=sheet(str(f.operational),'Mes a Mes vs 36C')
@@ -312,10 +317,12 @@ def monthly(f):
         df['retorno_cdi_liquido_periodo']=df['retorno_cdi_liquido_calendario'].combine_first(df.get('retorno_cdi_liquido_periodo'))
         df=df.drop(columns=['retorno_cdi_liquido_calendario'])
     extra=all_finalized_partial_month_rows(f)
-    current=finalized_partial_month_row(f,f.partial,require_finalized=False)
+    current_ps,_=partial(f)
+    current=finalized_partial_month_row(f,f.partial,require_finalized=False,capital=current_capital,min_weight=current_min_weight,fractional=current_fractional) if current_ps else pd.DataFrame()
     if not current.empty:
         extra=pd.concat([extra,current],ignore_index=True,sort=False) if not extra.empty else current
     if not extra.empty and 'mes' in df.columns:
+        extra=extra.drop_duplicates(subset=['mes'],keep='last')
         existing=set(df['mes'].astype(str).str[:7])
         extra=extra[~extra['mes'].astype(str).str[:7].isin(existing)]
         if not extra.empty:
@@ -404,10 +411,12 @@ def render_start(f,port,capital,min_w,frac):
     st.subheader('O que fazer agora'); st.markdown(f'<div class="decision">Com <b>{money(capital)}</b>, a carteira executavel fica com <b>{money(sv)}</b> em acoes e <b>{money(cv)}</b> em CDI liquido/reserva.</div>',unsafe_allow_html=True)
     a,b,c,d=st.columns(4); a.metric('Acoes',pct(stocks)); b.metric('CDI',pct(cdi)); c.metric('Comprar em acoes',money(sv)); d.metric('Aplicar em CDI',money(cv))
     if ps:
-        cr,_pa=practical_partial_return(ex,ps,assets) if not ex.empty and not assets.empty else (first(ps,['retorno_carteira_parcial_aplicada','retorno_carteira_periodo']),pd.DataFrame())
-        ib=first(ps,['retorno_ibov_parcial','retorno_ibov_periodo']); al=fnum(cr,np.nan)-fnum(ib,np.nan) if not np.isnan(fnum(cr,np.nan)) and not np.isnan(fnum(ib,np.nan)) else first(ps,['alfa_parcial_vs_ibov','alfa_vs_ibov']); dt=format_updated_at(first(ps,['data_avaliacao_parcial','data_avaliacao']),f.partial)
+        cr,_pa=practical_partial_return(ex,ps,assets)
+        ib=first(ps,['retorno_ibov_parcial','retorno_ibov_periodo']); al=fnum(cr,np.nan)-fnum(ib,np.nan) if not np.isnan(fnum(cr,np.nan)) and not np.isnan(fnum(ib,np.nan)) else np.nan; dt=format_updated_at(first(ps,['data_avaliacao_parcial','data_avaliacao']),f.partial)
         status_txt=str(ps.get('status','')).lower(); period_title='Fechamento do mes' if 'fechamento' in status_txt else 'Acompanhamento do mes'
         st.markdown(f'#### {period_title}'); p1,p2,p3,p4=st.columns(4); p1.metric('Modelo executavel',pct(cr)); p2.metric('IBOV',pct(ib)); p3.metric('Diferenca',pct(al)); p4.metric('Atualizado em',dt)
+        if cdi and pd.isna(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo'])):
+            st.warning('CDI da reserva indisponivel nesta parcial; retorno da reserva considerado zero ate a atualizacao da fonte.')
     left,right=st.columns([.9,1.35])
     with left:
         st.markdown('#### Divisao executavel')
@@ -423,16 +432,20 @@ def render_start(f,port,capital,min_w,frac):
     st.subheader('Plano pratico de compra'); st.dataframe(orders,hide_index=True,use_container_width=True)
     if not removed.empty: st.markdown(f'<div class="warn">{len(removed)} ativo(s) nao entraram por peso operacional irrelevante ou limite operacional.</div>',unsafe_allow_html=True)
 def practical_partial_return(ex,ps,assets):
-    if ex.empty: return np.nan,pd.DataFrame()
+    if ex.empty or assets.empty or not {'ticker','retorno_periodo'}.issubset(assets.columns): return np.nan,pd.DataFrame()
     out=ex.copy()
     if not assets.empty and 'ticker' in assets:
         src=assets.copy(); src['ticker_key']=src['ticker'].astype(str).str.upper(); out['ticker_key']=out['ticker'].astype(str).str.upper(); cols=[c for c in ['ticker_key','retorno_periodo','preco_entrada','preco_atual'] if c in src.columns]; out=out.merge(src[cols],on='ticker_key',how='left')
-    cdi_ret=platform_cdi_return(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo'])); out['retorno_pratico']=pd.to_numeric(out.get('retorno_periodo',pd.Series(dtype=float)),errors='coerce'); out.loc[out.apply(is_cdi,axis=1),'retorno_pratico']=cdi_ret; out['retorno_pratico']=out['retorno_pratico'].fillna(0); out['contribuicao_pratica']=pd.to_numeric(out['peso_executavel'],errors='coerce').fillna(0)*out['retorno_pratico']; return float(out['contribuicao_pratica'].sum()),out
+    cdi_ret=platform_cdi_return(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo'])); out['retorno_pratico']=pd.to_numeric(out.get('retorno_periodo',pd.Series(dtype=float)),errors='coerce'); out.loc[out.apply(is_cdi,axis=1),'retorno_pratico']=cdi_ret
+    if out.loc[~out.apply(is_cdi,axis=1),'retorno_pratico'].isna().any(): return np.nan,pd.DataFrame()
+    out['contribuicao_pratica']=pd.to_numeric(out['peso_executavel'],errors='coerce').fillna(0)*out['retorno_pratico']; return float(out['contribuicao_pratica'].sum()),out
 def render_tracking(f,port,capital,min_w,frac):
     ps,assets=partial(f); ex,_,_=executable_portfolio(port,capital,min_w,frac); st.subheader('Acompanhamento do mes')
     if not ps: st.info('Ainda nao ha parcial carregada.'); return
     ret,pa=practical_partial_return(ex,ps,assets); ib=first(ps,['retorno_ibov_parcial','retorno_ibov_periodo']); cd=platform_cdi_return(first(ps,['retorno_cdi_liquido_periodo'])); alfa=ret-fnum(ib,np.nan); dt=format_updated_at(first(ps,['data_avaliacao_parcial','data_avaliacao']),f.partial)
     c1,c2,c3,c4=st.columns(4); c1.metric('Minha carteira',pct(ret)); c2.metric('IBOV',pct(ib)); c3.metric('CDI liquido',pct(cd)); c4.metric('Diferenca vs IBOV',pct(alfa)); st.markdown(f'<span class="pill">Atualizado em: {dt}</span>',unsafe_allow_html=True)
+    if not ex.empty and ex.apply(is_cdi,axis=1).any() and pd.isna(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo'])):
+        st.warning('CDI da reserva indisponivel nesta parcial; retorno da reserva considerado zero ate a atualizacao da fonte.')
     if not pa.empty:
         t=pd.DataFrame({'Ativo':pa.get('ticker'),'Peso real':pa.get('peso_executavel'),'Quantidade':pa.get('quantidade'),'Preco entrada':pa.get('preco_entrada'),'Preco atual':pa.get('preco_atual'),'Resultado':pa.get('retorno_pratico'),'Impacto':pa.get('contribuicao_pratica')})
         for c in ['Peso real','Resultado','Impacto']: t[c]=t[c].map(pct)
@@ -483,9 +496,17 @@ def render_previous_portfolios(f):
     if not p.empty:
         r=p.iloc[0].to_dict(); a,b,c,d=st.columns(4); a.metric('Carteira',pct(r.get('retorno_modelo'))); b.metric('IBOV',pct(r.get('retorno_expost_ibov'))); c.metric('CDI liquido',pct(r.get('retorno_cdi_liquido_periodo'))); d.metric('Diferenca vs IBOV',pct(r.get('alfa')))
     st.dataframe(previous_portfolio_table(rows),hide_index=True,use_container_width=True)
-def render_history(f):
-    st.subheader('Historico do modelo executavel'); df=monthly(f)
+def render_history(f,capital,min_w,frac):
+    st.subheader('Historico do modelo executavel'); df=monthly(f,capital,min_w,frac)
     if df.empty: st.info('Historico nao encontrado.'); return
+    current_ps,_=partial(f)
+    if current_ps:
+        period_status='Fechado' if 'fechamento' in str(current_ps.get('status','')).lower() else 'Parcial'
+        evaluated_at=str(first(current_ps,['data_avaliacao_parcial','data_avaliacao']) or '')[:10]
+        st.caption(f'{month_label(current_forward_month(f))} | {period_status} ate {evaluated_at} | {f.version} | {SCENARIO_LABEL} | {money(capital)}. Meses anteriores: referencia historica de {money(HISTORY_CAPITAL)}.')
+        current_row=df[df['mes'].astype(str).str[:7].eq(current_forward_month(f))]
+        if not current_row.empty and fnum(current_row.iloc[-1].get('peso_cdi_executavel'),0)>0 and pd.isna(first(current_ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo'])):
+            st.warning('CDI da reserva indisponivel nesta parcial; retorno da reserva considerado zero ate a atualizacao da fonte.')
     total_model=compound(df.get('retorno_modelo',pd.Series(dtype=float)))
     total_ibov=compound(df.get('retorno_expost_ibov',pd.Series(dtype=float)))
     total_alfa=total_model-total_ibov if not np.isnan(total_model) and not np.isnan(total_ibov) else np.nan
@@ -519,13 +540,14 @@ def main():
         st.stop()
     port=portfolio(f); css(); st.sidebar.title('Minha carteira'); capital=simulated_capital_input(); frac=st.sidebar.toggle('Permitir compra fracionaria',value=True); min_w=st.sidebar.slider('Remover pesos menores que',0.0,0.05,0.01,0.005,format='%.3f'); auto=st.sidebar.toggle('Atualizar parcial automaticamente',value=True); mins=st.sidebar.select_slider('Intervalo da parcial',options=[5,10,15,30,60],value=15); autorefresh(auto,mins)
     ref=portfolio_reference(f)
-    st.title('Carteira mensal executavel'); st.markdown(f'<div class="hero"><div class="portfolio-ref">{ref}</div><b>Modelo atual:</b> {SCENARIO_LABEL}<br><span class="note">Metodologia vigente: {f.version}. Carteira Top 15 convertida para compras reais: quantidade inteira de acoes, posicoes irrelevantes removidas e sobra em CDI liquido.</span></div>',unsafe_allow_html=True)
+    selected_count=len(port[~port.apply(is_cdi,axis=1)]) if not port.empty else 0
+    st.title('Carteira mensal executavel'); st.markdown(f'<div class="hero"><div class="portfolio-ref">{ref}</div><b>Selecao 13B:</b> {selected_count} acoes ({f.version})<br><b>Plano de compra:</b> {SCENARIO_LABEL}<br><span class="note">Quantidade inteira de acoes, posicoes pequenas removidas e sobra em CDI liquido.</span></div>',unsafe_allow_html=True)
     with st.expander('Arquivos carregados'): st.write({'Carteira oficial':f.forward.name,'Versao metodologica':f.version,'Parcial':f.partial.name if f.partial else 'nao encontrada','Historico executavel':f.operational.name if f.operational else 'nao encontrado'})
     tabs=st.tabs(['O que fazer agora','Acompanhamento','Acoes da carteira','Historico','Carteiras anteriores','Como funciona'])
     with tabs[0]: render_start(f,port,capital,min_w,frac)
     with tabs[1]: render_tracking(f,port,capital,min_w,frac)
     with tabs[2]: render_assets(port,capital,min_w,frac)
-    with tabs[3]: render_history(f)
+    with tabs[3]: render_history(f,capital,min_w,frac)
     with tabs[4]: render_previous_portfolios(f)
     with tabs[5]: render_method()
 if __name__=='__main__': main()
