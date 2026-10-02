@@ -1,6 +1,7 @@
 # Forward-Test Operacional - Teste 14 / 13B Conservador
 
-Status: metodologia de producao `forward-13b-v1`, vigente a partir de 2026-10.
+Status: `Modelo v1.0.0` em producao desde 2026-10.
+`forward-13b-v1` permanece como identificador interno dos registros historicos.
 Esta e uma unica versao para a selecao 13B e sua conversao operacional Top 15.
 Nao ha uma segunda metodologia de producao chamada T49: esse nome identifica
 apenas a serie historica usada como referencia no painel.
@@ -56,6 +57,11 @@ O aplicativo recusa um arquivo ausente, modificado ou fora do registro.
 `--force-forward` nao pode substituir um mes ja ativado.
 
 ## Versionamento
+
+O nome publico vigente e `Modelo v1.0.0`. A equivalencia com o identificador
+interno `forward-13b-v1` esta em `config/methodology_display_names.json`.
+O nome publico nao representa uma nova estrategia nem altera a carteira ja
+ativada. Versoes anteriores nao foram numeradas retroativamente.
 
 O ponteiro vigente esta em `config/production_methodology.json`; a definicao
 completa e unica de selecao e execucao esta em

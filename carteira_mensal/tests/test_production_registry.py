@@ -3,7 +3,7 @@ import json
 import pandas as pd
 import pytest
 
-from production_registry import activate_month, load_active, load_methodology
+from production_registry import activate_month, load_active, load_methodology, load_methodology_display_name
 
 
 def candidate(root, month="2026-10", checks=True):
@@ -77,3 +77,12 @@ def test_active_month_requires_its_single_version_definition(tmp_path):
     (tmp_path / "config" / "methodologies" / "forward-13b-v1.json").unlink()
     with pytest.raises(FileNotFoundError):
         load_active(tmp_path)
+
+
+def test_public_name_keeps_the_historical_identifier(tmp_path):
+    candidate(tmp_path)
+    (tmp_path / "config" / "methodology_display_names.json").write_text(
+        json.dumps({"forward-13b-v1": "Modelo v1.0.0"}), encoding="utf-8"
+    )
+    assert load_methodology_display_name("forward-13b-v1", tmp_path) == "Modelo v1.0.0"
+    assert load_methodology("forward-13b-v1", tmp_path)["version"] == "forward-13b-v1"

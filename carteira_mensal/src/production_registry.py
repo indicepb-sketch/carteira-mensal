@@ -26,6 +26,15 @@ def load_methodology(version: str, root: Path = ROOT) -> dict:
     return method
 
 
+def load_methodology_display_name(version: str, root: Path = ROOT) -> str:
+    load_methodology(version, root)
+    names = _read_json(root / "config" / "methodology_display_names.json")
+    name = names.get(version)
+    if not isinstance(name, str) or not name.strip():
+        raise ValueError(f"Nome publico da metodologia ausente: {version}")
+    return name
+
+
 def _read_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
