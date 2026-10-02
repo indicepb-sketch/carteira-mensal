@@ -4,6 +4,7 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 import re
+import sys
 from typing import Any
 import numpy as np
 import pandas as pd
@@ -14,6 +15,8 @@ try:
 except Exception:
     go=None
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'src'))
+from production_registry import load_active
 EXCEL_DIR=ROOT/'output'/'excel'
 CDI_MONTHLY_PATH=ROOT/'data'/'processed'/'cdi_mensal_ipeadata.csv'
 IBOV_MONTHLY_PATH=ROOT/'data'/'processed'/'ibov_mensal_oficial.csv'
@@ -22,7 +25,7 @@ SOURCE_CDI_IR=0.225; PLATFORM_CDI_IR=0.225
 st.set_page_config(page_title='Carteira Mensal', page_icon='CM', layout='wide', initial_sidebar_state='expanded')
 @dataclass(frozen=True)
 class AppFiles:
-    forward:Path|None; partial:Path|None; operational:Path|None
+    forward:Path|None; partial:Path|None; operational:Path|None; version:str
 def file_sort_key(path:Path):
     month_match=re.search(r'(20\d{2})_(\d{2})', path.stem)
     month_key=f"{month_match.group(1)}{month_match.group(2)}" if month_match else "000000"
@@ -36,7 +39,8 @@ def file_sort_key(path:Path):
 def latest(pattern:str)->Path|None:
     files=sorted(EXCEL_DIR.glob(pattern), key=file_sort_key); return files[-1] if files else None
 def files()->AppFiles:
-    return AppFiles(latest('carteira_forward_2026_*.xlsx'), latest('parcial_carteira_forward_2026_*.xlsx'), latest('shadow_teste49_top15_regime_capital.xlsx') or latest('shadow_teste46_carteira_executavel.xlsx') or latest('shadow_teste45_consolidacao_final_t44a.xlsx'))
+    forward,manifest=load_active(ROOT)
+    return AppFiles(forward, latest('parcial_carteira_forward_2026_*.xlsx'), latest('shadow_teste49_top15_regime_capital.xlsx') or latest('shadow_teste46_carteira_executavel.xlsx') or latest('shadow_teste45_consolidacao_final_t44a.xlsx'),manifest['version'])
 @st.cache_data(show_spinner=False)
 def sheet(path:str,name:str)->pd.DataFrame:
     try: return pd.read_excel(path,sheet_name=name)
@@ -509,10 +513,14 @@ def render_history(f):
 def render_method():
     st.subheader('Como funciona'); st.markdown('<div class="note">A plataforma mostra a versao executavel do modelo: compras em quantidade inteira, posicoes pequenas removidas e sobra aplicada em CDI liquido com IR mensal de 22,5%.</div>',unsafe_allow_html=True)
 def main():
-    f=files(); port=portfolio(f); css(); st.sidebar.title('Minha carteira'); capital=simulated_capital_input(); frac=st.sidebar.toggle('Permitir compra fracionaria',value=True); min_w=st.sidebar.slider('Remover pesos menores que',0.0,0.05,0.01,0.005,format='%.3f'); auto=st.sidebar.toggle('Atualizar parcial automaticamente',value=True); mins=st.sidebar.select_slider('Intervalo da parcial',options=[5,10,15,30,60],value=15); autorefresh(auto,mins)
+    try: f=files()
+    except (OSError,ValueError,KeyError) as exc:
+        st.error(f'Carteira oficial indisponivel: {exc}')
+        st.stop()
+    port=portfolio(f); css(); st.sidebar.title('Minha carteira'); capital=simulated_capital_input(); frac=st.sidebar.toggle('Permitir compra fracionaria',value=True); min_w=st.sidebar.slider('Remover pesos menores que',0.0,0.05,0.01,0.005,format='%.3f'); auto=st.sidebar.toggle('Atualizar parcial automaticamente',value=True); mins=st.sidebar.select_slider('Intervalo da parcial',options=[5,10,15,30,60],value=15); autorefresh(auto,mins)
     ref=portfolio_reference(f)
-    st.title('Carteira mensal executavel'); st.markdown(f'<div class="hero"><div class="portfolio-ref">{ref}</div><b>Modelo atual:</b> {SCENARIO_LABEL}<br><span class="note">Carteira Top 15 convertida para compras reais: quantidade inteira de acoes, posicoes irrelevantes removidas e sobra em CDI liquido.</span></div>',unsafe_allow_html=True)
-    with st.expander('Arquivos carregados'): st.write({'Carteira do mes':f.forward.name if f.forward else 'nao encontrada','Parcial':f.partial.name if f.partial else 'nao encontrada','Historico executavel':f.operational.name if f.operational else 'nao encontrado'})
+    st.title('Carteira mensal executavel'); st.markdown(f'<div class="hero"><div class="portfolio-ref">{ref}</div><b>Modelo atual:</b> {SCENARIO_LABEL}<br><span class="note">Metodologia vigente: {f.version}. Carteira Top 15 convertida para compras reais: quantidade inteira de acoes, posicoes irrelevantes removidas e sobra em CDI liquido.</span></div>',unsafe_allow_html=True)
+    with st.expander('Arquivos carregados'): st.write({'Carteira oficial':f.forward.name,'Versao metodologica':f.version,'Parcial':f.partial.name if f.partial else 'nao encontrada','Historico executavel':f.operational.name if f.operational else 'nao encontrado'})
     tabs=st.tabs(['O que fazer agora','Acompanhamento','Acoes da carteira','Historico','Carteiras anteriores','Como funciona'])
     with tabs[0]: render_start(f,port,capital,min_w,frac)
     with tabs[1]: render_tracking(f,port,capital,min_w,frac)

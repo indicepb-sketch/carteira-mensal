@@ -549,8 +549,11 @@ def main() -> None:
     output = write_forward_workbook(tables, year, month)
 
     valid = tables["Validacao"]
-    if not bool(valid["ok"].all()):
+    valid_applied = tables["Validacao Aplicada"]
+    if not bool(valid["ok"].all()) or not bool(valid_applied["ok"].all()):
         log("REGRESSAO/VALIDACAO: alguma restricao da carteira forward falhou.")
+        log_path.write_text("\n".join(logs), encoding="utf-8")
+        raise SystemExit(1)
     log(f"Base mensal usada: {base_workbook.name}")
     log(f"Arquivo forward gerado: {output}")
     log(f"Data formacao: {formation_date.date()} | limite selecao/preco entrada: {selection_cutoff.date()}")

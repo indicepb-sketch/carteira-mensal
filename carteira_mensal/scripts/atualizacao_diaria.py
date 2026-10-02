@@ -9,6 +9,9 @@ from zoneinfo import ZoneInfo
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+from production_registry import activate_month, load_active
+
 EXCEL_DIR = ROOT / "output" / "excel"
 LOG_DIR = ROOT / "output" / "logs"
 
@@ -61,13 +64,23 @@ def main() -> None:
     month = args.mes or current_month()
     LOG_DIR.mkdir(parents=True, exist_ok=True)
 
-    forward = latest_forward(month)
-    if args.force_forward or forward is None:
-        run_command([sys.executable, "scripts/forward_test.py", "--mes", month])
+    active_path = ROOT / "output" / "production" / "active.json"
+    active_forward, active = load_active(ROOT) if active_path.exists() else (None, None)
+    if active and month == active["month"]:
+        if args.force_forward:
+            raise SystemExit("Mes oficial ja ativado; nao e permitido substituir a carteira com --force-forward.")
+        forward = active_forward
+    else:
         forward = latest_forward(month)
+        if args.force_forward or forward is None:
+            run_command([sys.executable, "scripts/forward_test.py", "--mes", month])
+            forward = latest_forward(month)
 
     if forward is None:
         raise SystemExit(f"Nenhum arquivo forward encontrado/gerado para {month}.")
+
+    if active is None or month > active["month"]:
+        activate_month(month, forward, ROOT)
 
     partial_cmd = [sys.executable, "scripts/forward_partial.py", "--mes", month, "--arquivo", str(forward)]
     if args.allow_network:
