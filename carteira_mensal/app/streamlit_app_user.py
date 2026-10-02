@@ -16,7 +16,7 @@ except Exception:
     go=None
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
-from production_registry import load_active
+from production_registry import load_active, load_methodology
 EXCEL_DIR=ROOT/'output'/'excel'
 CDI_MONTHLY_PATH=ROOT/'data'/'processed'/'cdi_mensal_ipeadata.csv'
 IBOV_MONTHLY_PATH=ROOT/'data'/'processed'/'ibov_mensal_oficial.csv'
@@ -40,6 +40,14 @@ def latest(pattern:str)->Path|None:
     files=sorted(EXCEL_DIR.glob(pattern), key=file_sort_key); return files[-1] if files else None
 def files()->AppFiles:
     forward,manifest=load_active(ROOT)
+    execution=load_methodology(manifest['version'],ROOT)['execution']
+    if (execution['scenario']!=SCENARIO or execution['max_stocks']!=PLATFORM_MAX_STOCKS
+        or execution['ranking']!=['nota_final_desc','peso_recomendado_desc']
+        or execution['min_weight_default']!=0.01 or execution['fractional_default'] is not True
+        or execution['capital_reference']!=HISTORY_CAPITAL
+        or execution['quantity_rule']!='floor_to_whole_shares_or_lots_of_100'
+        or execution['unallocated_to']!='CDI'):
+        raise ValueError('Regras de execucao divergem da metodologia versionada')
     return AppFiles(forward, latest('parcial_carteira_forward_2026_*.xlsx'), latest('shadow_teste49_top15_regime_capital.xlsx') or latest('shadow_teste46_carteira_executavel.xlsx') or latest('shadow_teste45_consolidacao_final_t44a.xlsx'),manifest['version'])
 @st.cache_data(show_spinner=False)
 def sheet(path:str,name:str)->pd.DataFrame:
@@ -541,7 +549,7 @@ def main():
     port=portfolio(f); css(); st.sidebar.title('Minha carteira'); capital=simulated_capital_input(); frac=st.sidebar.toggle('Permitir compra fracionaria',value=True); min_w=st.sidebar.slider('Remover pesos menores que',0.0,0.05,0.01,0.005,format='%.3f'); auto=st.sidebar.toggle('Atualizar parcial automaticamente',value=True); mins=st.sidebar.select_slider('Intervalo da parcial',options=[5,10,15,30,60],value=15); autorefresh(auto,mins)
     ref=portfolio_reference(f)
     selected_count=len(port[~port.apply(is_cdi,axis=1)]) if not port.empty else 0
-    st.title('Carteira mensal executavel'); st.markdown(f'<div class="hero"><div class="portfolio-ref">{ref}</div><b>Selecao 13B:</b> {selected_count} acoes ({f.version})<br><b>Plano de compra:</b> {SCENARIO_LABEL}<br><span class="note">Quantidade inteira de acoes, posicoes pequenas removidas e sobra em CDI liquido.</span></div>',unsafe_allow_html=True)
+    st.title('Carteira mensal executavel'); st.markdown(f'<div class="hero"><div class="portfolio-ref">{ref}</div><b>Metodo em producao:</b> {f.version}<br><span class="note">{selected_count} acoes selecionadas pelo 13B; ate 15 posicoes no plano executavel, com sobra em CDI liquido.</span></div>',unsafe_allow_html=True)
     with st.expander('Arquivos carregados'): st.write({'Carteira oficial':f.forward.name,'Versao metodologica':f.version,'Parcial':f.partial.name if f.partial else 'nao encontrada','Historico executavel':f.operational.name if f.operational else 'nao encontrado'})
     tabs=st.tabs(['O que fazer agora','Acompanhamento','Acoes da carteira','Historico','Carteiras anteriores','Como funciona'])
     with tabs[0]: render_start(f,port,capital,min_w,frac)

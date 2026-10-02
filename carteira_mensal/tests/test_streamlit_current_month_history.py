@@ -4,6 +4,29 @@ import pandas as pd
 import pytest
 
 from app import streamlit_app_user as app
+from production_registry import load_methodology
+
+
+def test_production_version_includes_the_execution_rule(monkeypatch):
+    files = app.files()
+    method = load_methodology(files.version, app.ROOT)
+    execution = method["execution"]
+    assert method["selection"]["portfolio_size"] == "unrestricted"
+    assert execution["scenario"] == "TOP15"
+    assert execution["max_stocks"] == app.PLATFORM_MAX_STOCKS
+
+    portfolio = app.portfolio(files)
+    executable, removed, _ = app.executable_portfolio(portfolio, 10000, 0.01, True)
+    assert len(portfolio) == 17
+    assert len(executable.loc[~executable.apply(app.is_cdi, axis=1)]) == 15
+    assert set(removed["ticker"]) == {"B3SA3.SA", "ASAI3.SA"}
+    assert executable.loc[executable.apply(app.is_cdi, axis=1), "peso_executavel"].iloc[0] == pytest.approx(0.0881803493)
+
+    changed = dict(method)
+    changed["execution"] = {**execution, "max_stocks": 16}
+    monkeypatch.setattr(app, "load_methodology", lambda version, root: changed)
+    with pytest.raises(ValueError, match="execucao divergem"):
+        app.files()
 
 
 def test_open_month_history_uses_the_same_executable_portfolio(monkeypatch):

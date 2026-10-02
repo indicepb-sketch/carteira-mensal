@@ -1,0 +1,31 @@
+{
+  "version": "forward-13b-v1",
+  "engine": "shadow.forward_test",
+  "selection": {
+    "regime_classifier": "13B conservador",
+    "portfolio_size": "unrestricted",
+    "uptrend_signal": "V3_MOMENTUM",
+    "downtrend_signal": "SINAL_A_DEFENSIVO",
+    "beta_target_lambda": 1.5,
+    "cv_lambda": 0.5,
+    "max_stocks_per_sector": 2,
+    "max_stock_weight": 0.25,
+    "exposure_by_regime": {
+      "alta": 1.0,
+      "oportunidade": 1.0,
+      "queda_leve": 0.6,
+      "queda_forte": 0.3,
+      "indefinido": 1.0
+    }
+  },
+  "execution": {
+    "scenario": "TOP15",
+    "max_stocks": 15,
+    "ranking": ["nota_final_desc", "peso_recomendado_desc"],
+    "min_weight_default": 0.01,
+    "fractional_default": true,
+    "capital_reference": 10000.0,
+    "quantity_rule": "floor_to_whole_shares_or_lots_of_100",
+    "unallocated_to": "CDI"
+  }
+}

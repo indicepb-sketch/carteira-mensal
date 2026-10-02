@@ -1,6 +1,9 @@
 # Forward-Test Operacional - Teste 14 / 13B Conservador
 
 Status: metodologia de producao `forward-13b-v1`, vigente a partir de 2026-10.
+Esta e uma unica versao para a selecao 13B e sua conversao operacional Top 15.
+Nao ha uma segunda metodologia de producao chamada T49: esse nome identifica
+apenas a serie historica usada como referencia no painel.
 Os meses anteriores permanecem historicos de teste; nao foram reclassificados retroativamente.
 A carteira base `carteira_recomendada_YYYY_MM_v1.xlsx` e uma entrada do calculo,
 enquanto a carteira oficial exibida no aplicativo vem exclusivamente do registro
@@ -20,6 +23,17 @@ O nome interno `shadow.forward_test` e herdado do motor e nao define o status do
 - Teto individual: 25% no modelo 100%.
 - Exposicao defensiva: alta/oportunidade = 100%; queda_leve = 60%; queda_forte = 30%.
 - Parcela defensiva: aplicada em CDI/Tesouro Selic. Na parcial/fechamento, o script busca o CDI diario automaticamente no Banco Central SGS serie 12 e calcula retorno liquido com IR regressivo sobre o rendimento.
+
+## Execucao da mesma versao
+
+- A selecao 13B pode gerar mais de 15 acoes (17 em outubro/2026).
+- O aplicativo ordena por `nota_final` e, em empate, por `peso_recomendado`;
+  considera no maximo 15 acoes e aplica o filtro de peso minimo (padrao 1%).
+- Converte os pesos em quantidades compraveis para o aporte informado,
+  usando a escolha do usuario entre acoes fracionarias e lotes de 100.
+- Posicoes excluidas e sobra de arredondamento permanecem em CDI/reserva.
+- A carteira de referencia de R$ 10 mil usa as opcoes padrao. Alterar o aporte
+  ou as opcoes da interface muda a simulacao, nao a versao metodologica.
 
 ## Comando mensal
 
@@ -43,9 +57,11 @@ O aplicativo recusa um arquivo ausente, modificado ou fora do registro.
 
 ## Versionamento
 
-O metodo vigente esta em `config/production_methodology.json`. Outubro/2026 foi
+O ponteiro vigente esta em `config/production_methodology.json`; a definicao
+completa e unica de selecao e execucao esta em
+`config/methodologies/forward-13b-v1.json`. Outubro/2026 foi
 ativado como `forward-13b-v1`, com corte de dados em 2026-09-30. Alteracoes
-metodologicas exigem nova versao e `effective_from` explicito antes do proximo
+na selecao ou na execucao exigem nova definicao de versao e `effective_from` explicito antes do proximo
 mes; os registros mensais anteriores e seus hashes nao devem ser reescritos.
 Uma mudanca intrames exige decisao documentada e nova publicacao, nunca troca
 silenciosa do arquivo ativo. A publicacao nao executa ordens em corretora.

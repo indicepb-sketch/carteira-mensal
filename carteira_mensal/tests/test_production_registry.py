@@ -3,14 +3,21 @@ import json
 import pandas as pd
 import pytest
 
-from production_registry import activate_month, load_active
+from production_registry import activate_month, load_active, load_methodology
 
 
 def candidate(root, month="2026-10", checks=True):
     (root / "config").mkdir()
+    (root / "config" / "methodologies").mkdir()
     (root / "output" / "excel").mkdir(parents=True)
     (root / "config" / "production_methodology.json").write_text(
-        json.dumps({"version": "forward-13b-v1", "effective_from": "2026-10", "status": "production"}),
+        json.dumps({"version": "forward-13b-v1", "effective_from": "2026-10", "status": "production", "engine": "shadow.forward_test"}),
+        encoding="utf-8",
+    )
+    (root / "config" / "methodologies" / "forward-13b-v1.json").write_text(
+        json.dumps({"version": "forward-13b-v1", "engine": "shadow.forward_test",
+                    "selection": {"portfolio_size": "unrestricted"},
+                    "execution": {"scenario": "TOP15", "max_stocks": 15}}),
         encoding="utf-8",
     )
     path = root / "output" / "excel" / f"carteira_forward_{month.replace('-', '_')}.xlsx"
@@ -59,3 +66,14 @@ def test_no_rollback_to_earlier_month(tmp_path):
     activate_month("2026-10", path, tmp_path)
     with pytest.raises(ValueError, match="vigencia"):
         activate_month("2026-09", path, tmp_path)
+
+
+def test_active_month_requires_its_single_version_definition(tmp_path):
+    path = candidate(tmp_path)
+    activate_month("2026-10", path, tmp_path)
+    method = load_methodology("forward-13b-v1", tmp_path)
+    assert method["selection"]["portfolio_size"] == "unrestricted"
+    assert method["execution"]["max_stocks"] == 15
+    (tmp_path / "config" / "methodologies" / "forward-13b-v1.json").unlink()
+    with pytest.raises(FileNotFoundError):
+        load_active(tmp_path)

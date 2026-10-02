@@ -16,6 +16,16 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def load_methodology(version: str, root: Path = ROOT) -> dict:
+    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", version):
+        raise ValueError("Identificador de metodologia invalido")
+    method = _read_json(root / "config" / "methodologies" / f"{version}.json")
+    if (method.get("version") != version or not method.get("engine")
+        or not method.get("selection") or not method.get("execution")):
+        raise ValueError("Definicao versionada da metodologia incompleta")
+    return method
+
+
 def _read_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -87,6 +97,9 @@ def load_active(root: Path = ROOT) -> tuple[Path, dict]:
     policy = _read_json(root / "config" / "production_methodology.json")
     if manifest["version"] != policy["version"] and month >= policy["effective_from"]:
         raise ValueError("Versao ativa nao confere com a politica vigente")
+    method = load_methodology(manifest["version"], root)
+    if manifest["version"] == policy["version"] and method["engine"] != policy["engine"]:
+        raise ValueError("Motor da metodologia diverge da politica de producao")
     path = root / "output" / "excel" / manifest["file"]
     if path.name != manifest["file"] or validate_workbook(path, month)["sha256"] != manifest["sha256"]:
         raise ValueError("Arquivo oficial mudou ou esta invalido")
@@ -101,6 +114,8 @@ def activate_month(month: str, workbook: Path, root: Path = ROOT) -> dict:
     policy = _read_json(root / "config" / "production_methodology.json")
     if policy.get("status") != "production" or month < policy["effective_from"]:
         raise ValueError("Mes fora da vigencia da metodologia de producao")
+    if load_methodology(policy["version"], root)["engine"] != policy["engine"]:
+        raise ValueError("Motor da metodologia diverge da politica de producao")
     details = validate_workbook(workbook, month)
     production = root / "output" / "production"
     monthly_path = production / f"{month}.json"
