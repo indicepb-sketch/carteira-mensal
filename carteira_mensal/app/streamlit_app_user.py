@@ -17,6 +17,12 @@ except Exception:
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
 from production_registry import load_active, load_methodology, load_methodology_display_name
+from portfolio_execution import (
+    executable_portfolio as build_executable_portfolio,
+    is_cdi,
+    norm,
+    practical_partial_return as calculate_practical_partial_return,
+)
 EXCEL_DIR=ROOT/'output'/'excel'
 CDI_MONTHLY_PATH=ROOT/'data'/'processed'/'cdi_mensal_ipeadata.csv'
 IBOV_MONTHLY_PATH=ROOT/'data'/'processed'/'ibov_mensal_oficial.csv'
@@ -38,6 +44,23 @@ def file_sort_key(path:Path):
     return (month_key, version_key, mtime, path.name)
 def latest(pattern:str)->Path|None:
     files=sorted(EXCEL_DIR.glob(pattern), key=file_sort_key); return files[-1] if files else None
+def latest_official_partial(month:str,forward_name:str,version:str)->Path|None:
+    candidates=sorted(EXCEL_DIR.glob(f'parcial_carteira_forward_{month.replace("-","_")}_v*.xlsx'),key=file_sort_key,reverse=True)
+    for path in candidates:
+        try:
+            frame=pd.read_excel(path,sheet_name='Resumo Parcial')
+            values=dict(zip(frame['metrica'].astype(str),frame['valor']))
+            result=fnum(values.get('retorno_modelo_executavel'))
+            if (values.get('calculo_oficial')=='executavel_top15_capital_10000'
+                and values.get('arquivo_forward_usado')==forward_name
+                and values.get('versao_modelo')==version
+                and str(values.get('data_corte_comum',''))[:10]==str(values.get('data_avaliacao_parcial',''))[:10]
+                and str(values.get('status','')) in {'parcial_mes_em_andamento','fechamento_mes'}
+                and not np.isnan(result)):
+                return path
+        except (OSError,ValueError,KeyError):
+            continue
+    return None
 def files()->AppFiles:
     forward,manifest=load_active(ROOT)
     execution=load_methodology(manifest['version'],ROOT)['execution']
@@ -48,7 +71,8 @@ def files()->AppFiles:
         or execution['quantity_rule']!='floor_to_whole_shares_or_lots_of_100'
         or execution['unallocated_to']!='CDI'):
         raise ValueError('Regras de execucao divergem da metodologia versionada')
-    return AppFiles(forward, latest('parcial_carteira_forward_2026_*.xlsx'), latest('shadow_teste49_top15_regime_capital.xlsx') or latest('shadow_teste46_carteira_executavel.xlsx') or latest('shadow_teste45_consolidacao_final_t44a.xlsx'),manifest['version'],load_methodology_display_name(manifest['version'],ROOT))
+    partial_path=latest_official_partial(manifest['month'],forward.name,manifest['version'])
+    return AppFiles(forward, partial_path, latest('shadow_teste49_top15_regime_capital.xlsx') or latest('shadow_teste46_carteira_executavel.xlsx') or latest('shadow_teste45_consolidacao_final_t44a.xlsx'),manifest['version'],load_methodology_display_name(manifest['version'],ROOT))
 @st.cache_data(show_spinner=False)
 def sheet(path:str,name:str)->pd.DataFrame:
     try: return pd.read_excel(path,sheet_name=name)
@@ -130,8 +154,8 @@ def first(d:dict[str,Any],keys:list[str])->Any:
         if v is not None and not pd.isna(v): return v
     return None
 def platform_cdi_return(v:Any)->float:
-    net=fnum(v,0.0)
-    if np.isnan(net): return 0.0
+    net=fnum(v)
+    if np.isnan(net): return np.nan
     gross=net/(1-SOURCE_CDI_IR) if SOURCE_CDI_IR<1 else net
     return gross*(1-PLATFORM_CDI_IR)
 def format_updated_at(value:Any,path:Path|None=None)->str:
@@ -144,15 +168,6 @@ def format_updated_at(value:Any,path:Path|None=None)->str:
         if parsed.hour or parsed.minute or parsed.second: return parsed.strftime('%d/%m/%Y %H:%M')
         return f"{parsed.strftime('%d/%m/%Y')} {file_dt.strftime('%H:%M')}" if file_dt else parsed.strftime('%d/%m/%Y')
     return file_dt.strftime('%d/%m/%Y %H:%M') if file_dt else '-'
-def is_cdi(row:pd.Series)->bool:
-    txt=' '.join(str(row.get(c,'')).lower() for c in ['ticker','setor','tipo_alocacao','nome'])
-    return 'cdi' in txt or 'caixa' in txt or 'reserva' in txt
-def norm(df:pd.DataFrame,col='peso_recomendado')->pd.DataFrame:
-    out=df.copy()
-    if col in out.columns:
-        out[col]=pd.to_numeric(out[col],errors='coerce').fillna(0.0)
-        if out[col].sum()>1.5: out[col]=out[col]/100.0
-    return out
 def portfolio(f:AppFiles)->pd.DataFrame:
     if not f.forward: return pd.DataFrame()
     df=sheet(str(f.forward),'Carteira Aplicada')
@@ -161,31 +176,8 @@ def portfolio(f:AppFiles)->pd.DataFrame:
     df=norm(df)
     if 'ticker' in df: df['ticker']=df['ticker'].astype(str).str.upper()
     return df
-def rank_top(stocks:pd.DataFrame)->pd.DataFrame:
-    r=stocks.copy()
-    r['_nota']=pd.to_numeric(r.get('nota_final',pd.Series(index=r.index)),errors='coerce').fillna(-999)
-    r['_peso']=pd.to_numeric(r.get('peso_recomendado',pd.Series(index=r.index)),errors='coerce').fillna(0)
-    return r.sort_values(['_nota','_peso'],ascending=[False,False])
 def executable_portfolio(df:pd.DataFrame,capital:float,min_weight:float,fractional:bool):
-    if df.empty: return pd.DataFrame(),pd.DataFrame(),{'stock_value':0.0,'cdi_value':capital}
-    data=norm(df); cash=data[data.apply(is_cdi,axis=1)].copy(); stocks=data[~data.apply(is_cdi,axis=1)].copy()
-    price_col='preco_entrada_fechamento_mes_anterior' if 'preco_entrada_fechamento_mes_anterior' in stocks.columns else 'preco_entrada' if 'preco_entrada' in stocks.columns else None
-    stocks['preco_referencia']=pd.to_numeric(stocks[price_col],errors='coerce') if price_col else np.nan
-    if len(stocks)>PLATFORM_MAX_STOCKS:
-        keep=rank_top(stocks).head(PLATFORM_MAX_STOCKS).index; removed_top=stocks.loc[~stocks.index.isin(keep)].copy(); stocks=stocks.loc[keep].copy()
-    else: removed_top=stocks.iloc[0:0].copy()
-    small=stocks[pd.to_numeric(stocks['peso_recomendado'],errors='coerce').fillna(0)<min_weight].copy(); stocks=stocks.drop(index=small.index)
-    removed=pd.concat([removed_top,small],ignore_index=True)
-    if stocks.empty:
-        return pd.DataFrame([{'ticker':'CDI','nome':'Reserva/CDI liquido','setor':'Protecao','peso_executavel':1.0,'valor_estimado':capital,'forma':'aplicacao + sobra'}]),removed,{'stock_value':0.0,'cdi_value':capital}
-    tw=pd.to_numeric(stocks['peso_recomendado'],errors='coerce').sum(); target=capital*min(tw,1.0)
-    stocks['peso_na_parte_acoes']=pd.to_numeric(stocks['peso_recomendado'],errors='coerce')/tw; stocks['valor_alvo']=target*stocks['peso_na_parte_acoes']
-    raw=stocks['valor_alvo']/stocks['preco_referencia']; stocks['quantidade']=np.floor(raw if fractional else raw/100.0)* (1 if fractional else 100)
-    stocks['valor_estimado']=stocks['quantidade'].fillna(0)*stocks['preco_referencia'].fillna(0); stocks=stocks[stocks['quantidade'].fillna(0)>0].copy()
-    stock_value=float(stocks['valor_estimado'].sum()); cdi_value=max(capital-stock_value,0.0)
-    stocks['peso_executavel']=stocks['valor_estimado']/capital if capital else 0.0; stocks['peso_modelo']=stocks['peso_recomendado']; stocks['forma']='fracionario' if fractional else 'lote padrao'
-    cdi=pd.DataFrame([{'ticker':'CDI','nome':'Reserva/CDI liquido','setor':'Protecao','peso_executavel':cdi_value/capital if capital else 0.0,'valor_estimado':cdi_value,'forma':'aplicacao + sobra'}])
-    return pd.concat([stocks,cdi],ignore_index=True,sort=False),removed,{'stock_value':stock_value,'cdi_value':cdi_value}
+    return build_executable_portfolio(df,capital,min_weight,fractional,PLATFORM_MAX_STOCKS)
 def order_plan(df,capital,min_weight,fractional):
     ex,rem,_=executable_portfolio(df,capital,min_weight,fractional)
     v=pd.DataFrame({'Ativo':ex.get('ticker'),'Empresa':ex.get('nome'),'Setor':ex.get('setor'),'Peso final':ex.get('peso_executavel'),'Valor alvo':ex.get('valor_alvo'),'Preco':ex.get('preco_referencia'),'Quantidade':ex.get('quantidade'),'Valor estimado':ex.get('valor_estimado'),'Forma':ex.get('forma')})
@@ -254,7 +246,7 @@ def finalized_partial_portfolio_rows(f,partial_path:Path|None=None,require_final
         out=out.merge(src[cols],on='ticker_key',how='left')
     cdi_ret=platform_cdi_return(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo']))
     out['retorno_periodo']=pd.to_numeric(out.get('retorno_periodo',pd.Series(index=out.index)),errors='coerce')
-    if not require_finalized and out.loc[~out.apply(is_cdi,axis=1),'retorno_periodo'].isna().any():
+    if not require_finalized and (out.loc[~out.apply(is_cdi,axis=1),'retorno_periodo'].isna().any() or pd.isna(cdi_ret)):
         return pd.DataFrame()
     out.loc[out.apply(is_cdi,axis=1),'retorno_periodo']=cdi_ret
     out['contribuicao_executavel']=pd.to_numeric(out.get('peso_executavel',pd.Series(index=out.index)),errors='coerce').fillna(0)*out['retorno_periodo'].fillna(0)
@@ -285,7 +277,7 @@ def finalized_partial_month_row(f,partial_path:Path|None=None,require_finalized:
         ret_pratico=float(pd.to_numeric(rows['contribuicao_executavel'],errors='coerce').fillna(0).sum())
     row={
         'mes':mes,
-        'retorno_modelo':ret_pratico if not np.isnan(ret_pratico) else fnum(first(ps,['retorno_carteira_parcial_aplicada','retorno_carteira_periodo']),np.nan),
+        'retorno_modelo':ret_pratico if not np.isnan(ret_pratico) else fnum(first(ps,['retorno_modelo_executavel','retorno_carteira_parcial_aplicada','retorno_carteira_periodo']),np.nan),
         'retorno_expost_ibov':fnum(first(ps,['retorno_ibov_parcial','retorno_ibov_periodo']),np.nan),
         'retorno_cdi_liquido_periodo':fnum(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo']),np.nan),
         'peso_acoes_executavel':stock_value/capital if capital and not np.isnan(stock_value) else fnum(first(ps,['exposicao_acoes','peso_acoes']),np.nan),
@@ -419,12 +411,12 @@ def render_start(f,port,capital,min_w,frac):
     st.subheader('O que fazer agora'); st.markdown(f'<div class="decision">Com <b>{money(capital)}</b>, a carteira executavel fica com <b>{money(sv)}</b> em acoes e <b>{money(cv)}</b> em CDI liquido/reserva.</div>',unsafe_allow_html=True)
     a,b,c,d=st.columns(4); a.metric('Acoes',pct(stocks)); b.metric('CDI',pct(cdi)); c.metric('Comprar em acoes',money(sv)); d.metric('Aplicar em CDI',money(cv))
     if ps:
-        cr,_pa=practical_partial_return(ex,ps,assets)
+        cr,_pa=checked_partial_return(ex,ps,assets,capital,min_w,frac)
         ib=first(ps,['retorno_ibov_parcial','retorno_ibov_periodo']); al=fnum(cr,np.nan)-fnum(ib,np.nan) if not np.isnan(fnum(cr,np.nan)) and not np.isnan(fnum(ib,np.nan)) else np.nan; dt=format_updated_at(first(ps,['data_avaliacao_parcial','data_avaliacao']),f.partial)
         status_txt=str(ps.get('status','')).lower(); period_title='Fechamento do mes' if 'fechamento' in status_txt else 'Acompanhamento do mes'
         st.markdown(f'#### {period_title}'); p1,p2,p3,p4=st.columns(4); p1.metric('Modelo executavel',pct(cr)); p2.metric('IBOV',pct(ib)); p3.metric('Diferenca',pct(al)); p4.metric('Atualizado em',dt)
         if cdi and pd.isna(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo'])):
-            st.warning('CDI da reserva indisponivel nesta parcial; retorno da reserva considerado zero ate a atualizacao da fonte.')
+            st.warning('CDI da reserva indisponivel; parcial executavel nao publicada.')
     left,right=st.columns([.9,1.35])
     with left:
         st.markdown('#### Divisao executavel')
@@ -440,20 +432,23 @@ def render_start(f,port,capital,min_w,frac):
     st.subheader('Plano pratico de compra'); st.dataframe(orders,hide_index=True,use_container_width=True)
     if not removed.empty: st.markdown(f'<div class="warn">{len(removed)} ativo(s) nao entraram por peso operacional irrelevante ou limite operacional.</div>',unsafe_allow_html=True)
 def practical_partial_return(ex,ps,assets):
-    if ex.empty or assets.empty or not {'ticker','retorno_periodo'}.issubset(assets.columns): return np.nan,pd.DataFrame()
-    out=ex.copy()
-    if not assets.empty and 'ticker' in assets:
-        src=assets.copy(); src['ticker_key']=src['ticker'].astype(str).str.upper(); out['ticker_key']=out['ticker'].astype(str).str.upper(); cols=[c for c in ['ticker_key','retorno_periodo','preco_entrada','preco_atual'] if c in src.columns]; out=out.merge(src[cols],on='ticker_key',how='left')
-    cdi_ret=platform_cdi_return(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo'])); out['retorno_pratico']=pd.to_numeric(out.get('retorno_periodo',pd.Series(dtype=float)),errors='coerce'); out.loc[out.apply(is_cdi,axis=1),'retorno_pratico']=cdi_ret
-    if out.loc[~out.apply(is_cdi,axis=1),'retorno_pratico'].isna().any(): return np.nan,pd.DataFrame()
-    out['contribuicao_pratica']=pd.to_numeric(out['peso_executavel'],errors='coerce').fillna(0)*out['retorno_pratico']; return float(out['contribuicao_pratica'].sum()),out
+    cdi_ret=platform_cdi_return(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo']))
+    return calculate_practical_partial_return(ex,assets,cdi_ret)
+def checked_partial_return(ex,ps,assets,capital,min_w,frac):
+    result,details=practical_partial_return(ex,ps,assets)
+    if (ps.get('calculo_oficial')=='executavel_top15_capital_10000'
+        and abs(capital-HISTORY_CAPITAL)<.01 and abs(min_w-.01)<1e-9 and frac):
+        frozen=fnum(ps.get('retorno_modelo_executavel'))
+        if np.isnan(result) or np.isnan(frozen) or not np.isclose(result,frozen,atol=1e-9,rtol=0):
+            raise ValueError('Parcial executavel diverge do arquivo oficial; painel bloqueado ate reconciliacao')
+    return result,details
 def render_tracking(f,port,capital,min_w,frac):
     ps,assets=partial(f); ex,_,_=executable_portfolio(port,capital,min_w,frac); st.subheader('Acompanhamento do mes')
     if not ps: st.info('Ainda nao ha parcial carregada.'); return
-    ret,pa=practical_partial_return(ex,ps,assets); ib=first(ps,['retorno_ibov_parcial','retorno_ibov_periodo']); cd=platform_cdi_return(first(ps,['retorno_cdi_liquido_periodo'])); alfa=ret-fnum(ib,np.nan); dt=format_updated_at(first(ps,['data_avaliacao_parcial','data_avaliacao']),f.partial)
+    ret,pa=checked_partial_return(ex,ps,assets,capital,min_w,frac); ib=first(ps,['retorno_ibov_parcial','retorno_ibov_periodo']); cd=platform_cdi_return(first(ps,['retorno_cdi_liquido_periodo'])); alfa=ret-fnum(ib,np.nan); dt=format_updated_at(first(ps,['data_avaliacao_parcial','data_avaliacao']),f.partial)
     c1,c2,c3,c4=st.columns(4); c1.metric('Minha carteira',pct(ret)); c2.metric('IBOV',pct(ib)); c3.metric('CDI liquido',pct(cd)); c4.metric('Diferenca vs IBOV',pct(alfa)); st.markdown(f'<span class="pill">Atualizado em: {dt}</span>',unsafe_allow_html=True)
     if not ex.empty and ex.apply(is_cdi,axis=1).any() and pd.isna(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo'])):
-        st.warning('CDI da reserva indisponivel nesta parcial; retorno da reserva considerado zero ate a atualizacao da fonte.')
+        st.warning('CDI da reserva indisponivel; parcial executavel nao publicada.')
     if not pa.empty:
         t=pd.DataFrame({'Ativo':pa.get('ticker'),'Peso real':pa.get('peso_executavel'),'Quantidade':pa.get('quantidade'),'Preco entrada':pa.get('preco_entrada'),'Preco atual':pa.get('preco_atual'),'Resultado':pa.get('retorno_pratico'),'Impacto':pa.get('contribuicao_pratica')})
         for c in ['Peso real','Resultado','Impacto']: t[c]=t[c].map(pct)

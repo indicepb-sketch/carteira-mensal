@@ -38,6 +38,21 @@ O sistema foi desenhado para rodar no primeiro dia util do mes, mas a execucao m
 
 ## Saidas
 
+### Parcial oficial da carteira ativa
+
+A parcial oficial e a do modelo executavel em producao: 15 acoes no maximo,
+capital de referencia de R$ 10.000, pesos minimos de 1% e saldo em CDI liquido.
+O painel e `scripts/forward_partial.py` usam as mesmas regras de execucao em
+`src/portfolio_execution.py`. O retorno bruto de todas as recomendacoes e apenas
+diagnostico; nao representa a carteira executavel.
+
+Para atualizar, use `python scripts/forward_partial.py --mes AAAA-MM --allow-network --cdi-auto`.
+O gerador usa uma data de corte comum para acoes, IBOV e CDI. Se faltar qualquer
+cotacao ou taxa nessa data, nao publica nova parcial. O painel carrega somente
+parciais marcadas como oficiais para a carteira e a versao ativas. Consulte a
+`data_corte_comum` antes de comparar resultados: datas diferentes nao sao
+comparaveis.
+
 Os relatorios sao gravados em:
 
 - `output/excel/carteira_recomendada_YYYY_MM_DD_MM_YYYY_HHMMSS.xlsx`

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import re
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -11,6 +12,10 @@ import pandas as pd
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+from portfolio_execution import executable_portfolio, practical_partial_return
+from production_registry import load_active, load_methodology
+
 EXCEL_DIR = ROOT / "output" / "excel"
 LOG_DIR = ROOT / "output" / "logs"
 RAW_DIR = ROOT / "data" / "raw"
@@ -124,7 +129,7 @@ def download_prices(tickers: list[str], start: pd.Timestamp, end: pd.Timestamp) 
         end=(end + pd.Timedelta(days=1)).date(),
         auto_adjust=False,
         group_by="ticker",
-        threads=True,
+        threads=False,
         progress=False,
     )
     out: dict[str, pd.Series] = {}
@@ -229,48 +234,63 @@ def return_from_single_adjusted_series(
     return entry, entry_price_date, current, current_price_date, current / entry - 1.0
 
 
+def require_price_on(series: pd.Series, date: pd.Timestamp, ticker: str) -> None:
+    value, observed_date = last_price(series, date)
+    if pd.isna(value) or observed_date != date:
+        raise RuntimeError(f"Cotacao de {ticker} ausente em {date.date().isoformat()}; parcial nao publicada")
+
+
 def main() -> None:
     args = parse_args()
     year, month, mes_key = parse_month(args.mes)
-    forward = Path(args.arquivo) if args.arquivo else latest_forward_file(year, month)
-    if not forward.is_absolute():
-        forward = ROOT / forward
+    forward, manifest = load_active(ROOT)
+    if manifest["month"] != mes_key:
+        raise ValueError(f"Parcial oficial somente para o mes ativo: {manifest['month']}")
+    if args.arquivo and (ROOT / args.arquivo).resolve() != forward.resolve():
+        raise ValueError("Arquivo solicitado difere da carteira oficial ativa")
+    execution = load_methodology(manifest["version"], ROOT)["execution"]
+    if (execution["scenario"] != "TOP15" or execution["unallocated_to"] != "CDI"
+            or float(execution["capital_reference"]) != 10000
+            or int(execution["max_stocks"]) != 15
+            or float(execution["min_weight_default"]) != .01
+            or execution["fractional_default"] is not True):
+        raise ValueError("Metodologia ativa nao possui a execucao esperada")
+    if not args.allow_network:
+        raise ValueError("Parcial oficial requer --allow-network; cache antigo nao e fonte oficial")
+    if not args.cdi_auto:
+        raise ValueError("Parcial oficial requer --cdi-auto para a reserva e a data de corte comum")
 
     portfolio = load_portfolio(forward)
     fields = read_fields(forward, "Resumo Forward")
     entry_date = pd.to_datetime(fields.get("data_limite_dados_selecao", fields.get("data_preco_entrada", ""))).normalize()
     if pd.isna(entry_date):
         entry_date = pd.to_datetime(portfolio.get("data_preco_entrada", pd.Series(dtype=str)).dropna().iloc[0]).normalize()
-    today = pd.to_datetime(args.data_avaliacao).normalize() if args.data_avaliacao else pd.Timestamp(datetime.today()).normalize()
-    if pd.isna(today):
+    requested_date = pd.to_datetime(args.data_avaliacao).normalize() if args.data_avaliacao else pd.Timestamp(datetime.today()).normalize()
+    if pd.isna(requested_date):
         raise ValueError("--data-avaliacao deve estar no formato YYYY-MM-DD")
-    month_end = (pd.Timestamp(year=year, month=month, day=1) + pd.offsets.MonthEnd(0)).normalize()
-    period_status = "fechamento_mes" if today >= month_end else "parcial_mes_em_andamento"
+    calendar_end = (pd.Timestamp(year=year, month=month, day=1) + pd.offsets.MonthEnd(0)).normalize()
+    last_weekday = pd.bdate_range(pd.Timestamp(year=year, month=month, day=1), calendar_end)[-1].normalize()
     defensive_tickers = {"CAIXA", "CDI"}
     tickers = [t for t in portfolio["ticker"].astype(str).str.upper().tolist() if t not in defensive_tickers]
 
-    if args.allow_network:
-        prices = download_prices(tickers + ["^BVSP"], entry_date, today)
-        source = "yfinance"
-        if prices.empty or prices[tickers].dropna(how="all").empty:
-            prices = cache_prices_from_old_partial(year, month)
-            source = "cache_parcial_anterior"
-        prices = add_local_benchmark(prices)
-    else:
-        prices = cache_prices_from_old_partial(year, month)
-        source = "cache_parcial_anterior_sem_rede"
-        prices = add_local_benchmark(prices)
-        if prices.empty:
-            raise RuntimeError("Sem cache local de parcial. Rode novamente com --allow-network se autorizar consulta ao yfinance.")
-
-    cdi_gross = np.nan
-    cdi_source = "nao_consultado"
-    cdi_daily = pd.DataFrame()
-    if args.cdi_auto:
-        try:
-            cdi_gross, cdi_daily, cdi_source = fetch_cdi_gross_return(entry_date + pd.Timedelta(days=1), today)
-        except Exception as exc:
-            cdi_source = f"erro_bcb_sgs_12: {exc}"
+    prices = download_prices(tickers + ["^BVSP"], entry_date, requested_date)
+    source = "yfinance"
+    if prices.empty:
+        raise RuntimeError("Cotacoes indisponiveis; parcial oficial nao publicada")
+    cdi_gross, cdi_daily, cdi_source = fetch_cdi_gross_return(entry_date + pd.Timedelta(days=1), requested_date)
+    if cdi_daily.empty:
+        raise RuntimeError("CDI oficial indisponivel; parcial nao publicada")
+    today = min(requested_date, pd.Timestamp(cdi_daily["data"].max()).normalize())
+    if today <= entry_date or today.month != month or today.year != year:
+        raise RuntimeError("CDI ainda nao possui data util no mes da carteira")
+    cdi_daily = cdi_daily.loc[cdi_daily["data"].le(today)].copy()
+    cdi_gross = float((1.0 + cdi_daily["cdi_diario_decimal"]).prod() - 1.0)
+    for ticker in tickers + ["^BVSP"]:
+        if ticker not in prices:
+            raise RuntimeError(f"Cotacao de {ticker} indisponivel; parcial nao publicada")
+        require_price_on(prices[ticker], entry_date, ticker)
+        require_price_on(prices[ticker], today, ticker)
+    period_status = "fechamento_mes" if today >= last_weekday else "parcial_mes_em_andamento"
     cdi_net, cdi_ir_rate, cdi_days = cdi_net_return(cdi_gross, entry_date, today)
 
     rows = []
@@ -278,7 +298,7 @@ def main() -> None:
         ticker = str(row.get("ticker", "")).upper()
         weight = float(row.get("peso_recomendado", 0.0) or 0.0)
         if ticker in defensive_tickers:
-            defensive_return = cdi_net if pd.notna(cdi_net) else 0.0
+            defensive_return = cdi_net
             rows.append(
                 {
                     "ticker": "CDI",
@@ -324,40 +344,52 @@ def main() -> None:
         )
 
     assets = pd.DataFrame(rows)
-    ibov_entry = np.nan
-    ibov_current = np.nan
-    ibov_date = None
-    if "^BVSP" in prices:
-        ibov_entry, _ = last_price(prices["^BVSP"], entry_date)
-        ibov_current, ibov_date = last_price(prices["^BVSP"], today)
-    ibov_return = (ibov_current / ibov_entry - 1.0) if pd.notna(ibov_entry) and pd.notna(ibov_current) and ibov_entry else np.nan
-    stock_assets = assets.loc[~assets["ticker"].isin(defensive_tickers)].copy()
-    missing_stock_prices = stock_assets[stock_assets["retorno_periodo"].isna()]
-    portfolio_return = pd.to_numeric(assets["contribuicao"], errors="coerce").sum(min_count=len(assets))
-    if not missing_stock_prices.empty:
-        portfolio_return = np.nan
-        if period_status == "fechamento_mes":
-            period_status = "dados_incompletos_cotacao"
+    ibov_entry, _ = last_price(prices["^BVSP"], entry_date)
+    ibov_current, _ = last_price(prices["^BVSP"], today)
+    if ibov_entry <= 0 or not np.isfinite(ibov_entry) or not np.isfinite(ibov_current):
+        raise RuntimeError("IBOV incompleto; parcial oficial nao publicada")
+    ibov_return = ibov_current / ibov_entry - 1.0
+    if assets["retorno_periodo"].isna().any():
+        raise RuntimeError("Ativo sem retorno; parcial oficial nao publicada")
+    capital = float(execution["capital_reference"])
+    executable, _removed, allocation = executable_portfolio(
+        portfolio, capital, float(execution["min_weight_default"]),
+        bool(execution["fractional_default"]), int(execution["max_stocks"]),
+    )
+    official_return, executable_assets = practical_partial_return(executable, assets, cdi_net)
+    if not np.isfinite(official_return):
+        raise RuntimeError("Retorno executavel incompleto; parcial oficial nao publicada")
+    raw_return = float(assets["contribuicao"].sum())
+    if abs(executable_assets["peso_executavel"].sum() - 1.0) > 1e-8:
+        raise RuntimeError("Pesos executaveis nao somam 100%; parcial oficial nao publicada")
 
     summary = pd.DataFrame(
         [
             {"metrica": "mes", "valor": mes_key},
             {"metrica": "arquivo_forward_usado", "valor": forward.name},
+            {"metrica": "versao_modelo", "valor": manifest["version"]},
+            {"metrica": "calculo_oficial", "valor": "executavel_top15_capital_10000"},
             {"metrica": "data_entrada", "valor": entry_date.date().isoformat()},
-            {"metrica": "data_avaliacao_parcial", "valor": ibov_date.date().isoformat() if ibov_date is not None else today.date().isoformat()},
+            {"metrica": "data_solicitada", "valor": requested_date.date().isoformat()},
+            {"metrica": "data_corte_comum", "valor": today.date().isoformat()},
+            {"metrica": "data_avaliacao_parcial", "valor": today.date().isoformat()},
             {"metrica": "status", "valor": period_status},
             {"metrica": "fonte_precos", "valor": source},
             {"metrica": "consulta_rede_autorizada", "valor": bool(args.allow_network)},
-            {"metrica": "retorno_carteira_parcial_aplicada", "valor": portfolio_return},
+            {"metrica": "capital_referencia", "valor": capital},
+            {"metrica": "quantidade_acoes_executavel", "valor": int((~executable_assets["ticker"].eq("CDI")).sum())},
+            {"metrica": "retorno_modelo_executavel", "valor": official_return},
+            {"metrica": "retorno_carteira_parcial_aplicada", "valor": official_return},
+            {"metrica": "retorno_bruto_recomendacoes_diagnostico", "valor": raw_return},
             {"metrica": "retorno_ibov_parcial", "valor": ibov_return},
-            {"metrica": "alfa_parcial_vs_ibov", "valor": portfolio_return - ibov_return if pd.notna(ibov_return) else np.nan},
-            {"metrica": "exposicao_acoes", "valor": assets.loc[~assets["ticker"].isin(["CAIXA", "CDI"]), "peso_recomendado"].sum()},
-            {"metrica": "peso_defensivo_cdi", "valor": assets.loc[assets["ticker"].isin(["CAIXA", "CDI"]), "peso_recomendado"].sum()},
+            {"metrica": "alfa_parcial_vs_ibov", "valor": official_return - ibov_return},
+            {"metrica": "exposicao_acoes", "valor": allocation["stock_value"] / capital},
+            {"metrica": "peso_defensivo_cdi", "valor": allocation["cdi_value"] / capital},
             {"metrica": "retorno_cdi_bruto_periodo", "valor": cdi_gross},
             {"metrica": "aliquota_ir_cdi", "valor": cdi_ir_rate},
             {"metrica": "retorno_cdi_liquido_periodo", "valor": cdi_net},
             {"metrica": "fonte_cdi", "valor": cdi_source},
-            {"metrica": "acoes_sem_cotacao", "valor": ", ".join(missing_stock_prices["ticker"].astype(str).tolist())},
+            {"metrica": "acoes_sem_cotacao", "valor": ""},
             {"metrica": "base_retorno_acoes", "valor": "mesma serie ajustada yfinance para entrada e avaliacao"},
         ]
     )
@@ -366,6 +398,7 @@ def main() -> None:
     with pd.ExcelWriter(output, engine="openpyxl") as writer:
         summary.to_excel(writer, sheet_name="Resumo Parcial", index=False)
         assets.to_excel(writer, sheet_name="Ativos", index=False)
+        executable_assets.to_excel(writer, sheet_name="Carteira Executavel", index=False)
         cdi_daily.to_excel(writer, sheet_name="CDI Diario", index=False)
 
     LOG_DIR.mkdir(parents=True, exist_ok=True)
@@ -375,12 +408,15 @@ def main() -> None:
         f"Arquivo forward usado: {forward.name}",
         f"Fonte precos: {source}",
         f"Data entrada: {entry_date.date().isoformat()}",
+        f"Data de corte comum: {today.date().isoformat()}",
+        f"Acoes executaveis: {int((~executable_assets['ticker'].eq('CDI')).sum())}; peso CDI: {allocation['cdi_value'] / capital:.2%}",
         f"CDI fonte: {cdi_source}",
         f"CDI bruto periodo: {cdi_gross:.4%}" if pd.notna(cdi_gross) else "CDI bruto periodo: n/a",
         f"IR CDI: {cdi_ir_rate:.2%}; CDI liquido periodo: {cdi_net:.4%}" if pd.notna(cdi_net) else f"IR CDI: {cdi_ir_rate:.2%}; CDI liquido periodo: n/a",
-        f"Retorno carteira aplicada: {portfolio_return:.2%}" if pd.notna(portfolio_return) else "Retorno carteira aplicada: n/a (cotacao ausente)",
-        f"Retorno IBOV parcial: {ibov_return:.2%}" if pd.notna(ibov_return) else "Retorno IBOV parcial: n/a",
-        f"Alfa parcial: {portfolio_return - ibov_return:.2%}" if pd.notna(ibov_return) else "Alfa parcial: n/a",
+        f"Retorno oficial executavel: {official_return:.2%}",
+        f"Retorno bruto das recomendacoes (diagnostico): {raw_return:.2%}",
+        f"Retorno IBOV parcial: {ibov_return:.2%}",
+        f"Alfa parcial: {official_return - ibov_return:.2%}",
         f"Arquivo gerado: {output}",
     ]
     log_path.write_text("\n".join(lines), encoding="utf-8")

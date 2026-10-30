@@ -61,6 +61,8 @@ def run_command(args: list[str]) -> None:
 
 def main() -> None:
     args = parse_args()
+    if not args.allow_network:
+        raise SystemExit("Parcial oficial exige --allow-network para cotacoes atuais e CDI; nenhuma atualizacao foi iniciada.")
     month = args.mes or current_month()
     LOG_DIR.mkdir(parents=True, exist_ok=True)
 
