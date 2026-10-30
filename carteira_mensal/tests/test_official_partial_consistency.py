@@ -10,6 +10,12 @@ from scripts import forward_partial
 from portfolio_execution import executable_portfolio, practical_partial_return
 
 
+def test_data_cutoff_does_not_borrow_file_modification_time(tmp_path):
+    path = tmp_path / "partial.xlsx"
+    path.touch()
+    assert app.format_updated_at("2026-10-28", path) == "28/10/2026"
+
+
 def test_dashboard_and_generator_share_execution_and_reject_missing_cdi():
     portfolio = pd.DataFrame([
         {"ticker": "AAA3.SA", "nota_final": 3, "peso_recomendado": .5,

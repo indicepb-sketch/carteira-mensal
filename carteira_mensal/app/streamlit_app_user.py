@@ -166,7 +166,7 @@ def format_updated_at(value:Any,path:Path|None=None)->str:
     parsed=pd.to_datetime(value,errors='coerce') if value is not None else pd.NaT
     if pd.notna(parsed):
         if parsed.hour or parsed.minute or parsed.second: return parsed.strftime('%d/%m/%Y %H:%M')
-        return f"{parsed.strftime('%d/%m/%Y')} {file_dt.strftime('%H:%M')}" if file_dt else parsed.strftime('%d/%m/%Y')
+        return parsed.strftime('%d/%m/%Y')
     return file_dt.strftime('%d/%m/%Y %H:%M') if file_dt else '-'
 def portfolio(f:AppFiles)->pd.DataFrame:
     if not f.forward: return pd.DataFrame()
@@ -414,7 +414,7 @@ def render_start(f,port,capital,min_w,frac):
         cr,_pa=checked_partial_return(ex,ps,assets,capital,min_w,frac)
         ib=first(ps,['retorno_ibov_parcial','retorno_ibov_periodo']); al=fnum(cr,np.nan)-fnum(ib,np.nan) if not np.isnan(fnum(cr,np.nan)) and not np.isnan(fnum(ib,np.nan)) else np.nan; dt=format_updated_at(first(ps,['data_avaliacao_parcial','data_avaliacao']),f.partial)
         status_txt=str(ps.get('status','')).lower(); period_title='Fechamento do mes' if 'fechamento' in status_txt else 'Acompanhamento do mes'
-        st.markdown(f'#### {period_title}'); p1,p2,p3,p4=st.columns(4); p1.metric('Modelo executavel',pct(cr)); p2.metric('IBOV',pct(ib)); p3.metric('Diferenca',pct(al)); p4.metric('Atualizado em',dt)
+        st.markdown(f'#### {period_title}'); p1,p2,p3,p4=st.columns(4); p1.metric('Modelo executavel',pct(cr)); p2.metric('IBOV',pct(ib)); p3.metric('Diferenca',pct(al)); p4.metric('Dados ate',dt)
         if cdi and pd.isna(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo'])):
             st.warning('CDI da reserva indisponivel; parcial executavel nao publicada.')
     left,right=st.columns([.9,1.35])
@@ -446,7 +446,7 @@ def render_tracking(f,port,capital,min_w,frac):
     ps,assets=partial(f); ex,_,_=executable_portfolio(port,capital,min_w,frac); st.subheader('Acompanhamento do mes')
     if not ps: st.info('Ainda nao ha parcial carregada.'); return
     ret,pa=checked_partial_return(ex,ps,assets,capital,min_w,frac); ib=first(ps,['retorno_ibov_parcial','retorno_ibov_periodo']); cd=platform_cdi_return(first(ps,['retorno_cdi_liquido_periodo'])); alfa=ret-fnum(ib,np.nan); dt=format_updated_at(first(ps,['data_avaliacao_parcial','data_avaliacao']),f.partial)
-    c1,c2,c3,c4=st.columns(4); c1.metric('Minha carteira',pct(ret)); c2.metric('IBOV',pct(ib)); c3.metric('CDI liquido',pct(cd)); c4.metric('Diferenca vs IBOV',pct(alfa)); st.markdown(f'<span class="pill">Atualizado em: {dt}</span>',unsafe_allow_html=True)
+    c1,c2,c3,c4=st.columns(4); c1.metric('Minha carteira',pct(ret)); c2.metric('IBOV',pct(ib)); c3.metric('CDI liquido',pct(cd)); c4.metric('Diferenca vs IBOV',pct(alfa)); st.markdown(f'<span class="pill">Dados ate: {dt}</span>',unsafe_allow_html=True)
     if not ex.empty and ex.apply(is_cdi,axis=1).any() and pd.isna(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo'])):
         st.warning('CDI da reserva indisponivel; parcial executavel nao publicada.')
     if not pa.empty:
