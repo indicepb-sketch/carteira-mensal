@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import pandas as pd
@@ -98,3 +99,33 @@ def test_current_closed_month_is_not_added_twice(monkeypatch):
     monkeypatch.setattr(app, "finalized_partial_month_row", lambda *args, **kwargs: row)
 
     assert app.monthly(files)["mes"].tolist() == ["2026-09", "2026-10"]
+
+
+def test_previous_open_partial_is_display_only(monkeypatch, tmp_path):
+    production = tmp_path / "output" / "production"
+    production.mkdir(parents=True)
+    (production / "2026-10.json").write_text(json.dumps({
+        "month": "2026-10",
+        "file": "carteira_forward_2026_10.xlsx",
+        "version": "forward-13b-v1",
+    }), encoding="utf-8")
+    archive = Path("parcial_carteira_forward_2026_10.xlsx")
+    details = {"mes": "2026-10", "status": "parcial_mes_em_andamento",
+               "data_corte_comum": "2026-10-29", "retorno_modelo_executavel": -0.10}
+    monkeypatch.setattr(app, "ROOT", tmp_path)
+    monkeypatch.setattr(app, "current_forward_month", lambda f: "2026-11")
+    monkeypatch.setattr(app, "latest_official_partial", lambda month, forward, version: archive)
+    monkeypatch.setattr(app, "fields", lambda path, sheet_name: details)
+    files = app.AppFiles(Path("carteira_forward_2026_11.xlsx"), None, None, "forward-13b-v1")
+    history = pd.DataFrame([{"mes": "2026-09", "retorno_modelo": 0.02}])
+
+    path, partial = app.latest_previous_open_partial(files, history)
+    assert path == archive
+    assert partial == details
+    assert history["mes"].tolist() == ["2026-09"]
+
+    with_october = pd.concat([history, pd.DataFrame([{"mes": "2026-10"}])], ignore_index=True)
+    assert app.latest_previous_open_partial(files, with_october) == (None, {})
+
+    details["status"] = "fechamento_mes"
+    assert app.latest_previous_open_partial(files, history) == (None, {})

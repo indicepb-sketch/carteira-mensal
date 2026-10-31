@@ -4,6 +4,7 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 from zoneinfo import ZoneInfo
+import json
 import re
 import sys
 from typing import Any
@@ -372,6 +373,30 @@ def partial(f):
     if forward_month and partial_month and partial_month!=forward_month:
         return {},pd.DataFrame()
     return ps,sheet(str(f.partial),'Ativos')
+def latest_previous_open_partial(f,history:pd.DataFrame)->tuple[Path|None,dict[str,Any]]:
+    try:
+        previous=str(pd.Period(current_forward_month(f),freq='M')-1)
+    except (ValueError,TypeError):
+        return None,{}
+    if 'mes' in history and history['mes'].astype(str).str[:7].eq(previous).any():
+        return None,{}
+    manifest_path=ROOT/'output'/'production'/f'{previous}.json'
+    try:
+        manifest=json.loads(manifest_path.read_text(encoding='utf-8'))
+    except (OSError,ValueError):
+        return None,{}
+    if not isinstance(manifest,dict) or manifest.get('month')!=previous:
+        return None,{}
+    forward_name=manifest.get('file'); version=manifest.get('version')
+    if not forward_name or not version:
+        return None,{}
+    path=latest_official_partial(previous,forward_name,version)
+    if not path:
+        return None,{}
+    details=fields(path,'Resumo Parcial')
+    if str(details.get('status',''))!='parcial_mes_em_andamento' or str(details.get('mes',''))[:7]!=previous:
+        return None,{}
+    return path,details
 def cumulative(df):
     if go is None or df.empty: return None
     fig=go.Figure()
@@ -544,7 +569,20 @@ def render_previous_portfolios(f):
     st.dataframe(previous_portfolio_table(rows),hide_index=True,use_container_width=True)
 def render_history(f,capital,min_w,frac):
     st.subheader('Histórico do modelo executável'); df=monthly(f,capital,min_w,frac)
-    if df.empty: st.info('Historico nao encontrado.'); return
+    previous_path,previous_ps=latest_previous_open_partial(f,df)
+    if previous_path:
+        month=str(previous_ps['mes'])[:7]
+        model=fnum(previous_ps.get('retorno_modelo_executavel'))
+        ibov=fnum(first(previous_ps,['retorno_ibov_parcial','retorno_ibov_periodo']))
+        cdi=fnum(first(previous_ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo']))
+        difference=model-ibov if not np.isnan(model) and not np.isnan(ibov) else np.nan
+        st.subheader(f'Parcial de {month_label(month)}')
+        cutoff=format_updated_at(first(previous_ps,['data_corte_comum','data_avaliacao_parcial']))
+        st.caption(f'Dados até {cutoff} · referência de {money(HISTORY_CAPITAL)}. Ainda não é fechamento e não entra nos totais, médias ou gráficos abaixo.')
+        a,b,c,d=st.columns(4)
+        a.metric('Carteira',pct(model)); b.metric('IBOV',pct(ibov)); c.metric('CDI líquido',pct(cdi)); d.metric('Diferença vs IBOV',pct(difference))
+        st.divider()
+    if df.empty: st.info('Histórico fechado ainda não encontrado.'); return
     current_ps,_=partial(f)
     if current_ps:
         period_status='Fechado' if 'fechamento' in str(current_ps.get('status','')).lower() else 'Parcial'
