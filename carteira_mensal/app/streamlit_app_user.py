@@ -412,17 +412,32 @@ def sector_exposure_chart(ex):
     d=ex.copy(); d['setor_exposicao']=d.apply(lambda r:'CDI / Reserva' if is_cdi(r) else str(r.get('setor') or 'Sem setor'),axis=1); d['peso_executavel']=pd.to_numeric(d['peso_executavel'],errors='coerce').fillna(0)
     g=d.groupby('setor_exposicao',as_index=False)['peso_executavel'].sum().sort_values('peso_executavel'); colors=g['setor_exposicao'].map(lambda x:'#16a34a' if x=='CDI / Reserva' else '#2f80ed')
     fig=go.Figure(go.Bar(x=g['peso_executavel'],y=g['setor_exposicao'],orientation='h',marker_color=colors,text=g['peso_executavel'].map(lambda v:f'{v:.1%}'),textposition='auto')); fig.update_layout(height=max(300,42*len(g)),xaxis_tickformat='.0%',template='plotly_dark',showlegend=False,margin=dict(l=10,r=10,t=20,b=20)); return fig
-def historical_calendar_html(df):
+def historical_calendar_html(df, open_partial=None):
     months=[(1,'JAN'),(2,'FEV'),(3,'MAR'),(4,'ABR'),(5,'MAI'),(6,'JUN'),(7,'JUL'),(8,'AGO'),(9,'SET'),(10,'OUT'),(11,'NOV'),(12,'DEZ')]
     data=df.copy(); data['mes_dt']=pd.to_datetime(data.get('mes'),errors='coerce'); data=data.dropna(subset=['mes_dt'])
     if data.empty: return ''
     data['ano']=data['mes_dt'].dt.year; data['mes_num']=data['mes_dt'].dt.month
     for c in ['retorno_modelo','retorno_expost_ibov','alfa']: data[c]=pd.to_numeric(data.get(c),errors='coerce')
     html=['<div class="hist-card"><div class="hist-title">Rentabilidade Historica</div><table class="hist-table"><thead><tr><th>ANO</th>']+[f'<th>{m}</th>' for _,m in months]+['<th>TOTAL</th></tr></thead><tbody>']
-    for year in sorted(data['ano'].astype(int).unique(),reverse=True):
+    partial_month=str(open_partial.get('mes',''))[:7] if open_partial else ''
+    partial_date=pd.to_datetime(partial_month,format='%Y-%m',errors='coerce')
+    years=set(data['ano'].astype(int).unique())
+    if pd.notna(partial_date): years.add(partial_date.year)
+    for year in sorted(years,reverse=True):
         ydf=data[data['ano'].eq(year)].copy(); html.append(f'<tr><th>{year}</th>')
         for mn,_ in months:
             row=ydf[ydf['mes_num'].eq(mn)]
+            if row.empty and pd.notna(partial_date) and year==partial_date.year and mn==partial_date.month:
+                ret=fnum(open_partial.get('retorno_modelo_executavel'))
+                ibov=fnum(first(open_partial,['retorno_ibov_parcial','retorno_ibov_periodo']))
+                alfa=ret-ibov if not np.isnan(ret) and not np.isnan(ibov) else np.nan
+                if not np.isnan(ret):
+                    rc='pos' if ret>=0 else 'neg'; ic='pos' if not np.isnan(ibov) and ibov>=0 else 'neg'; ac='beat' if not np.isnan(alfa) and alfa>=0 else 'miss'
+                    cutoff=format_updated_at(first(open_partial,['data_corte_comum','data_avaliacao_parcial']))
+                    ibov_txt='-' if np.isnan(ibov) else f'IBOV {ibov*100:+.2f}%'
+                    alfa_txt='-' if np.isnan(alfa) else f'{alfa*100:+.2f} p.p. vs IBOV'
+                    html.append(f'<td class="hist-cell partial"><div class="hist-partial-label">PARCIAL</div><div class="hist-ret {rc}">{ret*100:.2f}%</div><div class="hist-ibov {ic}">{ibov_txt}</div><div class="hist-sub {ac}">{alfa_txt}</div><div class="hist-partial-date">até {cutoff}</div></td>')
+                    continue
             if row.empty: html.append('<td class="empty">-</td>'); continue
             r=row.iloc[0]; ret=fnum(r.get('retorno_modelo')); ibov=fnum(r.get('retorno_expost_ibov')); alfa=fnum(r.get('alfa')); rc='pos' if not np.isnan(ret) and ret>=0 else 'neg'; ic='pos' if not np.isnan(ibov) and ibov>=0 else 'neg'; ac='beat' if not np.isnan(alfa) and alfa>=0 else 'miss' if not np.isnan(alfa) else 'neutral'
             ibov_txt='-' if np.isnan(ibov) else f'IBOV {ibov*100:+.2f}%'
@@ -445,6 +460,9 @@ def css():
     .hist-table th{background:#20272b;color:#e5ecea;text-align:center;padding:11px 8px;border-bottom:1px solid #343d42}
     .hist-table td{background:#171c21;text-align:center;padding:11px 8px;border-top:1px solid #30393e;min-width:82px}
     .hist-table .total{background:#20312d}.hist-ret{font-weight:700}
+    .hist-table td.partial{background:#1b2926;border:1px solid #3a7663}
+    .hist-partial-label{color:#8be1bd;font-size:.7rem;font-weight:700}
+    .hist-partial-date{color:#b7c1c0;font-size:.72rem;margin-top:5px}
     .hist-ret.pos{color:#7bd8a9}.hist-ret.neg{color:#f0918f}
     .hist-ibov{font-size:.78rem;color:#b7c1c0;margin-top:4px}
     .hist-ibov.pos{color:#90c4db}.hist-ibov.neg{color:#f5b0a7}
@@ -602,7 +620,7 @@ def render_history(f,capital,min_w,frac):
     fig=cumulative(df)
     if fig is not None:
         st.plotly_chart(fig,use_container_width=True)
-    html=historical_calendar_html(df)
+    html=historical_calendar_html(df,previous_ps if previous_path else None)
     if html:
         st.markdown(html,unsafe_allow_html=True)
     view=df.copy();
