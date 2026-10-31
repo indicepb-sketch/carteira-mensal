@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
+from zoneinfo import ZoneInfo
 import re
 import sys
 from typing import Any
@@ -168,6 +169,10 @@ def format_updated_at(value:Any,path:Path|None=None)->str:
         if parsed.hour or parsed.minute or parsed.second: return parsed.strftime('%d/%m/%Y %H:%M')
         return parsed.strftime('%d/%m/%Y')
     return file_dt.strftime('%d/%m/%Y %H:%M') if file_dt else '-'
+def upcoming_formation(value:Any,today=None)->bool:
+    formation=pd.to_datetime(value,errors='coerce') if value is not None else pd.NaT
+    local_today=today or datetime.now(ZoneInfo('America/Fortaleza')).date()
+    return bool(pd.notna(formation) and formation.date()>local_today)
 def portfolio(f:AppFiles)->pd.DataFrame:
     if not f.forward: return pd.DataFrame()
     df=sheet(str(f.forward),'Carteira Aplicada')
@@ -408,8 +413,11 @@ def css():
     st.markdown('''<style>.block-container{padding-top:1.1rem;max-width:1480px}.hero{background:linear-gradient(135deg,#10233d,#142f2d);border:1px solid #2f5670;border-radius:8px;padding:20px 22px;margin:10px 0 16px}.portfolio-ref{font-size:1.35rem;font-weight:850;color:#f8fafc;margin-bottom:8px}.note{color:#a7b0c0;line-height:1.55}.decision{background:#0f2d22;color:#ecfdf5;border:1px solid #2f855a;border-radius:8px;padding:16px 18px;margin-bottom:12px;line-height:1.55}.warn{background:#32220d;color:#fff7ed;border:1px solid #b45309;border-radius:8px;padding:14px 16px;margin:10px 0}.card{background:#111827;color:#f8fafc;border:1px solid #2f3b52;border-radius:8px;padding:14px 16px}.pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#1e293b;color:#dbeafe;border:1px solid #334155;font-weight:700;font-size:.85rem}.hist-card{background:#0f172a;color:#f8fafc;border:1px solid #263449;border-radius:12px;margin:18px 0;overflow:hidden}.hist-title{font-weight:800;font-size:1.1rem;padding:18px 24px;border-bottom:1px solid #263449}.hist-table{width:100%;border-collapse:separate;border-spacing:0;font-size:.92rem}.hist-table th{background:#111827;color:#dbeafe;text-align:center;padding:13px 10px;font-weight:800;border-bottom:1px solid #263449}.hist-table td{background:#0b1220;text-align:center;padding:13px 9px;border-top:1px solid #182235;border-left:1px solid #111827;min-width:82px}.hist-table tbody th{background:#111827;color:#f8fafc}.hist-table .total{background:#101b2e}.hist-ret{font-weight:800}.hist-ret.pos{color:#4ade80}.hist-ret.neg{color:#f87171}.hist-ibov{font-size:.78rem;color:#cbd5e1;margin-top:4px}.hist-ibov.pos{color:#93c5fd}.hist-ibov.neg{color:#fca5a5}.hist-sub{font-size:.78rem;color:#cbd5e1;margin-top:4px;min-height:17px}.hist-sub.beat{color:#86efac;font-weight:700}.hist-sub.miss{color:#fca5a5;font-weight:700}.hist-table .empty{color:#94a3b8;font-weight:800}div[data-testid="stMetric"]{background:#111827;border:1px solid #2f3b52;border-radius:8px;padding:14px 16px;min-height:120px}div[data-testid="stMetric"] label,div[data-testid="stMetric"] [data-testid="stMetricValue"]{color:#f8fafc!important}</style>''',unsafe_allow_html=True)
 def render_start(f,port,capital,min_w,frac):
     ff,rg=fields(f.forward,'Resumo Forward'),fields(f.forward,'Regime Mercado Base'); ps,assets=partial(f); ex,removed,meta=executable_portfolio(port,capital,min_w,frac); orders,_=order_plan(port,capital,min_w,frac); sv=float(meta.get('stock_value',0)); cv=float(meta.get('cdi_value',0)); stocks=sv/capital if capital else 0; cdi=cv/capital if capital else 0
-    st.subheader('O que fazer agora'); st.markdown(f'<div class="decision">Com <b>{money(capital)}</b>, a carteira executavel fica com <b>{money(sv)}</b> em acoes e <b>{money(cv)}</b> em CDI liquido/reserva.</div>',unsafe_allow_html=True)
-    a,b,c,d=st.columns(4); a.metric('Acoes',pct(stocks)); b.metric('CDI',pct(cdi)); c.metric('Comprar em acoes',money(sv)); d.metric('Aplicar em CDI',money(cv))
+    formation=first(ff,['data_formacao_forward','data_formacao_carteira']); pending=upcoming_formation(formation)
+    st.subheader('Carteira preparada' if pending else 'O que fazer agora')
+    if pending: st.info(f'Primeiro pregao desta carteira em {pd.to_datetime(formation).strftime("%d/%m/%Y")}. Alocacao preparada; execucao a partir dessa data.')
+    st.markdown(f'<div class="decision">Com <b>{money(capital)}</b>, a carteira executavel fica com <b>{money(sv)}</b> em acoes e <b>{money(cv)}</b> em CDI liquido/reserva.</div>',unsafe_allow_html=True)
+    a,b,c,d=st.columns(4); a.metric('Acoes',pct(stocks)); b.metric('CDI',pct(cdi)); c.metric('Acoes planejadas' if pending else 'Comprar em acoes',money(sv)); d.metric('CDI planejado' if pending else 'Aplicar em CDI',money(cv))
     if ps:
         cr,_pa=checked_partial_return(ex,ps,assets,capital,min_w,frac)
         ib=first(ps,['retorno_ibov_parcial','retorno_ibov_periodo']); al=fnum(cr,np.nan)-fnum(ib,np.nan) if not np.isnan(fnum(cr,np.nan)) and not np.isnan(fnum(ib,np.nan)) else np.nan; dt=format_updated_at(first(ps,['data_avaliacao_parcial','data_avaliacao']),f.partial)
@@ -429,7 +437,7 @@ def render_start(f,port,capital,min_w,frac):
             st.plotly_chart(sfig,use_container_width=True)
     with right:
         mercado=rg.get('regime_mercado') or rg.get('subtipo_mercado_favoravel') or 'Mercado seletivo'; st.markdown('#### Leitura simples'); st.dataframe(pd.DataFrame({'Pergunta':['Mes','Data de formacao','Leitura do mercado','Tipo de selecao','Carteira usada na plataforma'],'Resposta':[ff.get('mes_forward') or ff.get('mes_referencia') or current_forward_month(f) or '-' ,ff.get('data_formacao_forward') or ff.get('data_formacao_carteira'),mercado,ff.get('sinal_usado') or 'modelo operacional','Executavel por quantidade inteira']}),hide_index=True,use_container_width=True)
-    st.subheader('Plano pratico de compra'); st.dataframe(orders,hide_index=True,use_container_width=True)
+    st.subheader('Plano para o primeiro pregao' if pending else 'Plano pratico de compra'); st.dataframe(orders,hide_index=True,use_container_width=True)
     if not removed.empty: st.markdown(f'<div class="warn">{len(removed)} ativo(s) nao entraram por peso operacional irrelevante ou limite operacional.</div>',unsafe_allow_html=True)
 def practical_partial_return(ex,ps,assets):
     cdi_ret=platform_cdi_return(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo']))

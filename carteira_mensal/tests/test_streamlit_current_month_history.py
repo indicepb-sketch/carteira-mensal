@@ -19,10 +19,11 @@ def test_production_version_includes_the_execution_rule(monkeypatch):
 
     portfolio = app.portfolio(files)
     executable, removed, _ = app.executable_portfolio(portfolio, 10000, 0.01, True)
-    assert len(portfolio) == 17
-    assert len(executable.loc[~executable.apply(app.is_cdi, axis=1)]) == 15
-    assert set(removed["ticker"]) == {"B3SA3.SA", "ASAI3.SA"}
-    assert executable.loc[executable.apply(app.is_cdi, axis=1), "peso_executavel"].iloc[0] == pytest.approx(0.0881803493)
+    stocks = executable.loc[~executable.apply(app.is_cdi, axis=1)]
+    assert not portfolio.empty
+    assert 0 < len(stocks) <= app.PLATFORM_MAX_STOCKS
+    assert set(removed["ticker"]).isdisjoint(stocks["ticker"])
+    assert executable["peso_executavel"].sum() == pytest.approx(1.0)
 
     changed = dict(method)
     changed["execution"] = {**execution, "max_stocks": 16}

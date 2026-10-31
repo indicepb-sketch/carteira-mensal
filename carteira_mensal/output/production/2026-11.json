@@ -1,0 +1,9 @@
+{
+  "activated_at_utc": "2026-10-31T20:16:37.666933+00:00",
+  "file": "carteira_forward_2026_11.xlsx",
+  "formation_date": "2026-11-03",
+  "month": "2026-11",
+  "selection_cutoff": "2026-10-30",
+  "sha256": "24e6a092c915be69c930077a668dc4ddef4dd06596a73c7a332170710079fd6c",
+  "version": "forward-13b-v1"
+}
