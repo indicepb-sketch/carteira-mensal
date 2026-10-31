@@ -20,6 +20,7 @@ for item in (str(SRC), str(SCRIPTS)):
         sys.path.insert(0, item)
 
 from utils import load_settings  # noqa: E402
+from b3_calendar import b3_trading_days_by_rule  # noqa: E402
 import shadow_simulacao as sh  # noqa: E402
 import shadow_consolidada_6meses as sc  # noqa: E402
 import shadow_backtest_2025 as bt  # noqa: E402
@@ -67,12 +68,13 @@ def month_parts(month: str | None) -> tuple[int, int, str]:
 
 
 def first_business_day(year: int, month: int) -> pd.Timestamp:
-    return pd.bdate_range(f"{year:04d}-{month:02d}-01", periods=1)[0].normalize()
+    return b3_trading_days_by_rule(year, month)[0].normalize()
 
 
 def previous_month_end(year: int, month: int) -> pd.Timestamp:
     first = pd.Timestamp(f"{year:04d}-{month:02d}-01")
-    return (first - pd.Timedelta(days=1)).normalize()
+    previous = first - pd.Timedelta(days=1)
+    return b3_trading_days_by_rule(previous.year, previous.month)[-1].normalize()
 
 
 def latest_base_workbook(year: int, month: int) -> Path | None:

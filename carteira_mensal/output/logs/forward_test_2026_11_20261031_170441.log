@@ -1,0 +1,10 @@
+Verificacao producao/flags shadow: OK
+Ancora junho Teste 14 / 13B conservador: PASSOU
+Gerando base mensal 2026-11: formacao=2026-11-03 com series cortadas em 2026-10-30
+Base mensal usada: carteira_recomendada_2026_11_v1.xlsx
+Arquivo forward gerado: C:\Users\amade\Documents\Codex\2026-06-26\https-chatgpt-com-c-687d279e-28e0\deploy_portfolio_consistency_20261030\carteira_mensal\output\excel\carteira_forward_2026_11.xlsx
+Data formacao: 2026-11-03 | limite selecao/preco entrada: 2026-10-30
+Carteira forward modelo 100%: PETR3.SA: 16.37%; GGBR4.SA: 13.62%; EMBJ3.SA: 11.69%; FLRY3.SA: 0.46%; BBSE3.SA: 18.33%; SUZB3.SA: 12.70%; PRIO3.SA: 13.61%; WEGE3.SA: 13.22%
+Exposicao aplicada: 30%; CDI/Tesouro Selic: 70%; motivo=queda_forte: 30% em acoes e 70% em CDI/Tesouro Selic liquido de IR
+Bucket13B=queda_forte; regime=queda_forte; sinal=SINAL_A_DEFENSIVO; beta_alvo=0.75; beta_real=0.13149378675524212
+Comando mensal: .\.venv\Scripts\python.exe scripts\forward_test.py --mes YYYY-MM
