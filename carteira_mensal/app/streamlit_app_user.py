@@ -451,7 +451,7 @@ def render_start(f,port,capital,min_w,frac):
     else:
         columns=['Ativo','Quantidade','Valor estimado','Peso final','Preco','Empresa']
         st.dataframe(orders[columns].rename(columns={'Preco':'Preço ref.','Valor estimado':'Valor planejado','Peso final':'Peso'}),hide_index=True,use_container_width=True)
-    st.download_button('Baixar carteira oficial',data=f.forward.read_bytes(),file_name=f.forward.name,mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',icon=':material/download:')
+    st.download_button('Baixar carteira-base do modelo',data=f.forward.read_bytes(),file_name=f.forward.name,mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',icon=':material/download:',help='Arquivo oficial da seleção; não inclui ajustes do valor simulado acima.')
     if not removed.empty:
         names=', '.join(removed['ticker'].astype(str).str.replace('.SA','',regex=False))
         st.caption(f'Fora do plano executável com os ajustes atuais: {names}.')
