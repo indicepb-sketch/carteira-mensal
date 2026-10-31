@@ -108,7 +108,7 @@ def fnum(x:Any,default=np.nan)->float:
         return float(x)
     except Exception: return float(default)
 def pct(x:Any,d:int=2)->str:
-    n=fnum(x); return '-' if np.isnan(n) else f'{n*100:.{d}f}%'
+    n=fnum(x); return '-' if np.isnan(n) else f'{n*100:.{d}f}%'.replace('.',',')
 def money(x:Any)->str:
     n=fnum(x)
     return '-' if np.isnan(n) else f'R$ {n:,.2f}'.replace(',','X').replace('.',',').replace('X','.')
@@ -410,35 +410,66 @@ def autorefresh(enabled: bool, minutes: int):
     if enabled:
         components.html(f"<script>setTimeout(function(){{window.parent.location.reload();}}, {minutes * 60000});</script>", height=0)
 def css():
-    st.markdown('''<style>.block-container{padding-top:1.1rem;max-width:1480px}.hero{background:linear-gradient(135deg,#10233d,#142f2d);border:1px solid #2f5670;border-radius:8px;padding:20px 22px;margin:10px 0 16px}.portfolio-ref{font-size:1.35rem;font-weight:850;color:#f8fafc;margin-bottom:8px}.note{color:#a7b0c0;line-height:1.55}.decision{background:#0f2d22;color:#ecfdf5;border:1px solid #2f855a;border-radius:8px;padding:16px 18px;margin-bottom:12px;line-height:1.55}.warn{background:#32220d;color:#fff7ed;border:1px solid #b45309;border-radius:8px;padding:14px 16px;margin:10px 0}.card{background:#111827;color:#f8fafc;border:1px solid #2f3b52;border-radius:8px;padding:14px 16px}.pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#1e293b;color:#dbeafe;border:1px solid #334155;font-weight:700;font-size:.85rem}.hist-card{background:#0f172a;color:#f8fafc;border:1px solid #263449;border-radius:12px;margin:18px 0;overflow:hidden}.hist-title{font-weight:800;font-size:1.1rem;padding:18px 24px;border-bottom:1px solid #263449}.hist-table{width:100%;border-collapse:separate;border-spacing:0;font-size:.92rem}.hist-table th{background:#111827;color:#dbeafe;text-align:center;padding:13px 10px;font-weight:800;border-bottom:1px solid #263449}.hist-table td{background:#0b1220;text-align:center;padding:13px 9px;border-top:1px solid #182235;border-left:1px solid #111827;min-width:82px}.hist-table tbody th{background:#111827;color:#f8fafc}.hist-table .total{background:#101b2e}.hist-ret{font-weight:800}.hist-ret.pos{color:#4ade80}.hist-ret.neg{color:#f87171}.hist-ibov{font-size:.78rem;color:#cbd5e1;margin-top:4px}.hist-ibov.pos{color:#93c5fd}.hist-ibov.neg{color:#fca5a5}.hist-sub{font-size:.78rem;color:#cbd5e1;margin-top:4px;min-height:17px}.hist-sub.beat{color:#86efac;font-weight:700}.hist-sub.miss{color:#fca5a5;font-weight:700}.hist-table .empty{color:#94a3b8;font-weight:800}div[data-testid="stMetric"]{background:#111827;border:1px solid #2f3b52;border-radius:8px;padding:14px 16px;min-height:120px}div[data-testid="stMetric"] label,div[data-testid="stMetric"] [data-testid="stMetricValue"]{color:#f8fafc!important}</style>''',unsafe_allow_html=True)
+    st.markdown('''<style>
+    .block-container{padding-top:1.4rem;max-width:1180px}
+    .note{color:#aab3b9;line-height:1.5}
+    .pill{display:inline-block;padding:4px 9px;border-radius:4px;background:#20312d;color:#d4f4e8;border:1px solid #35594e;font-size:.85rem}
+    .hist-card{background:#171c21;border:1px solid #343d42;border-radius:8px;margin:18px 0;overflow-x:auto}
+    .hist-title{font-weight:700;font-size:1.05rem;padding:16px 20px;border-bottom:1px solid #343d42}
+    .hist-table{min-width:1100px;width:100%;border-collapse:separate;border-spacing:0;font-size:.88rem}
+    .hist-table th{background:#20272b;color:#e5ecea;text-align:center;padding:11px 8px;border-bottom:1px solid #343d42}
+    .hist-table td{background:#171c21;text-align:center;padding:11px 8px;border-top:1px solid #30393e;min-width:82px}
+    .hist-table .total{background:#20312d}.hist-ret{font-weight:700}
+    .hist-ret.pos{color:#7bd8a9}.hist-ret.neg{color:#f0918f}
+    .hist-ibov{font-size:.78rem;color:#b7c1c0;margin-top:4px}
+    .hist-ibov.pos{color:#90c4db}.hist-ibov.neg{color:#f5b0a7}
+    .hist-sub{font-size:.78rem;color:#b7c1c0;margin-top:4px;min-height:17px}
+    .hist-sub.beat{color:#7bd8a9;font-weight:700}.hist-sub.miss{color:#f5b0a7;font-weight:700}
+    .hist-table .empty{color:#8c9998;font-weight:700}
+    div[data-testid="stMetric"]{background:#1b2225;border:1px solid #34423f;border-radius:6px;padding:14px 16px;min-height:104px}
+    div[data-testid="stMetric"] label,div[data-testid="stMetric"] [data-testid="stMetricValue"]{color:#f4f7f5!important;overflow-wrap:anywhere}
+    div[data-testid="stMetric"] [data-testid="stMetricValue"]{font-size:1.8rem}
+    </style>''',unsafe_allow_html=True)
 def render_start(f,port,capital,min_w,frac):
-    ff,rg=fields(f.forward,'Resumo Forward'),fields(f.forward,'Regime Mercado Base'); ps,assets=partial(f); ex,removed,meta=executable_portfolio(port,capital,min_w,frac); orders,_=order_plan(port,capital,min_w,frac); sv=float(meta.get('stock_value',0)); cv=float(meta.get('cdi_value',0)); stocks=sv/capital if capital else 0; cdi=cv/capital if capital else 0
+    ff=fields(f.forward,'Resumo Forward'); ps,assets=partial(f)
+    ex,removed,meta=executable_portfolio(port,capital,min_w,frac)
+    orders,_=order_plan(port,capital,min_w,frac)
+    sv=float(meta.get('stock_value',0)); cv=float(meta.get('cdi_value',0))
+    stocks=sv/capital if capital else 0; cdi=cv/capital if capital else 0
     formation=first(ff,['data_formacao_forward','data_formacao_carteira']); pending=upcoming_formation(formation)
-    st.subheader('Carteira preparada' if pending else 'O que fazer agora')
-    if pending: st.info(f'Primeiro pregao desta carteira em {pd.to_datetime(formation).strftime("%d/%m/%Y")}. Alocacao preparada; execucao a partir dessa data.')
-    st.markdown(f'<div class="decision">Com <b>{money(capital)}</b>, a carteira executavel fica com <b>{money(sv)}</b> em acoes e <b>{money(cv)}</b> em CDI liquido/reserva.</div>',unsafe_allow_html=True)
-    a,b,c,d=st.columns(4); a.metric('Acoes',pct(stocks)); b.metric('CDI',pct(cdi)); c.metric('Acoes planejadas' if pending else 'Comprar em acoes',money(sv)); d.metric('CDI planejado' if pending else 'Aplicar em CDI',money(cv))
+    if pending:
+        st.info(f'Carteira preparada para {pd.to_datetime(formation).strftime("%d/%m/%Y")}, primeiro pregão do período. Valores ainda não representam compras realizadas.')
+    st.subheader('Distribuição para '+money(capital))
+    a,b=st.columns(2)
+    a.metric(f'Ações · {pct(stocks)}',money(sv))
+    b.metric(f'CDI / reserva · {pct(cdi)}',money(cv))
+    stock_count=len(ex.loc[~ex.apply(is_cdi,axis=1)]) if not ex.empty else 0
+    st.caption(f'{stock_count} ações no plano executável. Valores calculados com preços de referência de {format_updated_at(first(ff,["data_limite_dados_selecao"]))}; os preços no pregão podem variar.')
+    st.subheader('Plano para o primeiro pregão' if pending else 'Plano de alocação')
+    if orders.empty:
+        st.info('Não há ordens calculadas para o valor informado.')
+    else:
+        columns=['Ativo','Quantidade','Valor estimado','Peso final','Preco','Empresa']
+        st.dataframe(orders[columns].rename(columns={'Preco':'Preço ref.','Valor estimado':'Valor planejado','Peso final':'Peso'}),hide_index=True,use_container_width=True)
+    st.download_button('Baixar carteira oficial',data=f.forward.read_bytes(),file_name=f.forward.name,mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',icon=':material/download:')
+    if not removed.empty:
+        names=', '.join(removed['ticker'].astype(str).str.replace('.SA','',regex=False))
+        st.caption(f'Fora do plano executável com os ajustes atuais: {names}.')
     if ps:
         cr,_pa=checked_partial_return(ex,ps,assets,capital,min_w,frac)
         ib=first(ps,['retorno_ibov_parcial','retorno_ibov_periodo']); al=fnum(cr,np.nan)-fnum(ib,np.nan) if not np.isnan(fnum(cr,np.nan)) and not np.isnan(fnum(ib,np.nan)) else np.nan; dt=format_updated_at(first(ps,['data_avaliacao_parcial','data_avaliacao']),f.partial)
-        status_txt=str(ps.get('status','')).lower(); period_title='Fechamento do mes' if 'fechamento' in status_txt else 'Acompanhamento do mes'
-        st.markdown(f'#### {period_title}'); p1,p2,p3,p4=st.columns(4); p1.metric('Modelo executavel',pct(cr)); p2.metric('IBOV',pct(ib)); p3.metric('Diferenca',pct(al)); p4.metric('Dados ate',dt)
+        status_txt=str(ps.get('status','')).lower(); period_title='Fechamento do mês' if 'fechamento' in status_txt else 'Acompanhamento do mês'
+        st.markdown(f'#### {period_title} · dados até {dt}')
+        p1,p2,p3=st.columns(3); p1.metric('Modelo executável',pct(cr)); p2.metric('IBOV',pct(ib)); p3.metric('Diferença',pct(al))
         if cdi and pd.isna(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo'])):
             st.warning('CDI da reserva indisponivel; parcial executavel nao publicada.')
-    left,right=st.columns([.9,1.35])
-    with left:
-        st.markdown('#### Divisao executavel')
-        fig=allocation_chart(stocks,cdi)
-        if fig is not None:
-            st.plotly_chart(fig,use_container_width=True)
-        st.markdown('#### Exposicao por setor')
+    with st.expander('Composição e critérios'):
+        st.write(f'Mercado: {ff.get("regime_mercado") or "-"}. Seleção: {str(ff.get("sinal_usado") or "-").replace("_"," ").lower()}.')
         sfig=sector_exposure_chart(ex)
         if sfig is not None:
             st.plotly_chart(sfig,use_container_width=True)
-    with right:
-        mercado=rg.get('regime_mercado') or rg.get('subtipo_mercado_favoravel') or 'Mercado seletivo'; st.markdown('#### Leitura simples'); st.dataframe(pd.DataFrame({'Pergunta':['Mes','Data de formacao','Leitura do mercado','Tipo de selecao','Carteira usada na plataforma'],'Resposta':[ff.get('mes_forward') or ff.get('mes_referencia') or current_forward_month(f) or '-' ,ff.get('data_formacao_forward') or ff.get('data_formacao_carteira'),mercado,ff.get('sinal_usado') or 'modelo operacional','Executavel por quantidade inteira']}),hide_index=True,use_container_width=True)
-    st.subheader('Plano para o primeiro pregao' if pending else 'Plano pratico de compra'); st.dataframe(orders,hide_index=True,use_container_width=True)
-    if not removed.empty: st.markdown(f'<div class="warn">{len(removed)} ativo(s) nao entraram por peso operacional irrelevante ou limite operacional.</div>',unsafe_allow_html=True)
+    with st.expander('Detalhe de uma ação'):
+        render_assets(port,capital,min_w,frac)
 def practical_partial_return(ex,ps,assets):
     cdi_ret=platform_cdi_return(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo']))
     return calculate_practical_partial_return(ex,assets,cdi_ret)
@@ -451,10 +482,12 @@ def checked_partial_return(ex,ps,assets,capital,min_w,frac):
             raise ValueError('Parcial executavel diverge do arquivo oficial; painel bloqueado ate reconciliacao')
     return result,details
 def render_tracking(f,port,capital,min_w,frac):
-    ps,assets=partial(f); ex,_,_=executable_portfolio(port,capital,min_w,frac); st.subheader('Acompanhamento do mes')
-    if not ps: st.info('Ainda nao ha parcial carregada.'); return
+    ps,assets=partial(f); ex,_,_=executable_portfolio(port,capital,min_w,frac); st.subheader('Acompanhamento do mês')
+    if not ps:
+        st.info('A primeira parcial deste mês aparecerá aqui depois do início da carteira e da publicação dos dados oficiais.')
+        return
     ret,pa=checked_partial_return(ex,ps,assets,capital,min_w,frac); ib=first(ps,['retorno_ibov_parcial','retorno_ibov_periodo']); cd=platform_cdi_return(first(ps,['retorno_cdi_liquido_periodo'])); alfa=ret-fnum(ib,np.nan); dt=format_updated_at(first(ps,['data_avaliacao_parcial','data_avaliacao']),f.partial)
-    c1,c2,c3,c4=st.columns(4); c1.metric('Minha carteira',pct(ret)); c2.metric('IBOV',pct(ib)); c3.metric('CDI liquido',pct(cd)); c4.metric('Diferenca vs IBOV',pct(alfa)); st.markdown(f'<span class="pill">Dados ate: {dt}</span>',unsafe_allow_html=True)
+    c1,c2,c3,c4=st.columns(4); c1.metric('Minha carteira',pct(ret)); c2.metric('IBOV',pct(ib)); c3.metric('CDI líquido',pct(cd)); c4.metric('Diferença vs IBOV',pct(alfa)); st.markdown(f'<span class="pill">Dados até: {dt}</span>',unsafe_allow_html=True)
     if not ex.empty and ex.apply(is_cdi,axis=1).any() and pd.isna(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo'])):
         st.warning('CDI da reserva indisponivel; parcial executavel nao publicada.')
     if not pa.empty:
@@ -463,11 +496,13 @@ def render_tracking(f,port,capital,min_w,frac):
         for c in ['Preco entrada','Preco atual']: t[c]=t[c].map(money)
         t['Quantidade']=t['Quantidade'].map(lambda x:'-' if pd.isna(x) else str(int(x))); st.dataframe(t,hide_index=True,use_container_width=True)
 def render_assets(port,capital,min_w,frac):
-    st.subheader('Acoes da carteira executavel'); ex,removed,_=executable_portfolio(port,capital,min_w,frac); stocks=ex[~ex.apply(is_cdi,axis=1)].copy() if not ex.empty else pd.DataFrame()
+    ex,removed,_=executable_portfolio(port,capital,min_w,frac); stocks=ex[~ex.apply(is_cdi,axis=1)].copy() if not ex.empty else pd.DataFrame()
     if stocks.empty: st.info('Nao ha acoes compraveis.'); return
     ticker=st.selectbox('Escolha uma acao',[str(t) for t in stocks['ticker'].dropna()]); r=stocks[stocks['ticker'].astype(str).eq(ticker)].iloc[0]
-    st.markdown(f'<div class="card"><b>{ticker}</b> entrou com <b>{int(fnum(r.get("quantidade"),0))} acao(oes)</b>, peso real de <b>{pct(r.get("peso_executavel"))}</b> e valor de <b>{money(r.get("valor_estimado"))}</b>.</div>',unsafe_allow_html=True)
-    a,b,c,d=st.columns(4); a.metric('Peso real',pct(r.get('peso_executavel'))); b.metric('Quantidade',str(int(fnum(r.get('quantidade'),0)))); c.metric('Preco referencia',money(r.get('preco_referencia'))); d.metric('Peso modelo',pct(r.get('peso_modelo')))
+    a,b=st.columns(2)
+    a.metric('Quantidade',str(int(fnum(r.get('quantidade'),0))))
+    b.metric('Valor planejado',money(r.get('valor_estimado')))
+    st.caption(f'Peso executável: {pct(r.get("peso_executavel"))} · Preço de referência: {money(r.get("preco_referencia"))}')
 def previous_portfolio_table(rows:pd.DataFrame)->pd.DataFrame:
     if rows.empty: return rows
     src=rows.copy()
@@ -508,7 +543,7 @@ def render_previous_portfolios(f):
         r=p.iloc[0].to_dict(); a,b,c,d=st.columns(4); a.metric('Carteira',pct(r.get('retorno_modelo'))); b.metric('IBOV',pct(r.get('retorno_expost_ibov'))); c.metric('CDI liquido',pct(r.get('retorno_cdi_liquido_periodo'))); d.metric('Diferenca vs IBOV',pct(r.get('alfa')))
     st.dataframe(previous_portfolio_table(rows),hide_index=True,use_container_width=True)
 def render_history(f,capital,min_w,frac):
-    st.subheader('Historico do modelo executavel'); df=monthly(f,capital,min_w,frac)
+    st.subheader('Histórico do modelo executável'); df=monthly(f,capital,min_w,frac)
     if df.empty: st.info('Historico nao encontrado.'); return
     current_ps,_=partial(f)
     if current_ps:
@@ -522,10 +557,10 @@ def render_history(f,capital,min_w,frac):
     total_ibov=compound(df.get('retorno_expost_ibov',pd.Series(dtype=float)))
     total_alfa=total_model-total_ibov if not np.isnan(total_model) and not np.isnan(total_ibov) else np.nan
     hit_rate=pd.to_numeric(df.get('alfa',pd.Series(dtype=float)),errors='coerce').gt(0).mean()
-    c1,c2,c3,c4=st.columns(4); c1.metric('Modelo executavel',pct(total_model)); c2.metric('IBOV',pct(total_ibov)); c3.metric('Ganho acima do IBOV',pct(total_alfa)); c4.metric('Meses que bateu',pct(hit_rate))
+    c1,c2,c3,c4=st.columns(4); c1.metric('Modelo executável',pct(total_model)); c2.metric('IBOV',pct(total_ibov)); c3.metric('Ganho acima do IBOV',pct(total_alfa)); c4.metric('Meses que bateu',pct(hit_rate))
     m_model=eq_month(df.get('retorno_modelo',pd.Series(dtype=float))); m_ibov=eq_month(df.get('retorno_expost_ibov',pd.Series(dtype=float))); m_cdi=eq_month(df.get('retorno_cdi_liquido_periodo',pd.Series(dtype=float)))
-    st.subheader('Taxa media historica'); a,b,c,d=st.columns(4); a.metric('Modelo ao mes',pct(m_model),delta=f'Ano: {pct((1+m_model)**12-1)}'); b.metric('IBOV ao mes',pct(m_ibov),delta=f'Ano: {pct((1+m_ibov)**12-1)}'); c.metric('CDI liquido ao mes',pct(m_cdi),delta=f'Ano: {pct((1+m_cdi)**12-1)}'); d.metric('Ganho medio vs IBOV',pct(m_model-m_ibov),delta=f'Ano: {pct((1+m_model)**12-(1+m_ibov)**12)}')
-    st.subheader('Evolucao acumulada')
+    st.subheader('Taxa média histórica'); a,b,c,d=st.columns(4); a.metric('Modelo ao mês',pct(m_model),delta=f'Ano: {pct((1+m_model)**12-1)}'); b.metric('IBOV ao mês',pct(m_ibov),delta=f'Ano: {pct((1+m_ibov)**12-1)}'); c.metric('CDI líquido ao mês',pct(m_cdi),delta=f'Ano: {pct((1+m_cdi)**12-1)}'); d.metric('Ganho médio vs IBOV',pct(m_model-m_ibov),delta=f'Ano: {pct((1+m_model)**12-(1+m_ibov)**12)}')
+    st.subheader('Evolução acumulada')
     fig=cumulative(df)
     if fig is not None:
         st.plotly_chart(fig,use_container_width=True)
@@ -543,24 +578,31 @@ def render_history(f,capital,min_w,frac):
         with st.expander('Auditoria tecnica'):
             st.dataframe(view[audit_cols].rename(columns={'mes':'Mes','tipo_regime_expost':'Regime realizado','regime_previsto_norm':'Regime previsto','data_inicio_performance':'Inicio performance','data_avaliacao':'Fim performance'}),hide_index=True,use_container_width=True,height=360)
 def render_method():
-    st.subheader('Como funciona'); st.markdown('<div class="note">A plataforma mostra a versao executavel do modelo: compras em quantidade inteira, posicoes pequenas removidas e sobra aplicada em CDI liquido com IR mensal de 22,5%.</div>',unsafe_allow_html=True)
+    st.write('A plataforma mostra a versão executável do modelo: quantidade inteira de ações, exclusão de posições pequenas e saldo em CDI líquido. A simulação usa preços de referência; não é uma ordem executada.')
 def main():
     try: f=files()
     except (OSError,ValueError,KeyError) as exc:
         st.error(f'Carteira oficial indisponivel: {exc}')
         st.stop()
-    port=portfolio(f); css(); st.sidebar.title('Minha carteira'); capital=simulated_capital_input(); frac=st.sidebar.toggle('Permitir compra fracionaria',value=True); min_w=st.sidebar.slider('Remover pesos menores que',0.0,0.05,0.01,0.005,format='%.3f'); auto=st.sidebar.toggle('Atualizar parcial automaticamente',value=True); mins=st.sidebar.select_slider('Intervalo da parcial',options=[5,10,15,30,60],value=15); autorefresh(auto,mins)
-    ref=portfolio_reference(f)
-    selected_count=len(port[~port.apply(is_cdi,axis=1)]) if not port.empty else 0
-    st.title('Carteira mensal executavel'); st.markdown(f'<div class="hero"><div class="portfolio-ref">{ref}</div><b>Metodo em producao:</b> {f.display_name or f.version}<br><span class="note">{selected_count} acoes selecionadas pelo 13B; ate 15 posicoes no plano executavel, com sobra em CDI liquido.</span></div>',unsafe_allow_html=True)
-    with st.expander('Arquivos carregados'): st.write({'Carteira oficial':f.forward.name,'Modelo':f.display_name or f.version,'Identificador interno':f.version,'Parcial':f.partial.name if f.partial else 'nao encontrada','Historico executavel':f.operational.name if f.operational else 'nao encontrado'})
-    tabs=st.tabs(['O que fazer agora','Acompanhamento','Acoes da carteira','Historico','Carteiras anteriores','Como funciona'])
+    port=portfolio(f); css(); st.sidebar.title('Simular carteira'); capital=simulated_capital_input()
+    with st.sidebar.expander('Ajustes da simulação'):
+        frac=st.toggle('Permitir compra fracionária',value=True)
+        min_w=st.slider('Remover pesos menores que',0.0,0.05,0.01,0.005,format='%.3f')
+    with st.sidebar.expander('Atualização'):
+        auto=st.toggle('Atualizar parcial automaticamente',value=True)
+        mins=st.select_slider('Intervalo da parcial',options=[5,10,15,30,60],value=15)
+    autorefresh(auto,mins)
+    ff=fields(f.forward,'Resumo Forward')
+    st.title(f'Carteira de {month_label(current_forward_month(f))}')
+    st.caption(f'{f.display_name or f.version} · Dados de seleção até {format_updated_at(ff.get("data_limite_dados_selecao"))} · Formação em {format_updated_at(ff.get("data_formacao_forward"))}')
+    tabs=st.tabs(['Carteira','Acompanhamento','Histórico','Carteiras anteriores'])
     with tabs[0]: render_start(f,port,capital,min_w,frac)
     with tabs[1]: render_tracking(f,port,capital,min_w,frac)
-    with tabs[2]: render_assets(port,capital,min_w,frac)
-    with tabs[3]: render_history(f,capital,min_w,frac)
-    with tabs[4]: render_previous_portfolios(f)
-    with tabs[5]: render_method()
+    with tabs[2]: render_history(f,capital,min_w,frac)
+    with tabs[3]: render_previous_portfolios(f)
+    with st.expander('Sobre o modelo e os dados'):
+        render_method()
+        st.write({'Carteira oficial':f.forward.name,'Modelo':f.display_name or f.version,'Identificador interno':f.version,'Parcial':f.partial.name if f.partial else 'nao encontrada','Historico executavel':f.operational.name if f.operational else 'nao encontrado'})
 if __name__=='__main__': main()
 
 
