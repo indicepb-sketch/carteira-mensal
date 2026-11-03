@@ -3,9 +3,10 @@ from __future__ import annotations
 import argparse
 import re
 import sys
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
@@ -49,9 +50,10 @@ def fetch_cdi_gross_return(start: pd.Timestamp, end: pd.Timestamp) -> tuple[floa
     start = start.normalize()
     end = end.normalize()
     url = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.12/dados"
+    # Include recent published observations so an empty new-month range is not a 404.
     params = {
         "formato": "json",
-        "dataInicial": start.strftime("%d/%m/%Y"),
+        "dataInicial": (start - pd.Timedelta(days=10)).strftime("%d/%m/%Y"),
         "dataFinal": end.strftime("%d/%m/%Y"),
     }
     with urlopen(f"{url}?{urlencode(params)}", timeout=20) as response:
@@ -61,10 +63,21 @@ def fetch_cdi_gross_return(start: pd.Timestamp, end: pd.Timestamp) -> tuple[floa
     frame = pd.DataFrame(rows)
     frame["data"] = pd.to_datetime(frame["data"], dayfirst=True, errors="coerce")
     frame["cdi_diario_pct"] = pd.to_numeric(frame["valor"].astype(str).str.replace(",", ".", regex=False), errors="coerce")
-    frame = frame.dropna(subset=["data", "cdi_diario_pct"]).sort_values("data")
+    frame = frame.dropna(subset=["data", "cdi_diario_pct"])
+    frame = frame.loc[frame["data"].between(start, end)].sort_values("data")
     frame["cdi_diario_decimal"] = frame["cdi_diario_pct"] / 100.0
     gross = float((1.0 + frame["cdi_diario_decimal"]).prod() - 1.0) if not frame.empty else np.nan
     return gross, frame[["data", "cdi_diario_pct", "cdi_diario_decimal"]], "bcb_sgs_12"
+
+
+def cdi_publication_pending(month: str, requested_date: pd.Timestamp, explicit_date: bool, local_today: date | None = None) -> bool:
+    local_today = local_today or datetime.now(ZoneInfo("America/Fortaleza")).date()
+    return (
+        not explicit_date
+        and month == local_today.strftime("%Y-%m")
+        and requested_date.date() == local_today
+        and len(pd.bdate_range(requested_date.replace(day=1), requested_date)) <= 3
+    )
 
 
 def cdi_net_return(gross_return: float | None, start: pd.Timestamp, end: pd.Timestamp) -> tuple[float, float, int]:
@@ -265,7 +278,7 @@ def main() -> None:
     entry_date = pd.to_datetime(fields.get("data_limite_dados_selecao", fields.get("data_preco_entrada", ""))).normalize()
     if pd.isna(entry_date):
         entry_date = pd.to_datetime(portfolio.get("data_preco_entrada", pd.Series(dtype=str)).dropna().iloc[0]).normalize()
-    requested_date = pd.to_datetime(args.data_avaliacao).normalize() if args.data_avaliacao else pd.Timestamp(datetime.today()).normalize()
+    requested_date = pd.to_datetime(args.data_avaliacao).normalize() if args.data_avaliacao else pd.Timestamp(datetime.now(ZoneInfo("America/Fortaleza")).date())
     if pd.isna(requested_date):
         raise ValueError("--data-avaliacao deve estar no formato YYYY-MM-DD")
     calendar_end = (pd.Timestamp(year=year, month=month, day=1) + pd.offsets.MonthEnd(0)).normalize()
@@ -279,6 +292,9 @@ def main() -> None:
         raise RuntimeError("Cotacoes indisponiveis; parcial oficial nao publicada")
     cdi_gross, cdi_daily, cdi_source = fetch_cdi_gross_return(entry_date + pd.Timedelta(days=1), requested_date)
     if cdi_daily.empty:
+        if cdi_publication_pending(mes_key, requested_date, args.data_avaliacao is not None):
+            print(f"CDI do periodo {mes_key} ainda nao publicado pelo BCB; parcial nao gerada. Nova tentativa no proximo agendamento.")
+            return
         raise RuntimeError("CDI oficial indisponivel; parcial nao publicada")
     today = min(requested_date, pd.Timestamp(cdi_daily["data"].max()).normalize())
     if today <= entry_date or today.month != month or today.year != year:

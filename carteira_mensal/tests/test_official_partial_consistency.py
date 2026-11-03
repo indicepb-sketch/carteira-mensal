@@ -1,5 +1,8 @@
 from argparse import Namespace
+from datetime import date
 from pathlib import Path
+import json
+from urllib.parse import parse_qs, urlparse
 
 import numpy as np
 import pandas as pd
@@ -8,6 +11,83 @@ import pytest
 from app import streamlit_app_user as app
 from scripts import forward_partial
 from portfolio_execution import executable_portfolio, practical_partial_return
+
+
+def test_cdi_probe_excludes_previous_month_and_handles_unpublished_month(monkeypatch):
+    class Response:
+        def __init__(self, rows):
+            self.rows = rows
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_):
+            return False
+
+        def read(self):
+            return json.dumps(self.rows).encode("utf-8")
+
+    rows = [{"data": "30/10/2026", "valor": "0,05"}]
+
+    def fake_urlopen(url, timeout):
+        params = parse_qs(urlparse(url).query)
+        assert params["dataInicial"] == ["21/10/2026"]
+        assert params["dataFinal"] == ["03/11/2026"]
+        return Response(rows)
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    start, end = pd.Timestamp("2026-10-31"), pd.Timestamp("2026-11-03")
+    gross, daily, _ = forward_partial.fetch_cdi_gross_return(start, end)
+    assert np.isnan(gross)
+    assert daily.empty
+
+    rows.append({"data": "03/11/2026", "valor": "0,06"})
+    gross, daily, _ = forward_partial.fetch_cdi_gross_return(start, end)
+    assert daily["data"].dt.strftime("%Y-%m-%d").tolist() == ["2026-11-03"]
+    assert gross == pytest.approx(0.0006)
+
+
+def test_unpublished_cdi_is_expected_only_at_start_of_current_month():
+    requested = pd.Timestamp("2026-11-03")
+    today = date(2026, 11, 3)
+    assert forward_partial.cdi_publication_pending("2026-11", requested, False, today)
+    assert not forward_partial.cdi_publication_pending("2026-11", requested, True, today)
+    assert not forward_partial.cdi_publication_pending("2026-10", requested, False, today)
+    assert not forward_partial.cdi_publication_pending("2026-11", requested, False, date(2026, 11, 4))
+    assert not forward_partial.cdi_publication_pending("2026-11", pd.Timestamp("2026-11-05"), False, date(2026, 11, 5))
+
+
+def test_new_month_without_cdi_does_not_publish_partial(monkeypatch, tmp_path, capsys):
+    args = Namespace(mes="2026-11", arquivo=None, data_avaliacao=None,
+                     allow_network=True, cdi_auto=True)
+    monkeypatch.setattr(forward_partial, "parse_args", lambda: args)
+    monkeypatch.setattr(forward_partial, "load_active", lambda root: (
+        Path("carteira_forward_2026_11.xlsx"), {"month": "2026-11", "version": "test"}))
+    monkeypatch.setattr(forward_partial, "load_methodology", lambda version, root: {
+        "execution": {"scenario": "TOP15", "unallocated_to": "CDI", "capital_reference": 10000,
+                      "min_weight_default": .01, "fractional_default": True, "max_stocks": 15}})
+    monkeypatch.setattr(forward_partial, "load_portfolio", lambda path: pd.DataFrame([
+        {"ticker": "AAA3.SA", "peso_recomendado": 1.0}]))
+    monkeypatch.setattr(forward_partial, "read_fields", lambda path, sheet: {
+        "data_limite_dados_selecao": "2026-10-30"})
+    monkeypatch.setattr(forward_partial, "download_prices", lambda *a: pd.DataFrame({
+        "AAA3.SA": [100.0]}, index=[pd.Timestamp("2026-10-30")]))
+    empty = pd.DataFrame(columns=["data", "cdi_diario_pct", "cdi_diario_decimal"])
+    monkeypatch.setattr(forward_partial, "fetch_cdi_gross_return", lambda *a: (
+        np.nan, empty, "sem_dados_bcb_sgs_12"))
+    monkeypatch.setattr(forward_partial, "cdi_publication_pending", lambda month, requested, explicit: (
+        month == "2026-11" and not explicit))
+    monkeypatch.setattr(forward_partial, "EXCEL_DIR", tmp_path)
+    monkeypatch.setattr(forward_partial, "LOG_DIR", tmp_path)
+
+    forward_partial.main()
+    assert "parcial nao gerada" in capsys.readouterr().out
+    assert not list(tmp_path.glob("parcial_*.xlsx"))
+
+    args.data_avaliacao = "2026-11-03"
+    with pytest.raises(RuntimeError, match="CDI oficial indisponivel"):
+        forward_partial.main()
+    assert not list(tmp_path.glob("parcial_*.xlsx"))
 
 
 def test_data_cutoff_does_not_borrow_file_modification_time(tmp_path):
