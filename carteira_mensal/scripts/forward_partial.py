@@ -15,7 +15,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 from portfolio_execution import executable_portfolio, practical_partial_return
-from production_registry import load_active, load_methodology
+from production_registry import load_active, load_methodology, load_month
 
 EXCEL_DIR = ROOT / "output" / "excel"
 LOG_DIR = ROOT / "output" / "logs"
@@ -257,8 +257,14 @@ def main() -> None:
     args = parse_args()
     year, month, mes_key = parse_month(args.mes)
     forward, manifest = load_active(ROOT)
-    if manifest["month"] != mes_key:
-        raise ValueError(f"Parcial oficial somente para o mes ativo: {manifest['month']}")
+    closing_past_month = mes_key < manifest["month"]
+    if mes_key > manifest["month"]:
+        raise ValueError(f"Parcial oficial somente para o mes ativo ou anteriores: {manifest['month']}")
+    if closing_past_month:
+        # Mes ja encerrado: so e permitido o fechamento, com data de avaliacao explicita.
+        forward, manifest = load_month(mes_key, ROOT)
+        if not args.data_avaliacao:
+            raise ValueError("Fechar mes anterior exige --data-avaliacao (ultimo dia util do mes)")
     if args.arquivo and (ROOT / args.arquivo).resolve() != forward.resolve():
         raise ValueError("Arquivo solicitado difere da carteira oficial ativa")
     execution = load_methodology(manifest["version"], ROOT)["execution"]
@@ -307,6 +313,9 @@ def main() -> None:
         require_price_on(prices[ticker], entry_date, ticker)
         require_price_on(prices[ticker], today, ticker)
     period_status = "fechamento_mes" if today >= last_weekday else "parcial_mes_em_andamento"
+    if closing_past_month and period_status != "fechamento_mes":
+        print(f"Fechamento de {mes_key} adiado: dados comuns (cotacoes/CDI) so vao ate {today.date()}, ultimo dia util e {last_weekday.date()}.")
+        return
     cdi_net, cdi_ir_rate, cdi_days = cdi_net_return(cdi_gross, entry_date, today)
 
     rows = []

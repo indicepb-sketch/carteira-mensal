@@ -7,6 +7,8 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import pandas as pd
+
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
@@ -59,6 +61,51 @@ def run_command(args: list[str]) -> None:
     subprocess.run(args, cwd=ROOT, check=True)
 
 
+def previous_month(month: str) -> str:
+    year, mon = month_parts(month)
+    return f"{year - 1:04d}-12" if mon == 1 else f"{year:04d}-{mon - 1:02d}"
+
+
+def last_weekday_of(month: str) -> str:
+    year, mon = month_parts(month)
+    end = pd.Timestamp(year=year, month=mon, day=1) + pd.offsets.MonthEnd(0)
+    return pd.bdate_range(end.replace(day=1), end)[-1].date().isoformat()
+
+
+def previous_month_is_closed(month: str) -> bool:
+    """True se a parcial mais recente do mes ja esta marcada como fechamento_mes."""
+    key = month.replace("-", "_")
+    for path in sorted(EXCEL_DIR.glob(f"parcial_carteira_forward_{key}_v*.xlsx"), reverse=True):
+        try:
+            frame = pd.read_excel(path, sheet_name="Resumo Parcial")
+            values = dict(zip(frame["metrica"].astype(str), frame["valor"]))
+        except (OSError, ValueError, KeyError):
+            continue
+        if str(values.get("status")) == "fechamento_mes":
+            return True
+    return False
+
+
+def close_previous_month(month: str) -> None:
+    """Fecha o mes anterior quando cotacoes e CDI do ultimo dia util ja estiverem disponiveis.
+
+    Falhas aqui nao interrompem a atualizacao do mes corrente: o mes anterior segue
+    parcial e a nova tentativa ocorre no proximo agendamento.
+    """
+    previous = previous_month(month)
+    if not (ROOT / "output" / "production" / f"{previous}.json").exists():
+        return
+    if previous_month_is_closed(previous):
+        return
+    try:
+        run_command([
+            sys.executable, "scripts/forward_partial.py", "--mes", previous,
+            "--data-avaliacao", last_weekday_of(previous), "--allow-network", "--cdi-auto",
+        ])
+    except subprocess.CalledProcessError as exc:
+        print(f"[aviso] fechamento de {previous} nao concluido ({exc}); nova tentativa no proximo agendamento.")
+
+
 def main() -> None:
     args = parse_args()
     if not args.allow_network:
@@ -83,6 +130,9 @@ def main() -> None:
 
     if active is None or month > active["month"]:
         activate_month(month, forward, ROOT)
+
+    if args.allow_network:
+        close_previous_month(month)
 
     partial_cmd = [sys.executable, "scripts/forward_partial.py", "--mes", month, "--arquivo", str(forward)]
     if args.allow_network:

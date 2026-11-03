@@ -7,9 +7,9 @@ from production_registry import activate_month, load_active, load_methodology, l
 
 
 def candidate(root, month="2026-10", checks=True):
-    (root / "config").mkdir()
-    (root / "config" / "methodologies").mkdir()
-    (root / "output" / "excel").mkdir(parents=True)
+    (root / "config").mkdir(exist_ok=True)
+    (root / "config" / "methodologies").mkdir(exist_ok=True)
+    (root / "output" / "excel").mkdir(parents=True, exist_ok=True)
     (root / "config" / "production_methodology.json").write_text(
         json.dumps({"version": "forward-13b-v1", "effective_from": "2026-10", "status": "production", "engine": "shadow.forward_test"}),
         encoding="utf-8",
@@ -86,3 +86,14 @@ def test_public_name_keeps_the_historical_identifier(tmp_path):
     )
     assert load_methodology_display_name("forward-13b-v1", tmp_path) == "Modelo v1.0.0"
     assert load_methodology("forward-13b-v1", tmp_path)["version"] == "forward-13b-v1"
+
+
+def test_previous_month_stays_loadable_after_new_month_is_active(tmp_path):
+    from production_registry import load_month
+
+    october = candidate(tmp_path, month="2026-10")
+    first = activate_month("2026-10", october, tmp_path)
+    november = candidate(tmp_path, month="2026-11")
+    activate_month("2026-11", november, tmp_path)
+    assert load_active(tmp_path)[1]["month"] == "2026-11"
+    assert load_month("2026-10", tmp_path) == (october, first)

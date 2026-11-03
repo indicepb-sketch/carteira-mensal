@@ -100,9 +100,18 @@ def validate_workbook(path: Path, month: str) -> dict:
 def load_active(root: Path = ROOT) -> tuple[Path, dict]:
     production = root / "output" / "production"
     manifest = _read_json(production / "active.json")
-    month = manifest["month"]
-    if _read_json(production / f"{month}.json") != manifest:
+    path, monthly = load_month(manifest["month"], root)
+    if monthly != manifest:
         raise ValueError("Registro ativo difere do arquivo mensal imutavel")
+    return path, manifest
+
+
+def load_month(month: str, root: Path = ROOT) -> tuple[Path, dict]:
+    """Carrega e valida a carteira imutavel de um mes ja ativado (ativo ou anterior)."""
+    production = root / "output" / "production"
+    manifest = _read_json(production / f"{month}.json")
+    if manifest.get("month") != month:
+        raise ValueError("Registro mensal nao corresponde ao mes solicitado")
     policy = _read_json(root / "config" / "production_methodology.json")
     if manifest["version"] != policy["version"] and month >= policy["effective_from"]:
         raise ValueError("Versao ativa nao confere com a politica vigente")
