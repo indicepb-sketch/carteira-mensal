@@ -435,18 +435,18 @@ def historical_calendar_html(df, open_partial=None):
                     rc='pos' if ret>=0 else 'neg'; ic='pos' if not np.isnan(ibov) and ibov>=0 else 'neg'; ac='beat' if not np.isnan(alfa) and alfa>=0 else 'miss'
                     cutoff=format_updated_at(first(open_partial,['data_corte_comum','data_avaliacao_parcial']))
                     ibov_txt='-' if np.isnan(ibov) else f'IBOV {ibov*100:+.2f}%'
-                    alfa_txt='-' if np.isnan(alfa) else f'{alfa*100:+.2f} p.p. vs IBOV'
+                    alfa_txt='-' if np.isnan(alfa) else f'{alfa*100:+.2f} p.p.'
                     cells.append(f'<td data-label="{label}" class="hist-cell partial"><div class="hist-partial-label">PARCIAL</div><div class="hist-ret {rc}">{ret*100:.2f}%</div><div class="hist-ibov {ic}">{ibov_txt}</div><div class="hist-sub {ac}">{alfa_txt}</div><div class="hist-partial-date">até {cutoff}</div></td>')
                     continue
             if row.empty: cells.append(f'<td data-label="{label}" class="empty">-</td>'); continue
             r=row.iloc[0]; ret=fnum(r.get('retorno_modelo')); ibov=fnum(r.get('retorno_expost_ibov')); alfa=fnum(r.get('alfa')); rc='pos' if not np.isnan(ret) and ret>=0 else 'neg'; ic='pos' if not np.isnan(ibov) and ibov>=0 else 'neg'; ac='beat' if not np.isnan(alfa) and alfa>=0 else 'miss' if not np.isnan(alfa) else 'neutral'
             ibov_txt='-' if np.isnan(ibov) else f'IBOV {ibov*100:+.2f}%'
-            cells.append(f'<td data-label="{label}" class="hist-cell"><div class="hist-ret {rc}">{ret*100:.2f}%</div><div class="hist-ibov {ic}">{ibov_txt}</div><div class="hist-sub {ac}">{alfa*100:+.2f} p.p. vs IBOV</div></td>')
+            cells.append(f'<td data-label="{label}" class="hist-cell"><div class="hist-ret {rc}">{ret*100:.2f}%</div><div class="hist-ibov {ic}">{ibov_txt}</div><div class="hist-sub {ac}">{alfa*100:+.2f} p.p.</div></td>')
         tm=compound(ydf.get('retorno_modelo',pd.Series(dtype=float))); ti=compound(ydf.get('retorno_expost_ibov',pd.Series(dtype=float))); ta=tm-ti if not np.isnan(tm) and not np.isnan(ti) else np.nan; rc='pos' if not np.isnan(tm) and tm>=0 else 'neg'; ic='pos' if not np.isnan(ti) and ti>=0 else 'neg'; ac='beat' if not np.isnan(ta) and ta>=0 else 'miss'
         ti_txt='-' if np.isnan(ti) else f'IBOV {ti*100:+.2f}%'
-        total=f'<td data-label="TOTAL" class="total hist-cell"><div class="hist-ret {rc}">{tm*100:.2f}%</div><div class="hist-ibov {ic}">{ti_txt}</div><div class="hist-sub {ac}">{ta*100:+.2f} p.p. vs IBOV</div></td>'
+        total=f'<td data-label="TOTAL" class="total hist-cell"><div class="hist-ret {rc}">{tm*100:.2f}%</div><div class="hist-ibov {ic}">{ti_txt}</div><div class="hist-sub {ac}">{ta*100:+.2f} p.p.</div></td>'
         rows[year]=(cells,total)
-    html=['<div class="hist-card"><div class="hist-title">Rentabilidade Histórica</div><table class="hist-table"><thead><tr><th>ANO</th><th>TOTAL</th>']
+    html=['<div class="hist-card"><div class="hist-title">Rentabilidade Histórica <span class="hist-legend">retorno do modelo · IBOV no mês · diferença vs IBOV em p.p.</span></div><table class="hist-table"><thead><tr><th>ANO</th><th>TOTAL</th>']
     html.extend(f'<th>{label}</th>' for _,label in months)
     html.append('</tr></thead><tbody>')
     for year,(cells,total) in rows.items():
@@ -459,24 +459,28 @@ def autorefresh(enabled: bool, minutes: int):
         components.html(f"<script>setTimeout(function(){{window.parent.location.reload();}}, {minutes * 60000});</script>", height=0)
 def css():
     st.markdown('''<style>
-    .block-container{padding-top:1.4rem;max-width:1180px}
+    .block-container{padding-top:1.4rem;max-width:1400px}
     .note{color:#aab3b9;line-height:1.5}
     .pill{display:inline-block;padding:4px 9px;border-radius:4px;background:#20312d;color:#d4f4e8;border:1px solid #35594e;font-size:.85rem}
-    .hist-card{background:#171c21;border:1px solid #343d42;border-radius:8px;margin:18px 0;overflow-x:auto}
+    .hist-card{background:#171c21;border:1px solid #343d42;border-radius:8px;margin:18px 0;overflow-x:auto;scrollbar-color:#6b7b80 #20272b}
+    .hist-card::-webkit-scrollbar{height:12px}
+    .hist-card::-webkit-scrollbar-track{background:#20272b}
+    .hist-card::-webkit-scrollbar-thumb{background:#6b7b80;border-radius:6px}
     .hist-title{font-weight:700;font-size:1.05rem;padding:16px 20px;border-bottom:1px solid #343d42}
-    .hist-table{min-width:1400px;width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;font-size:.86rem}
-    .hist-table th{background:#20272b;color:#e5ecea;text-align:center;padding:11px 6px;border-bottom:1px solid #343d42}
-    .hist-table td{background:#171c21;text-align:center;padding:11px 6px;border-top:1px solid #30393e;overflow-wrap:anywhere}
-    .hist-table th:first-child,.hist-table tbody th{position:sticky;left:0;width:68px;z-index:3;background:#20272b}
-    .hist-table th:nth-child(2),.hist-table td:nth-child(2){position:sticky;left:68px;width:112px;z-index:2;box-shadow:2px 0 5px #0005}
+    .hist-table{min-width:940px;width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;font-size:.8rem}
+    .hist-table th{background:#20272b;color:#e5ecea;text-align:center;padding:10px 3px;border-bottom:1px solid #343d42}
+    .hist-table td{background:#171c21;text-align:center;padding:10px 3px;border-top:1px solid #30393e;overflow-wrap:anywhere}
+    .hist-table th:first-child,.hist-table tbody th{position:sticky;left:0;width:54px;z-index:3;background:#20272b}
+    .hist-table th:nth-child(2),.hist-table td:nth-child(2){position:sticky;left:54px;width:92px;z-index:2;box-shadow:2px 0 5px #0005}
     .hist-table .total{background:#20312d}.hist-ret{font-weight:700}
     .hist-table td.partial{background:#1b2926;border:1px solid #3a7663}
+    .hist-legend{font-size:.72rem;font-weight:400;color:#aab3b9;margin-left:10px}
     .hist-partial-label{color:#8be1bd;font-size:.7rem;font-weight:700}
     .hist-partial-date{color:#b7c1c0;font-size:.72rem;margin-top:5px}
     .hist-ret.pos{color:#7bd8a9}.hist-ret.neg{color:#f0918f}
-    .hist-ibov{font-size:.78rem;color:#b7c1c0;margin-top:4px}
+    .hist-ibov{font-size:.7rem;color:#b7c1c0;margin-top:4px}
     .hist-ibov.pos{color:#90c4db}.hist-ibov.neg{color:#f5b0a7}
-    .hist-sub{font-size:.78rem;color:#b7c1c0;margin-top:4px;min-height:17px}
+    .hist-sub{font-size:.7rem;color:#b7c1c0;margin-top:4px;min-height:17px}
     .hist-sub.beat{color:#7bd8a9;font-weight:700}.hist-sub.miss{color:#f5b0a7;font-weight:700}
     .hist-table .empty{color:#8c9998;font-weight:700}
     @media(max-width:700px){
