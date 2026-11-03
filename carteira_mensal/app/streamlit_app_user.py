@@ -418,14 +418,14 @@ def historical_calendar_html(df, open_partial=None):
     if data.empty: return ''
     data['ano']=data['mes_dt'].dt.year; data['mes_num']=data['mes_dt'].dt.month
     for c in ['retorno_modelo','retorno_expost_ibov','alfa']: data[c]=pd.to_numeric(data.get(c),errors='coerce')
-    html=['<div class="hist-card"><div class="hist-title">Rentabilidade Historica</div><table class="hist-table"><thead><tr><th>ANO</th>']+[f'<th>{m}</th>' for _,m in months]+['<th>TOTAL</th></tr></thead><tbody>']
+    rows={}
     partial_month=str(open_partial.get('mes',''))[:7] if open_partial else ''
     partial_date=pd.to_datetime(partial_month,format='%Y-%m',errors='coerce')
     years=set(data['ano'].astype(int).unique())
     if pd.notna(partial_date): years.add(partial_date.year)
     for year in sorted(years,reverse=True):
-        ydf=data[data['ano'].eq(year)].copy(); html.append(f'<tr><th>{year}</th>')
-        for mn,_ in months:
+        ydf=data[data['ano'].eq(year)].copy(); cells=[]
+        for mn,label in months:
             row=ydf[ydf['mes_num'].eq(mn)]
             if row.empty and pd.notna(partial_date) and year==partial_date.year and mn==partial_date.month:
                 ret=fnum(open_partial.get('retorno_modelo_executavel'))
@@ -436,15 +436,23 @@ def historical_calendar_html(df, open_partial=None):
                     cutoff=format_updated_at(first(open_partial,['data_corte_comum','data_avaliacao_parcial']))
                     ibov_txt='-' if np.isnan(ibov) else f'IBOV {ibov*100:+.2f}%'
                     alfa_txt='-' if np.isnan(alfa) else f'{alfa*100:+.2f} p.p. vs IBOV'
-                    html.append(f'<td class="hist-cell partial"><div class="hist-partial-label">PARCIAL</div><div class="hist-ret {rc}">{ret*100:.2f}%</div><div class="hist-ibov {ic}">{ibov_txt}</div><div class="hist-sub {ac}">{alfa_txt}</div><div class="hist-partial-date">até {cutoff}</div></td>')
+                    cells.append(f'<td data-label="{label}" class="hist-cell partial"><div class="hist-partial-label">PARCIAL</div><div class="hist-ret {rc}">{ret*100:.2f}%</div><div class="hist-ibov {ic}">{ibov_txt}</div><div class="hist-sub {ac}">{alfa_txt}</div><div class="hist-partial-date">até {cutoff}</div></td>')
                     continue
-            if row.empty: html.append('<td class="empty">-</td>'); continue
+            if row.empty: cells.append(f'<td data-label="{label}" class="empty">-</td>'); continue
             r=row.iloc[0]; ret=fnum(r.get('retorno_modelo')); ibov=fnum(r.get('retorno_expost_ibov')); alfa=fnum(r.get('alfa')); rc='pos' if not np.isnan(ret) and ret>=0 else 'neg'; ic='pos' if not np.isnan(ibov) and ibov>=0 else 'neg'; ac='beat' if not np.isnan(alfa) and alfa>=0 else 'miss' if not np.isnan(alfa) else 'neutral'
             ibov_txt='-' if np.isnan(ibov) else f'IBOV {ibov*100:+.2f}%'
-            html.append(f'<td class="hist-cell"><div class="hist-ret {rc}">{ret*100:.2f}%</div><div class="hist-ibov {ic}">{ibov_txt}</div><div class="hist-sub {ac}">{alfa*100:+.2f} p.p. vs IBOV</div></td>')
+            cells.append(f'<td data-label="{label}" class="hist-cell"><div class="hist-ret {rc}">{ret*100:.2f}%</div><div class="hist-ibov {ic}">{ibov_txt}</div><div class="hist-sub {ac}">{alfa*100:+.2f} p.p. vs IBOV</div></td>')
         tm=compound(ydf.get('retorno_modelo',pd.Series(dtype=float))); ti=compound(ydf.get('retorno_expost_ibov',pd.Series(dtype=float))); ta=tm-ti if not np.isnan(tm) and not np.isnan(ti) else np.nan; rc='pos' if not np.isnan(tm) and tm>=0 else 'neg'; ic='pos' if not np.isnan(ti) and ti>=0 else 'neg'; ac='beat' if not np.isnan(ta) and ta>=0 else 'miss'
         ti_txt='-' if np.isnan(ti) else f'IBOV {ti*100:+.2f}%'
-        html.append(f'<td class="total hist-cell"><div class="hist-ret {rc}">{tm*100:.2f}%</div><div class="hist-ibov {ic}">{ti_txt}</div><div class="hist-sub {ac}">{ta*100:+.2f} p.p. vs IBOV</div></td></tr>')
+        total=f'<td data-label="TOTAL" class="total hist-cell"><div class="hist-ret {rc}">{tm*100:.2f}%</div><div class="hist-ibov {ic}">{ti_txt}</div><div class="hist-sub {ac}">{ta*100:+.2f} p.p. vs IBOV</div></td>'
+        rows[year]=(cells,total)
+    html=['<div class="hist-card"><div class="hist-title">Rentabilidade Histórica</div><table class="hist-table"><thead><tr><th>ANO</th><th>TOTAL</th>']
+    html.extend(f'<th>{label}</th>' for _,label in months)
+    html.append('</tr></thead><tbody>')
+    for year,(cells,total) in rows.items():
+        html.append(f'<tr><th scope="row">{year}</th>{total}')
+        html.extend(cells)
+        html.append('</tr>')
     html.append('</tbody></table></div>'); return ''.join(html)
 def autorefresh(enabled: bool, minutes: int):
     if enabled:
@@ -456,9 +464,11 @@ def css():
     .pill{display:inline-block;padding:4px 9px;border-radius:4px;background:#20312d;color:#d4f4e8;border:1px solid #35594e;font-size:.85rem}
     .hist-card{background:#171c21;border:1px solid #343d42;border-radius:8px;margin:18px 0;overflow-x:auto}
     .hist-title{font-weight:700;font-size:1.05rem;padding:16px 20px;border-bottom:1px solid #343d42}
-    .hist-table{min-width:1100px;width:100%;border-collapse:separate;border-spacing:0;font-size:.88rem}
-    .hist-table th{background:#20272b;color:#e5ecea;text-align:center;padding:11px 8px;border-bottom:1px solid #343d42}
-    .hist-table td{background:#171c21;text-align:center;padding:11px 8px;border-top:1px solid #30393e;min-width:82px}
+    .hist-table{min-width:1400px;width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;font-size:.86rem}
+    .hist-table th{background:#20272b;color:#e5ecea;text-align:center;padding:11px 6px;border-bottom:1px solid #343d42}
+    .hist-table td{background:#171c21;text-align:center;padding:11px 6px;border-top:1px solid #30393e;overflow-wrap:anywhere}
+    .hist-table th:first-child,.hist-table tbody th{position:sticky;left:0;width:68px;z-index:3;background:#20272b}
+    .hist-table th:nth-child(2),.hist-table td:nth-child(2){position:sticky;left:68px;width:112px;z-index:2;box-shadow:2px 0 5px #0005}
     .hist-table .total{background:#20312d}.hist-ret{font-weight:700}
     .hist-table td.partial{background:#1b2926;border:1px solid #3a7663}
     .hist-partial-label{color:#8be1bd;font-size:.7rem;font-weight:700}
@@ -469,6 +479,15 @@ def css():
     .hist-sub{font-size:.78rem;color:#b7c1c0;margin-top:4px;min-height:17px}
     .hist-sub.beat{color:#7bd8a9;font-weight:700}.hist-sub.miss{color:#f5b0a7;font-weight:700}
     .hist-table .empty{color:#8c9998;font-weight:700}
+    @media(max-width:700px){
+      .hist-table{min-width:0}
+      .hist-table thead{display:none}
+      .hist-table tbody tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+      .hist-table tbody th{grid-column:1/-1;text-align:left;position:static;width:auto}
+      .hist-table td{min-width:0;min-height:105px;border-right:1px solid #30393e}
+      .hist-table td:nth-child(2){position:static;width:auto;box-shadow:none}
+      .hist-table td::before{content:attr(data-label);display:block;color:#b7c1c0;font-size:.73rem;font-weight:700;margin-bottom:5px}
+    }
     div[data-testid="stMetric"]{background:#1b2225;border:1px solid #34423f;border-radius:6px;padding:14px 16px;min-height:104px}
     div[data-testid="stMetric"] label,div[data-testid="stMetric"] [data-testid="stMetricValue"]{color:#f4f7f5!important;overflow-wrap:anywhere}
     div[data-testid="stMetric"] [data-testid="stMetricValue"]{font-size:1.8rem}
