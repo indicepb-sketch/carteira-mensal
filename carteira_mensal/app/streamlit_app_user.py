@@ -446,12 +446,14 @@ def historical_calendar_html(df, open_partial=None):
         ti_txt='-' if np.isnan(ti) else f'IBOV {ti*100:+.2f}%'
         total=f'<td data-label="TOTAL" class="total hist-cell"><div class="hist-ret {rc}">{tm*100:.2f}%</div><div class="hist-ibov {ic}">{ti_txt}</div><div class="hist-sub {ac}">{ta*100:+.2f} p.p.</div></td>'
         rows[year]=(cells,total)
-    html=['<div class="hist-card"><div class="hist-title">Rentabilidade Histórica <span class="hist-legend">retorno do modelo · IBOV no mês · diferença vs IBOV em p.p.</span></div><table class="hist-table"><thead><tr><th>ANO</th><th>TOTAL</th>']
+    html=['<div class="hist-card"><div class="hist-title">Rentabilidade Histórica <span class="hist-legend">retorno do modelo · IBOV no mês · diferença vs IBOV em p.p.</span></div><table class="hist-table"><thead><tr><th>ANO</th>']
     html.extend(f'<th>{label}</th>' for _,label in months)
+    html.append('<th>TOTAL</th>')
     html.append('</tr></thead><tbody>')
     for year,(cells,total) in rows.items():
-        html.append(f'<tr><th scope="row">{year}</th>{total}')
+        html.append(f'<tr><th scope="row">{year}</th>')
         html.extend(cells)
+        html.append(total)
         html.append('</tr>')
     html.append('</tbody></table></div>'); return ''.join(html)
 def autorefresh(enabled: bool, minutes: int):
@@ -471,7 +473,6 @@ def css():
     .hist-table th{background:#20272b;color:#e5ecea;text-align:center;padding:10px 3px;border-bottom:1px solid #343d42}
     .hist-table td{background:#171c21;text-align:center;padding:10px 3px;border-top:1px solid #30393e;overflow-wrap:anywhere}
     .hist-table th:first-child,.hist-table tbody th{position:sticky;left:0;width:54px;z-index:3;background:#20272b}
-    .hist-table th:nth-child(2),.hist-table td:nth-child(2){position:sticky;left:54px;width:92px;z-index:2;box-shadow:2px 0 5px #0005}
     .hist-table .total{background:#20312d}.hist-ret{font-weight:700}
     .hist-table td.partial{background:#1b2926;border:1px solid #3a7663}
     .hist-legend{font-size:.72rem;font-weight:400;color:#aab3b9;margin-left:10px}
@@ -489,7 +490,6 @@ def css():
       .hist-table tbody tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
       .hist-table tbody th{grid-column:1/-1;text-align:left;position:static;width:auto}
       .hist-table td{min-width:0;min-height:105px;border-right:1px solid #30393e}
-      .hist-table td:nth-child(2){position:static;width:auto;box-shadow:none}
       .hist-table td::before{content:attr(data-label);display:block;color:#b7c1c0;font-size:.73rem;font-weight:700;margin-bottom:5px}
     }
     div[data-testid="stMetric"]{background:#1b2225;border:1px solid #34423f;border-radius:6px;padding:14px 16px;min-height:104px}
