@@ -658,6 +658,16 @@ def render_history(f,capital,min_w,frac):
             st.dataframe(view[audit_cols].rename(columns={'mes':'Mes','tipo_regime_expost':'Regime realizado','regime_previsto_norm':'Regime previsto','data_inicio_performance':'Inicio performance','data_avaliacao':'Fim performance'}),hide_index=True,use_container_width=True,height=360)
 def render_method():
     st.write('A plataforma mostra a versão executável do modelo: quantidade inteira de ações, exclusão de posições pequenas e saldo em CDI líquido. A simulação usa preços de referência; não é uma ordem executada.')
+def monthly_report_files()->list[Path]:
+    return sorted((ROOT/'output'/'pdf').glob('carteira_recomendada_20*_*.pdf'),reverse=True)
+def render_reports_sidebar():
+    reports=monthly_report_files()
+    if not reports: return
+    def label(path:Path)->str:
+        m=re.search(r'(20\d{2})_(\d{2})',path.stem); return month_label(f'{m.group(1)}-{m.group(2)}') if m else path.stem
+    with st.sidebar.expander('Relatório mensal (PDF)'):
+        chosen=st.selectbox('Mês',reports,format_func=label,label_visibility='collapsed')
+        st.download_button('Baixar relatório',data=chosen.read_bytes(),file_name=chosen.name,mime='application/pdf',icon=':material/picture_as_pdf:',help='Carteira recomendada, desempenho do mês e gráfico de 12 meses de cada ação com os indicadores do robô.')
 def main():
     try: f=files()
     except (OSError,ValueError,KeyError) as exc:
@@ -670,6 +680,7 @@ def main():
     with st.sidebar.expander('Atualização'):
         auto=st.toggle('Atualizar parcial automaticamente',value=True)
         mins=st.select_slider('Intervalo da parcial',options=[5,10,15,30,60],value=15)
+    render_reports_sidebar()
     autorefresh(auto,mins)
     ff=fields(f.forward,'Resumo Forward')
     st.title(f'Carteira de {month_label(current_forward_month(f))}')

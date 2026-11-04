@@ -106,6 +106,21 @@ def close_previous_month(month: str) -> None:
         print(f"[aviso] fechamento de {previous} nao concluido ({exc}); nova tentativa no proximo agendamento.")
 
 
+def ensure_monthly_report(month: str) -> None:
+    """Gera o PDF do mes anterior depois de fechado, se ainda nao existir.
+
+    Falhas nao interrompem a atualizacao diaria; nova tentativa no proximo agendamento.
+    """
+    previous = previous_month(month)
+    pdf = ROOT / "output" / "pdf" / f"carteira_recomendada_{previous.replace('-', '_')}.pdf"
+    if pdf.exists() or not previous_month_is_closed(previous):
+        return
+    try:
+        run_command([sys.executable, "scripts/gerar_relatorio_mensal.py", "--mes", previous])
+    except subprocess.CalledProcessError as exc:
+        print(f"[aviso] relatorio PDF de {previous} nao gerado ({exc}); nova tentativa no proximo agendamento.")
+
+
 def main() -> None:
     args = parse_args()
     if not args.allow_network:
@@ -133,6 +148,7 @@ def main() -> None:
 
     if args.allow_network:
         close_previous_month(month)
+        ensure_monthly_report(month)
 
     partial_cmd = [sys.executable, "scripts/forward_partial.py", "--mes", month, "--arquivo", str(forward)]
     if args.allow_network:
