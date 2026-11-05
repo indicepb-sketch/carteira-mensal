@@ -1,0 +1,13 @@
+{
+  "activated_at_utc": "2026-10-02T02:23:18.512054+00:00",
+  "file": "carteira_forward_2026_10.xlsx",
+  "formation_date": "2026-10-01",
+  "month": "2026-10",
+  "reason": "Metodologia v2: nota com os 5 componentes; historico refeito pelo motor v2 (out/26: B3SA3 entra, VAMO3 sai)",
+  "selection_cutoff": "2026-09-30",
+  "sha256": "b8050a0ed8953517201328f6cf7aca80a52023d1342fda0ad96c8aab69943d54",
+  "superseded_at_utc": "2026-11-05T09:32:54.528963+00:00",
+  "superseded_by_file": "carteira_forward_2026_10_v20261105_063243.xlsx",
+  "superseded_by_version": "forward-13b-v2",
+  "version": "forward-13b-v1"
+}

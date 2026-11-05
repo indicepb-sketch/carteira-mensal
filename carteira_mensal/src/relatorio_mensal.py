@@ -63,7 +63,8 @@ PDF_DIR = ROOT / "output" / "pdf"
 CACHE_DIR = ROOT / "data" / "report_cache"
 CDI_MONTHLY_PATH = ROOT / "data" / "processed" / "cdi_mensal_ipeadata.csv"
 IBOV_MONTHLY_PATH = ROOT / "data" / "processed" / "ibov_mensal_oficial.csv"
-OPERATIONAL_FILE = "shadow_teste49_top15_regime_capital.xlsx"
+OPERATIONAL_FILE = "historico_v2_top15_capital.xlsx"   # historico refeito pelo motor v2 (scripts/historico_v2.py)
+LEGACY_OPERATIONAL_FILE = "shadow_teste49_top15_regime_capital.xlsx"
 
 CAPITAL = 10_000.0
 MIN_WEIGHT = 0.01
@@ -299,6 +300,8 @@ def month_performance(data: MonthData) -> dict[str, Any]:
 def load_history(upto_month: str) -> pd.DataFrame:
     """Serie mensal (modelo, IBOV, CDI liquido) ate o mes informado."""
     operational = EXCEL_DIR / OPERATIONAL_FILE
+    if not operational.exists():
+        operational = EXCEL_DIR / LEGACY_OPERATIONAL_FILE
     frame = pd.read_excel(operational, sheet_name="Mes a Mes")
     cap = pd.to_numeric(frame["capital"], errors="coerce")
     frame = frame[frame["cenario"].astype(str).eq("TOP15") & cap.sub(CAPITAL).abs().lt(0.01)].copy()

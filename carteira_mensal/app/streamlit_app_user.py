@@ -74,7 +74,7 @@ def files()->AppFiles:
         or execution['unallocated_to']!='CDI'):
         raise ValueError('Regras de execucao divergem da metodologia versionada')
     partial_path=latest_official_partial(manifest['month'],forward.name,manifest['version'])
-    return AppFiles(forward, partial_path, latest('shadow_teste49_top15_regime_capital.xlsx') or latest('shadow_teste46_carteira_executavel.xlsx') or latest('shadow_teste45_consolidacao_final_t44a.xlsx'),manifest['version'],load_methodology_display_name(manifest['version'],ROOT))
+    return AppFiles(forward, partial_path, latest('historico_v2_top15_capital.xlsx') or latest('shadow_teste49_top15_regime_capital.xlsx') or latest('shadow_teste46_carteira_executavel.xlsx') or latest('shadow_teste45_consolidacao_final_t44a.xlsx'),manifest['version'],load_methodology_display_name(manifest['version'],ROOT))
 @st.cache_data(show_spinner=False)
 def sheet(path:str,name:str)->pd.DataFrame:
     try: return pd.read_excel(path,sheet_name=name)

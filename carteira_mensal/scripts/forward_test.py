@@ -247,10 +247,11 @@ def candidate_completion_enabled(month: str) -> bool:
     return bool(load_methodology(policy["version"], ROOT)["selection"].get("complete_candidate_features", False))
 
 
-def run_forward_portfolio(mes_key: str, workbook: Path, base_settings: dict) -> dict[str, Any]:
+def run_forward_portfolio(mes_key: str, workbook: Path, base_settings: dict, force_completion: bool | None = None) -> dict[str, Any]:
+    """Forma a carteira do mes. `force_completion` so e usado para refazer o historico na metodologia vigente (v2)."""
     sh.MONTHS = {mes_key: workbook.name}
     original_complete = sh.COMPLETE_CANDIDATE_FEATURES
-    sh.COMPLETE_CANDIDATE_FEATURES = candidate_completion_enabled(mes_key)
+    sh.COMPLETE_CANDIDATE_FEATURES = candidate_completion_enabled(mes_key) if force_completion is None else bool(force_completion)
     original_build = sh.build_free_size_portfolio
     original_d3 = sh.technical_veto_to_penalty_in_opportunity
     original_beta_profile = sh.beta_target_profile

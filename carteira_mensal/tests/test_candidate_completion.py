@@ -59,9 +59,10 @@ def test_flag_off_keeps_current_behaviour_and_on_adds_score_columns():
     assert on["ticker"].tolist() == off["ticker"].tolist()
 
 
-def test_policy_enables_completion_only_from_november():
+def test_policy_enables_completion_only_from_october():
+    assert ft.candidate_completion_enabled("2026-08") is False
     assert ft.candidate_completion_enabled("2026-09") is False
-    assert ft.candidate_completion_enabled("2026-10") is False
+    assert ft.candidate_completion_enabled("2026-10") is True
     assert ft.candidate_completion_enabled("2026-11") is True
     assert ft.candidate_completion_enabled("2027-03") is True
     assert load_methodology("forward-13b-v1", ROOT)["selection"].get("complete_candidate_features") is None
@@ -74,14 +75,14 @@ def test_v2_only_adds_the_completion_flag_to_the_v1_definition():
     assert selection_v2 == v1["selection"] and v2["execution"] == v1["execution"] and v2["engine"] == v1["engine"]
 
 
-def test_registry_serves_v2_for_november_and_keeps_the_history():
+def test_registry_serves_v2_for_october_and_november_and_keeps_the_history():
     active_path, active = load_active(ROOT)
     assert active["version"] == "forward-13b-v2" and active["month"] == "2026-11"
-    assert active["supersedes"]["version"] == "forward-13b-v1"
-    archived = ROOT / "output" / "production" / "superseded" / "2026-11_forward-13b-v1.json"
-    assert archived.is_file() and (ROOT / "output" / "excel" / active["supersedes"]["file"]).is_file()
-    _, october = load_month("2026-10", ROOT)                # outubro segue na v1, validado contra o manifesto original
-    assert october["version"] == "forward-13b-v1"
+    for month in ("2026-10", "2026-11"):
+        _, manifest = load_month(month, ROOT)
+        assert manifest["version"] == "forward-13b-v2" and manifest["supersedes"]["version"] == "forward-13b-v1"
+        archived = ROOT / "output" / "production" / "superseded" / f"{month}_forward-13b-v1.json"
+        assert archived.is_file() and (ROOT / "output" / "excel" / manifest["supersedes"]["file"]).is_file()
 
 
 @needs_september
@@ -92,7 +93,7 @@ def test_september_formation_unchanged_after_change_and_regime_unaffected_by_v2(
     production = production[~production["ticker"].astype(str).str.contains("CDI", case=False)]
     expected = production.set_index("ticker")["peso_modelo_100pct"].astype(float)
 
-    result_v1 = ft.run_forward_portfolio("2026-09", SEPTEMBER, settings)       # politica: v2 so vale a partir de 2026-11
+    result_v1 = ft.run_forward_portfolio("2026-09", SEPTEMBER, settings)       # politica: v2 so vale a partir de 2026-10
     weights_v1 = result_v1["portfolio"].set_index("ticker")["peso_recomendado"].astype(float)
     assert set(weights_v1.index) == set(expected.index)
     assert (weights_v1.reindex(expected.index) - expected).abs().max() < 1e-6

@@ -151,6 +151,8 @@ def test_supersede_month_rejects_invalid_requests(tmp_path):
         supersede_month("2026-11", other, "  ", tmp_path)
     with pytest.raises(ValueError, match="vigencia"):              # mes anterior a vigencia da politica
         supersede_month("2026-10", other, "x", tmp_path)
+    with pytest.raises(ValueError, match="sem manifesto"):         # mes que nunca foi ativado
+        supersede_month("2026-12", other, "x", tmp_path)
     with pytest.raises(ValueError, match="diferente"):
         supersede_month("2026-11", old, "x", tmp_path)
     assert not (tmp_path / "output" / "production" / "superseded").exists()

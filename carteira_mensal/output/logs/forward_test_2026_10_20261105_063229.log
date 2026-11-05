@@ -1,0 +1,10 @@
+Verificacao producao/flags shadow: OK
+Ancora junho Teste 14 / 13B conservador: PASSOU
+Base mensal existente reutilizada: carteira_recomendada_2026_10_v1.xlsx
+Base mensal usada: carteira_recomendada_2026_10_v1.xlsx
+Arquivo forward gerado: C:\Users\amade\Documents\Codex\2026-06-26\wt_score_v2\carteira_mensal\output\excel\carteira_forward_2026_10_v20261105_063243.xlsx
+Data formacao: 2026-10-01 | limite selecao/preco entrada: 2026-09-30
+Carteira forward modelo 100%: VBBR3.SA: 9.80%; BBSE3.SA: 5.05%; EMBJ3.SA: 2.48%; CPLE3.SA: 10.95%; ITUB4.SA: 7.90%; PETR3.SA: 5.13%; ITSA4.SA: 8.25%; MOTV3.SA: 7.96%; MULT3.SA: 7.79%; GOAU4.SA: 7.01%; CYRE3.SA: 3.29%; ENEV3.SA: 5.36%; RAIL3.SA: 4.27%; ALOS3.SA: 4.35%; B3SA3.SA: 5.11%; VAMO3.SA: 2.30%; ASAI3.SA: 3.00%
+Exposicao aplicada: 100%; CDI/Tesouro Selic: 0%; motivo=alta: 100% investido
+Bucket13B=alta; regime=alta; sinal=V3_MOMENTUM; beta_alvo=1.1; beta_real=1.1208607493405855
+Comando mensal: .\.venv\Scripts\python.exe scripts\forward_test.py --mes YYYY-MM

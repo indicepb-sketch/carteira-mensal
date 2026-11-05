@@ -162,11 +162,12 @@ def activate_month(month: str, workbook: Path, root: Path = ROOT) -> dict:
 
 
 def supersede_month(month: str, workbook: Path, reason: str, root: Path = ROOT) -> dict:
-    """Troca a carteira ATIVA do mes por uma nova versao de metodologia, de forma auditavel.
+    """Troca a carteira de um mes ja formado por uma nova versao de metodologia, de forma auditavel.
 
     O manifesto anterior nao e apagado: fica em output/production/superseded/<mes>_<versao>.json,
     com o motivo e o arquivo substituto; o arquivo forward antigo permanece em output/excel.
-    So vale para o mes ativo, para a versao vigente da politica e para um arquivo diferente.
+    Vale para meses com manifesto, a partir da vigencia da politica, para a versao vigente e para um
+    arquivo diferente. `active.json` so muda se o mes substituido for o ativo.
     """
     if not reason.strip():
         raise ValueError("Informe o motivo da substituicao")
@@ -181,9 +182,8 @@ def supersede_month(month: str, workbook: Path, reason: str, root: Path = ROOT) 
         raise ValueError("Motor da metodologia diverge da politica de producao")
     production = root / "output" / "production"
     active_path, monthly_path = production / "active.json", production / f"{month}.json"
-    active = _read_json(active_path)
-    if active["month"] != month:
-        raise ValueError("So o mes ativo pode ser substituido")
+    if not monthly_path.exists():
+        raise ValueError("Mes sem manifesto: use activate_month")
     previous = _read_json(monthly_path)
     if previous["version"] == policy["version"]:
         raise ValueError("Mes ja esta na versao vigente da metodologia")
@@ -199,7 +199,8 @@ def supersede_month(month: str, workbook: Path, reason: str, root: Path = ROOT) 
     manifest = {"month": month, "version": policy["version"], "file": workbook.name, **details, "activated_at_utc": now,
                 "supersedes": {"file": previous["file"], "version": previous["version"], "sha256": previous["sha256"]}}
     _write_json(monthly_path, manifest)
-    _write_json(active_path, manifest)
+    if active_path.exists() and _read_json(active_path)["month"] == month:
+        _write_json(active_path, manifest)
     return manifest
 
 
