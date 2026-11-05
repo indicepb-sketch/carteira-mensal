@@ -43,7 +43,7 @@ IBOV_CSV = ROOT / "data" / "processed" / "ibov_mensal_oficial.csv"
 CDI_CSV = ROOT / "data" / "processed" / "cdi_mensal_ipeadata.csv"
 FIRST, LAST = "2022-01", "2026-10"
 CAPITAL, MIN_WEIGHT, MAX_STOCKS, CDI_IR = 10_000.0, 0.01, 15, 0.225
-VERSION = "forward-13b-v2"
+VERSION = "forward-13b-v3 (nota v2 + regra de 1 acao, aplicada a todo o historico)"
 
 
 def month_workbook(month: str) -> Path:
@@ -129,13 +129,16 @@ def form_month(month: str, settings: dict, prices: pd.DataFrame) -> dict[str, An
     portfolio = result["portfolio"].copy()
     exposure, _ = ft.exposure_for_metrics(result.get("metrics", {}))
     portfolio["ticker"] = portfolio["ticker"].astype(str).str.upper()
-    portfolio["peso_recomendado"] = pd.to_numeric(portfolio["peso_recomendado"], errors="coerce").fillna(0.0) * exposure
     cutoff, end = selection_cutoff(month), month_end(month)
     portfolio["preco_entrada_fechamento_mes_anterior"] = portfolio["ticker"].map(lambda t: last_price(prices[t], cutoff) if t in prices.columns else np.nan)
+    # regra de viabilidade (v3), aplicada a TODO o historico: posicao que nao comporta 1 acao no capital de referencia nao entra na
+    # carteira e o peso e redistribuido proporcionalmente (mesma funcao usada na formacao oficial)
+    portfolio, removed = ft.drop_unbuyable_positions(portfolio, exposure, CAPITAL)
+    portfolio["peso_recomendado"] = pd.to_numeric(portfolio["peso_recomendado"], errors="coerce").fillna(0.0) * exposure
     portfolio["preco_fim"] = portfolio["ticker"].map(lambda t: last_price(prices[t], end) if t in prices.columns else np.nan)
     portfolio["retorno_periodo"] = portfolio["preco_fim"] / portfolio["preco_entrada_fechamento_mes_anterior"] - 1
     return {"portfolio": portfolio, "bucket": str(result.get("metrics", {}).get("forward_13b_bucket", "")), "exposure": float(exposure),
-            "workbook": workbook.name}
+            "workbook": workbook.name, "removed_unbuyable": removed}
 
 
 def build_rows(month: str, formed: dict[str, Any], ibov: float, cdi: float) -> tuple[pd.DataFrame, dict[str, Any], dict[str, Any]]:
@@ -171,7 +174,9 @@ def build_rows(month: str, formed: dict[str, Any], ibov: float, cdi: float) -> t
             "max_peso_setor": float(stock_rows.groupby("setor")["peso_final"].sum().max()) if len(stock_rows) else 0.0,
             "soma_pesos": float(table["peso_final"].sum()), "ano": month[:4], "capital_label": t49.money(CAPITAL)}
     audit = {"mes": month, "base_formacao": formed["workbook"], "regime": formed["bucket"], "exposicao": formed["exposure"],
-             "acoes_modelo": int(len(portfolio)), "acoes_sem_preco": dropped, "removidas_top15_ou_minimo": int(len(removed))}
+             "acoes_modelo": int(len(portfolio)), "acoes_sem_preco": dropped, "removidas_top15_ou_minimo": int(len(removed)),
+             "removidas_por_inviabilidade_1_acao": "; ".join(f"{r['ticker'].replace('.SA', '')} (R$ {r['valor_alvo']:.2f} < R$ {r['preco']:.2f})"
+                                                              for r in formed.get("removed_unbuyable", [])) or ""}
     return table, meta, audit
 
 
@@ -212,7 +217,7 @@ def main() -> None:
     validation["qtd_ok_top15"] = validation["qtd_acoes"] <= MAX_STOCKS
     notes = pd.DataFrame({"item": [
         "versao_metodologia", "gerado_em", "periodo", "execucao", "regime",
-        "nota", "fundamentos_jan_jun_2026", "precos_e_retornos", "cdi_e_ibov", "limitacao_2022_2025", "ordem_de_grandeza"],
+        "nota", "fundamentos_jan_jun_2026", "precos_e_retornos", "cdi_e_ibov", "limitacao_2022_2025", "ordem_de_grandeza", "regra_1_acao"],
         "valor": [VERSION, f"{datetime.now():%Y-%m-%d %H:%M}", f"{FIRST} a {LAST}", "Top 15, minimo de 1%, quantidades inteiras, R$ 10 mil, saldo no CDI",
                   "13B conservador do motor forward (amplitude de tendencia; demais entradas so existem a partir de 2026)",
                   "5 componentes (tendencia, timing, fundamentos, setor, risco); colunas ausentes completadas da aba Analise Preliminar da mesma base",
@@ -220,7 +225,8 @@ def main() -> None:
                   "yfinance ajustado: entrada no fechamento da data de selecao, saida no ultimo pregao do mes",
                   "CDI liquido de IR 22,5% (IPEA ate jul/2026; depois parcial fechada) e IBOV oficial (CSV; depois parcial fechada)",
                   "Em 2022-2025 o regime usa so a amplitude de tendencia, pois as bases historicas nao guardam as demais entradas do 13B",
-                  "Substitui o historico anterior (T49 ate jun/2026 + parciais): ver docs/metodologia_forward_13b_v2.md"]})
+                  "Substitui o historico anterior (T49 ate jun/2026 + parciais): ver docs/metodologia_forward_13b_v2.md",
+                  "Cada posicao precisa comportar pelo menos 1 acao no capital de referencia (R$ 10 mil); as que nao comportam saem da carteira e o peso e redistribuido proporcionalmente (aba Auditoria)"]})
     with pd.ExcelWriter(OUT, engine="openpyxl") as writer:
         summary.to_excel(writer, sheet_name="Resumo Capital", index=False)
         by_year.to_excel(writer, sheet_name="Resumo Ano", index=False)

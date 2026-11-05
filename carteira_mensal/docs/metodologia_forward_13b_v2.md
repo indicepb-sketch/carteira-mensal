@@ -39,7 +39,7 @@ tetos por ativo e setor, exposição por regime (100% / 30%) e regras de execuç
 
 | Período | Histórico anterior (publicado) | Histórico v2 (motor) | IBOV |
 |---|---|---|---|
-| 2022–out/2026 (58 meses) | +100,5% | **+75,1%** | +60,2% |
+| 2022–out/2026 (58 meses) | +100,5% | **+74,2%** | +60,2% |
 
 A plataforma e os relatórios PDF passam a ler `historico_v2_top15_capital.xlsx`; o T49 fica como arquivo de pesquisa/reserva.
 
@@ -50,3 +50,16 @@ A plataforma e os relatórios PDF passam a ler `historico_v2_top15_capital.xlsx`
 - Resultados de backtest dependem de momento/tendência e de execução próxima do fechamento (Testes 61, 64 e 65).
 - Em 2022–2025 o regime do histórico v2 usa só a amplitude de tendência (as demais entradas do 13B só existem nas bases de 2026); por isso o regime desses anos é uma aproximação do motor atual.
 - Fundamentos de jan–jun/2026 do histórico v2 vêm do Fundamentus coletado depois da formação (look-ahead leve); a partir de jul/2026 são válidos.
+
+## Atualização: forward-13b-v3 (vigente desde novembro/2026)
+Regra de viabilidade: **cada posição da carteira precisa comportar pelo menos 1 ação** ao preço de entrada, no capital de
+referência (R$ 10.000). Posição cujo valor alvo (peso × exposição × capital) não paga 1 ação não entra na carteira, e o peso
+dela é redistribuído proporcionalmente às demais (a soma do modelo é preservada).
+
+- Caso que originou a regra: **FLRY3 em novembro/2026**: alvo de R$ 13,94 contra uma ação a R$ 20,47 (peso de 0,46% do modelo).
+- Novembro refeito: 7 ações (PETR3, GGBR4, EMBJ3, WEGE3, BBSE3, PRIO3, SUZB3); pesos das demais sobem ~0,5% em termos relativos.
+- **Aplicada a todo o histórico (2022–out/2026):** `historico_v2_top15_capital.xlsx` foi refeito com a regra em cada mês
+  (aba `Auditoria`, coluna `removidas_por_inviabilidade_1_acao`). Atingiu 29 dos 58 meses, em geral posições residuais
+  (ex.: CEAB3 em 2024, YDUQ3 em 2025, FLRY3 em nov/2026). Com o peso redistribuído, o acumulado passou de +75,1% para **+74,2%**.
+- A carteira do forward registra `regra_minimo_1_acao` e `posicoes_removidas_por_inviabilidade` em `Resumo Forward` e a validação
+  `todas_posicoes_compraveis_1_acao`. Manifestos anteriores ficam em `output/production/superseded/`.

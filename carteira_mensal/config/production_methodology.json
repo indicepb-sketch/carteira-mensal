@@ -1,6 +1,6 @@
 {
-  "version": "forward-13b-v2",
-  "effective_from": "2026-10",
+  "version": "forward-13b-v3",
+  "effective_from": "2026-11",
   "engine": "shadow.forward_test",
   "status": "production"
 }

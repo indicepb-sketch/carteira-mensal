@@ -68,3 +68,15 @@ def test_platform_reads_the_v2_history_and_keeps_its_structure():
     assert {"retorno_modelo", "retorno_expost_ibov"}.issubset(history.columns)
     row = history[history["mes"].astype(str).str[:7] == "2026-10"].iloc[0]
     assert row["retorno_modelo"] == pytest.approx(-0.1143, abs=3e-4)
+
+
+def test_one_share_rule_is_applied_to_every_historical_month():
+    carteiras = pd.read_excel(HISTORY, sheet_name="Carteiras")
+    stocks = carteiras[carteiras["tipo_linha"] == "acao"]
+    assert (stocks["quantidade"] >= 1).all()
+    assert (stocks["valor_executado"] >= stocks["preco_entrada"] - 1e-9).all()          # cada posicao paga ao menos 1 acao
+    audit = pd.read_excel(HISTORY, sheet_name="Auditoria")
+    assert "removidas_por_inviabilidade_1_acao" in audit.columns
+    removed = audit["removidas_por_inviabilidade_1_acao"].fillna("").astype(str)
+    assert (removed != "").sum() >= 20                                                  # a regra atua em boa parte dos meses
+    assert removed[audit["mes"].astype(str) == "2024-06"].iloc[0].startswith("CEAB3")  # exemplo conferido

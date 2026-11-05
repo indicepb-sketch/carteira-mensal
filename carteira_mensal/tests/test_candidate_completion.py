@@ -59,30 +59,34 @@ def test_flag_off_keeps_current_behaviour_and_on_adds_score_columns():
     assert on["ticker"].tolist() == off["ticker"].tolist()
 
 
-def test_policy_enables_completion_only_from_october():
-    assert ft.candidate_completion_enabled("2026-08") is False
+def test_policy_enables_completion_only_from_the_effective_month():
     assert ft.candidate_completion_enabled("2026-09") is False
-    assert ft.candidate_completion_enabled("2026-10") is True
+    assert ft.candidate_completion_enabled("2026-10") is False          # outubro ja formado na v2 (manifesto proprio)
     assert ft.candidate_completion_enabled("2026-11") is True
+    assert ft.candidate_completion_enabled("2027-03") is True
     assert ft.candidate_completion_enabled("2027-03") is True
     assert load_methodology("forward-13b-v1", ROOT)["selection"].get("complete_candidate_features") is None
     assert load_methodology("forward-13b-v2", ROOT)["selection"]["complete_candidate_features"] is True
 
 
-def test_v2_only_adds_the_completion_flag_to_the_v1_definition():
-    v1, v2 = load_methodology("forward-13b-v1", ROOT), load_methodology("forward-13b-v2", ROOT)
-    selection_v2 = {k: v for k, v in v2["selection"].items() if k != "complete_candidate_features"}
-    assert selection_v2 == v1["selection"] and v2["execution"] == v1["execution"] and v2["engine"] == v1["engine"]
+def test_each_version_only_adds_its_own_flag_to_the_previous_definition():
+    v1, v2, v3 = (load_methodology(f"forward-13b-v{i}", ROOT) for i in (1, 2, 3))
+    assert {k: v for k, v in v2["selection"].items() if k != "complete_candidate_features"} == v1["selection"]
+    assert {k: v for k, v in v3["selection"].items() if k != "min_one_share_per_position"} == v2["selection"]
+    assert v3["selection"]["min_one_share_per_position"] is True and "min_one_share_per_position" not in v2["selection"]
+    assert v2["execution"] == v1["execution"] == v3["execution"] and v2["engine"] == v1["engine"] == v3["engine"]
 
 
-def test_registry_serves_v2_for_october_and_november_and_keeps_the_history():
+def test_registry_serves_the_right_version_per_month_and_keeps_the_history():
     active_path, active = load_active(ROOT)
-    assert active["version"] == "forward-13b-v2" and active["month"] == "2026-11"
-    for month in ("2026-10", "2026-11"):
+    assert active["version"] == "forward-13b-v3" and active["month"] == "2026-11"
+    expected = {"2026-10": ("forward-13b-v2", "forward-13b-v1"), "2026-11": ("forward-13b-v3", "forward-13b-v2")}
+    for month, (version, previous) in expected.items():
         _, manifest = load_month(month, ROOT)
-        assert manifest["version"] == "forward-13b-v2" and manifest["supersedes"]["version"] == "forward-13b-v1"
-        archived = ROOT / "output" / "production" / "superseded" / f"{month}_forward-13b-v1.json"
+        assert manifest["version"] == version and manifest["supersedes"]["version"] == previous
+        archived = ROOT / "output" / "production" / "superseded" / f"{month}_{previous}.json"
         assert archived.is_file() and (ROOT / "output" / "excel" / manifest["supersedes"]["file"]).is_file()
+    assert (ROOT / "output" / "production" / "superseded" / "2026-11_forward-13b-v1.json").is_file()   # historico completo preservado
 
 
 @needs_september

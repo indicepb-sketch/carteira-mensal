@@ -343,6 +343,39 @@ def exposure_for_metrics(metrics: dict[str, Any]) -> tuple[float, str]:
         return exposure, f"{regime}: 100% investido"
     return exposure, "regime indefinido: 100% investido por fallback"
 
+def min_one_share_capital(month: str) -> float | None:
+    """Capital de referencia da regra 'cada posicao precisa comportar pelo menos 1 acao' (v3 em diante); None se desligada."""
+    import json
+
+    from production_registry import load_methodology
+
+    policy = json.loads((ROOT / "config" / "production_methodology.json").read_text(encoding="utf-8"))
+    if month < str(policy.get("effective_from", "9999-12")):
+        return None
+    method = load_methodology(policy["version"], ROOT)
+    if not method["selection"].get("min_one_share_per_position", False):
+        return None
+    return float(method["execution"]["capital_reference"])
+
+
+def drop_unbuyable_positions(portfolio: pd.DataFrame, exposure: float, capital: float) -> tuple[pd.DataFrame, list[dict[str, Any]]]:
+    """Remove posicoes cujo valor alvo (peso x exposicao x capital) nao paga 1 acao ao preco de entrada.
+
+    O peso removido e redistribuido proporcionalmente as demais posicoes (a soma do modelo e preservada).
+    """
+    price = pd.to_numeric(portfolio["preco_entrada_fechamento_mes_anterior"], errors="coerce")
+    weight = pd.to_numeric(portfolio["peso_recomendado"], errors="coerce").fillna(0.0)
+    target_value = weight * exposure * capital
+    unbuyable = price.notna() & price.gt(0) & np.floor(target_value / price).lt(1)
+    removed = [{"ticker": str(row["ticker"]), "peso_modelo": float(weight[idx]), "valor_alvo": float(target_value[idx]), "preco": float(price[idx])}
+               for idx, row in portfolio[unbuyable].iterrows()]
+    kept = portfolio[~unbuyable].copy()
+    total_before, total_after = float(weight.sum()), float(weight[~unbuyable].sum())
+    if removed and total_after > 0:
+        kept["peso_recomendado"] = pd.to_numeric(kept["peso_recomendado"], errors="coerce") * total_before / total_after
+    return kept, removed
+
+
 def build_forward_tables(
     mes_key: str,
     base_workbook: Path,
@@ -360,8 +393,12 @@ def build_forward_tables(
     regime_fields = fields_from_sheet(base_workbook, "Regime Mercado")
     data_base_fields = fields_from_sheet(base_workbook, "Data Base Carteira")
     prices = entry_prices(base_workbook, portfolio["ticker"].astype(str).tolist() if not portfolio.empty and "ticker" in portfolio else [])
+    unbuyable_capital = min_one_share_capital(mes_key)
+    removed_unbuyable: list[dict[str, Any]] = []
     if not portfolio.empty:
         portfolio["preco_entrada_fechamento_mes_anterior"] = portfolio["ticker"].map(prices)
+        if unbuyable_capital:
+            portfolio, removed_unbuyable = drop_unbuyable_positions(portfolio, exposure, unbuyable_capital)
         portfolio["data_preco_entrada"] = selection_cutoff.date().isoformat()
         portfolio["data_formacao_forward"] = formation_date.date().isoformat()
         portfolio["retorno_expost_mes"] = np.nan
@@ -443,6 +480,12 @@ def build_forward_tables(
             {"campo": "comando_mensal", "valor": command},
         ]
     )
+    if unbuyable_capital:
+        removed_text = "; ".join(f"{r['ticker']} (alvo R$ {r['valor_alvo']:.2f} < 1 acao a R$ {r['preco']:.2f})" for r in removed_unbuyable) or "nenhuma"
+        regime = pd.concat([regime, pd.DataFrame([
+            {"campo": "regra_minimo_1_acao", "valor": f"ativa (capital de referencia R$ {unbuyable_capital:,.0f})"},
+            {"campo": "posicoes_removidas_por_inviabilidade", "valor": removed_text},
+        ])], ignore_index=True)
     valid = pd.DataFrame(
         [
             {"restricao": "soma_pesos_100", "valor": float(portfolio["peso_recomendado"].sum()) if not portfolio.empty and "peso_recomendado" in portfolio else np.nan, "ok": bool(not portfolio.empty and abs(float(portfolio["peso_recomendado"].sum()) - 1.0) <= 1e-6)},
@@ -453,6 +496,11 @@ def build_forward_tables(
             {"restricao": "retorno_expost", "valor": "em_aberto", "ok": True},
         ]
     )
+    if unbuyable_capital and not portfolio.empty:
+        shares = np.floor(pd.to_numeric(portfolio["peso_recomendado"], errors="coerce") * exposure * unbuyable_capital
+                          / pd.to_numeric(portfolio["preco_entrada_fechamento_mes_anterior"], errors="coerce"))
+        valid = pd.concat([valid, pd.DataFrame([{"restricao": "todas_posicoes_compraveis_1_acao", "valor": int(len(portfolio)),
+                                                 "ok": bool((shares.fillna(0) >= 1).all())}])], ignore_index=True)
     valid_aplicada = pd.DataFrame([
         {"restricao": "soma_ativos_mais_cdi_100", "valor": float(portfolio_aplicada["peso_recomendado"].sum()) if not portfolio_aplicada.empty and "peso_recomendado" in portfolio_aplicada else np.nan, "ok": bool(not portfolio_aplicada.empty and abs(float(portfolio_aplicada["peso_recomendado"].sum()) - 1.0) <= 1e-6)},
         {"restricao": "exposicao_ativos", "valor": float(portfolio["peso_recomendado"].sum() * exposure) if not portfolio.empty and "peso_recomendado" in portfolio else np.nan, "ok": bool(not portfolio.empty and abs(float(portfolio["peso_recomendado"].sum() * exposure) - exposure) <= 1e-6)},
@@ -581,7 +629,7 @@ def main() -> None:
     if portfolio.empty:
         log("Carteira forward nao foi formada.")
     else:
-        weights = sh.format_weights(sh.weights_map(portfolio))
+        weights = sh.format_weights(sh.weights_map(tables.get("Carteira Forward", portfolio)))   # ja sem posicoes inviaveis (regra de 1 acao)
         metrics = result.get("metrics", {})
         exposure, exposure_reason = exposure_for_metrics(metrics)
         log(f"Carteira forward modelo 100%: {weights}")
