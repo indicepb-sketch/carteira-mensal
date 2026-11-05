@@ -10,6 +10,7 @@ Uso via script: ``python scripts/gerar_relatorio_mensal.py --mes 2026-09``.
 from __future__ import annotations
 
 import io
+import json
 import re
 from dataclasses import dataclass
 from datetime import datetime
@@ -231,6 +232,11 @@ class MonthData:
 def load_month_data(month: str) -> MonthData:
     key = month_key(month)
     forward_path = EXCEL_DIR / f"carteira_forward_{key}.xlsx"
+    manifest = ROOT / "output" / "production" / f"{month}.json"
+    if manifest.exists():   # carteira oficial do mes (pode ser uma versao posterior a original, ver superseded/)
+        official = EXCEL_DIR / str(json.loads(manifest.read_text(encoding="utf-8")).get("file", ""))
+        if official.is_file():
+            forward_path = official
     if not forward_path.exists():
         raise FileNotFoundError(f"Carteira forward de {month} nao encontrada: {forward_path.name}")
     forward = _fields(forward_path, "Resumo Forward")

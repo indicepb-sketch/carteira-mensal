@@ -232,8 +232,25 @@ def make_forward_profiles(mes_key: str, workbook: Path, original_beta_profile, o
     return bucket, reason, beta_target_profile, downturn_profile
 
 
+def candidate_completion_enabled(month: str) -> bool:
+    """A metodologia versionada vigente no mes decide se o score usa as colunas completas (v2 em diante).
+
+    Meses anteriores a vigencia da politica atual (e, portanto, a metodologia v1) mantem o comportamento original.
+    """
+    import json
+
+    from production_registry import load_methodology
+
+    policy = json.loads((ROOT / "config" / "production_methodology.json").read_text(encoding="utf-8"))
+    if month < str(policy.get("effective_from", "9999-12")):
+        return False
+    return bool(load_methodology(policy["version"], ROOT)["selection"].get("complete_candidate_features", False))
+
+
 def run_forward_portfolio(mes_key: str, workbook: Path, base_settings: dict) -> dict[str, Any]:
     sh.MONTHS = {mes_key: workbook.name}
+    original_complete = sh.COMPLETE_CANDIDATE_FEATURES
+    sh.COMPLETE_CANDIDATE_FEATURES = candidate_completion_enabled(mes_key)
     original_build = sh.build_free_size_portfolio
     original_d3 = sh.technical_veto_to_penalty_in_opportunity
     original_beta_profile = sh.beta_target_profile
@@ -255,6 +272,7 @@ def run_forward_portfolio(mes_key: str, workbook: Path, base_settings: dict) -> 
         result.setdefault("metrics", {})["forward_13b_motivo"] = reason
         return result
     finally:
+        sh.COMPLETE_CANDIDATE_FEATURES = original_complete
         sh.build_free_size_portfolio = original_build
         sh.technical_veto_to_penalty_in_opportunity = original_d3
         sh.beta_target_profile = original_beta_profile

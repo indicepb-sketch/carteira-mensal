@@ -97,3 +97,61 @@ def test_previous_month_stays_loadable_after_new_month_is_active(tmp_path):
     activate_month("2026-11", november, tmp_path)
     assert load_active(tmp_path)[1]["month"] == "2026-11"
     assert load_month("2026-10", tmp_path) == (october, first)
+
+
+def make_policy_v2(root, month="2026-11"):
+    """Politica v2 vigente em `month`; a definicao v1 continua disponivel para os meses ja formados."""
+    (root / "config" / "production_methodology.json").write_text(
+        json.dumps({"version": "forward-13b-v2", "effective_from": month, "status": "production", "engine": "shadow.forward_test"}),
+        encoding="utf-8",
+    )
+    (root / "config" / "methodologies" / "forward-13b-v2.json").write_text(
+        json.dumps({"version": "forward-13b-v2", "engine": "shadow.forward_test", "selection": {"portfolio_size": "unrestricted"},
+                    "execution": {"scenario": "TOP15", "max_stocks": 15}}),
+        encoding="utf-8",
+    )
+
+
+def new_version_of(path):
+    replacement = path.with_name("carteira_forward_2026_11_v20261104_233545.xlsx")
+    replacement.write_bytes(path.read_bytes())
+    return replacement
+
+
+def test_supersede_month_archives_previous_manifest_and_keeps_history(tmp_path):
+    from production_registry import supersede_month
+
+    old = candidate(tmp_path, "2026-11")
+    activate_month("2026-11", old, tmp_path)                       # v1 ativada
+    make_policy_v2(tmp_path)
+    replacement = new_version_of(old)
+    with pytest.raises(ValueError, match="Versao ativa"):          # politica v2 ja vale: a v1 do mes so volta a validar apos a substituicao
+        load_active(tmp_path)
+    manifest = supersede_month("2026-11", replacement, "score completo (v2)", tmp_path)
+    assert manifest["version"] == "forward-13b-v2" and manifest["file"] == replacement.name
+    assert manifest["supersedes"] == {"file": old.name, "version": "forward-13b-v1", "sha256": json.loads(
+        (tmp_path / "output" / "production" / "superseded" / "2026-11_forward-13b-v1.json").read_text())["sha256"]}
+    archived = json.loads((tmp_path / "output" / "production" / "superseded" / "2026-11_forward-13b-v1.json").read_text())
+    assert archived["version"] == "forward-13b-v1" and archived["reason"] == "score completo (v2)"
+    assert archived["superseded_by_file"] == replacement.name
+    assert load_active(tmp_path) == (replacement, manifest)
+    assert old.exists()                                            # historico preservado em output/excel
+    with pytest.raises(ValueError, match="ja esta na versao vigente"):
+        supersede_month("2026-11", replacement, "de novo", tmp_path)
+
+
+def test_supersede_month_rejects_invalid_requests(tmp_path):
+    from production_registry import supersede_month
+
+    old = candidate(tmp_path, "2026-11")
+    activate_month("2026-11", old, tmp_path)
+    make_policy_v2(tmp_path)
+    other = new_version_of(old)
+    with pytest.raises(ValueError, match="motivo"):
+        supersede_month("2026-11", other, "  ", tmp_path)
+    with pytest.raises(ValueError, match="vigencia"):              # mes anterior a vigencia da politica
+        supersede_month("2026-10", other, "x", tmp_path)
+    with pytest.raises(ValueError, match="diferente"):
+        supersede_month("2026-11", old, "x", tmp_path)
+    assert not (tmp_path / "output" / "production" / "superseded").exists()
+    assert json.loads((tmp_path / "output" / "production" / "2026-11.json").read_text())["version"] == "forward-13b-v1"

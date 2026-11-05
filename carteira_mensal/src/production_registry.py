@@ -161,9 +161,56 @@ def activate_month(month: str, workbook: Path, root: Path = ROOT) -> dict:
     return manifest
 
 
+def supersede_month(month: str, workbook: Path, reason: str, root: Path = ROOT) -> dict:
+    """Troca a carteira ATIVA do mes por uma nova versao de metodologia, de forma auditavel.
+
+    O manifesto anterior nao e apagado: fica em output/production/superseded/<mes>_<versao>.json,
+    com o motivo e o arquivo substituto; o arquivo forward antigo permanece em output/excel.
+    So vale para o mes ativo, para a versao vigente da politica e para um arquivo diferente.
+    """
+    if not reason.strip():
+        raise ValueError("Informe o motivo da substituicao")
+    root = root.resolve()
+    workbook = workbook.resolve()
+    if workbook.parent != (root / "output" / "excel").resolve():
+        raise ValueError("O arquivo deve estar em output/excel")
+    policy = _read_json(root / "config" / "production_methodology.json")
+    if policy.get("status") != "production" or month < policy["effective_from"]:
+        raise ValueError("Mes fora da vigencia da metodologia de producao")
+    if load_methodology(policy["version"], root)["engine"] != policy["engine"]:
+        raise ValueError("Motor da metodologia diverge da politica de producao")
+    production = root / "output" / "production"
+    active_path, monthly_path = production / "active.json", production / f"{month}.json"
+    active = _read_json(active_path)
+    if active["month"] != month:
+        raise ValueError("So o mes ativo pode ser substituido")
+    previous = _read_json(monthly_path)
+    if previous["version"] == policy["version"]:
+        raise ValueError("Mes ja esta na versao vigente da metodologia")
+    if previous["file"] == workbook.name:
+        raise ValueError("O arquivo substituto deve ser diferente do atual")
+    details = validate_workbook(workbook, month)
+    archive = production / "superseded" / f"{month}_{previous['version']}.json"
+    if archive.exists():
+        raise ValueError("Ja existe substituicao registrada para este mes e versao")
+    now = datetime.now(timezone.utc).isoformat()
+    _write_json(archive, {**previous, "superseded_at_utc": now, "superseded_by_file": workbook.name,
+                          "superseded_by_version": policy["version"], "reason": reason.strip()})
+    manifest = {"month": month, "version": policy["version"], "file": workbook.name, **details, "activated_at_utc": now,
+                "supersedes": {"file": previous["file"], "version": previous["version"], "sha256": previous["sha256"]}}
+    _write_json(monthly_path, manifest)
+    _write_json(active_path, manifest)
+    return manifest
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Ativa uma carteira mensal validada em producao.")
     parser.add_argument("--mes", required=True)
     parser.add_argument("--arquivo", type=Path, required=True)
+    parser.add_argument("--substituir", metavar="MOTIVO", default=None,
+                        help="Substitui a carteira ativa do mes por nova versao de metodologia, arquivando o manifesto anterior")
     arguments = parser.parse_args()
-    print(json.dumps(activate_month(arguments.mes, arguments.arquivo), ensure_ascii=False, indent=2))
+    if arguments.substituir:
+        print(json.dumps(supersede_month(arguments.mes, arguments.arquivo, arguments.substituir), ensure_ascii=False, indent=2))
+    else:
+        print(json.dumps(activate_month(arguments.mes, arguments.arquivo), ensure_ascii=False, indent=2))

@@ -1444,6 +1444,37 @@ def enrich_candidate_input(candidates: pd.DataFrame, path: Path, include_downtur
     out["forca_relativa_score"] = pd.to_numeric(out["forca_relativa_score"], errors="coerce")
     return out
 
+# Colunas que o score (src/scoring.py) le e que as bases mensais de 2026 nao trazem em 'Candidatas Risco'.
+# Sem elas, score_tendencia (max 30) e score_fundamentos (max 20) saem 0 e score_setor fica 5 para todos.
+# Desligado por padrao (preserva backtests e a metodologia v1); ligado pela metodologia forward-13b-v2.
+COMPLETE_CANDIDATE_FEATURES = False
+SCORE_FEATURE_COLUMNS = ["mm9", "mm21", "mm50", "mm100", "preco_atual", "retorno_ytd", "roe", "roic",
+                         "margem_bruta", "pl_atual", "tendencia_setorial"]
+
+
+def complete_candidate_features(candidates: pd.DataFrame, path: Path) -> pd.DataFrame:
+    """Completa colunas AUSENTES (nunca sobrescreve) a partir de 'Analise Preliminar' da mesma base mensal.
+
+    So usa dados de formacao ja gravados na base do mes (sem informacao posterior).
+    """
+    if candidates.empty or "ticker" not in candidates.columns:
+        return candidates
+    missing = [col for col in SCORE_FEATURE_COLUMNS if col not in candidates.columns]
+    if not missing:
+        return candidates
+    source = read_sheet(path, "Analise Preliminar")
+    if source.empty or "ticker" not in source.columns:
+        return candidates
+    cols = [col for col in missing if col in source.columns]
+    if not cols:
+        return candidates
+    lookup = source[["ticker", *cols]].drop_duplicates("ticker").set_index("ticker")
+    out = candidates.copy()
+    for col in cols:
+        out[col] = out["ticker"].map(lookup[col])
+    return out
+
+
 def load_candidate_input(path: Path, settings: dict | None = None) -> pd.DataFrame:
     expanded = bool(settings and composition_settings(settings)["enabled"])
     if expanded:
@@ -1455,6 +1486,8 @@ def load_candidate_input(path: Path, settings: dict | None = None) -> pd.DataFra
     if candidates.empty or "ticker" not in candidates.columns:
         return candidates
     candidates = enrich_candidate_input(candidates.drop_duplicates("ticker").copy(), path, include_downturn_cols=False)
+    if COMPLETE_CANDIDATE_FEATURES:
+        candidates = complete_candidate_features(candidates, path)
     if expanded:
         cfg = composition_settings(settings or {})
         candidates = candidates.reset_index(drop=True)
