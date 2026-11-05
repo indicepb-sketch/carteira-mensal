@@ -265,6 +265,8 @@ def load_month_data(month: str) -> MonthData:
     cutoff = pd.Timestamp(str(database.get("data_limite_dados_selecao", ""))[:10])
     end_text = str(partial.get("data_avaliacao_parcial") or database.get("ultimo_pregao_mes") or "")[:10]
     end = pd.Timestamp(end_text)
+    if not partial:  # mes em andamento sem parcial oficial: usa precos ate ontem
+        end = min(end, pd.Timestamp.today().normalize() - pd.Timedelta(days=1))
     fechado = "fechamento" in str(partial.get("status", "")).lower()
     return MonthData(month, forward_path, base_path, partial_path, forward, regime, database,
                      partial, carteira, executavel, ativos, tecnicos, cutoff, end, fechado)
@@ -1035,8 +1037,12 @@ def build_report(month: str, output: Path | None = None, allow_network: bool = T
     ret_by_ticker = ({r["ticker"]: fnum(r["retorno_periodo"]) for _, r in table.iterrows()}
                      if "retorno_periodo" in table else {})
 
-    status_text = (f"Fechamento do mês · avaliação em {data.end:%d/%m/%Y}" if data.fechado
-                   else f"Parcial do mês · avaliação até {data.end:%d/%m/%Y}")
+    if data.fechado:
+        status_text = f"Fechamento do mês · avaliação em {data.end:%d/%m/%Y}"
+    elif data.partial:
+        status_text = f"Parcial do mês · avaliação até {data.end:%d/%m/%Y}"
+    else:
+        status_text = f"Carteira do mês · parcial oficial ainda não disponível · preços até {data.end:%d/%m/%Y}"
     regime_name = pt_fix(data.forward.get("regime_mercado", "-")).capitalize()
     subtype = ""
     for key in ("subtipo_queda", "subtipo_mercado_favoravel"):
@@ -1057,15 +1063,20 @@ def build_report(month: str, output: Path | None = None, allow_network: bool = T
         ("Regime de mercado", f'<font size="12">{regime_name}</font>', NAVY),
     ]))
     story.append(Spacer(1, 0.7 * cm))
-    story.append(paragraph("RESULTADO DO MÊS" if data.fechado else "RESULTADO PARCIAL DO MÊS", "kicker"))
-    story.append(Spacer(1, 0.15 * cm))
-    story.append(kpi_cards([
-        ("Carteira (execução R$ 10 mil)", fmt_pct(perf["retorno"], 2, True), sign_color(perf["retorno"])),
-        ("IBOV", fmt_pct(perf["ibov"], 2, True), sign_color(perf["ibov"])),
-        ("CDI líquido de IR", fmt_pct(perf["cdi"], 2, True), sign_color(perf["cdi"])),
-        ("Diferença vs IBOV", fmt_pp(perf["alfa"]), sign_color(perf["alfa"])),
-    ]))
-    story.append(Spacer(1, 0.7 * cm))
+    if not np.isnan(perf["retorno"]):
+        story.append(paragraph("RESULTADO DO MÊS" if data.fechado else "RESULTADO PARCIAL DO MÊS", "kicker"))
+        story.append(Spacer(1, 0.15 * cm))
+        story.append(kpi_cards([
+            ("Carteira (execução R$ 10 mil)", fmt_pct(perf["retorno"], 2, True), sign_color(perf["retorno"])),
+            ("IBOV", fmt_pct(perf["ibov"], 2, True), sign_color(perf["ibov"])),
+            ("CDI líquido de IR", fmt_pct(perf["cdi"], 2, True), sign_color(perf["cdi"])),
+            ("Diferença vs IBOV", fmt_pp(perf["alfa"]), sign_color(perf["alfa"])),
+        ]))
+        story.append(Spacer(1, 0.7 * cm))
+    else:
+        story.append(paragraph("O resultado do mês entra neste relatório quando a parcial oficial estiver disponível. "
+                               "As cotações após a data de entrada, nas fichas, são apenas informativas.", "small"))
+        story.append(Spacer(1, 0.5 * cm))
     story.append(paragraph("Sobre esta edição", "h2"))
     cdi_clause = (f" e <b>{fmt_pct(cdi_weight, 0)}</b> em CDI/Tesouro Selic líquido de IR"
                   if cdi_weight >= 0.005 else "")
@@ -1287,7 +1298,8 @@ def build_report(month: str, output: Path | None = None, allow_network: bool = T
         "investimento. Investimentos em renda variável envolvem risco de perda de capital. Rentabilidade passada "
         "não é garantia de resultados futuros.", "small"))
 
-    output = output or (PDF_DIR / f"carteira_recomendada_{month_key(month)}.pdf")
+    suffix = "" if data.fechado else "_parcial"
+    output = output or (PDF_DIR / f"carteira_recomendada_{month_key(month)}{suffix}.pdf")
     output.parent.mkdir(parents=True, exist_ok=True)
     doc = BaseDocTemplate(str(output), pagesize=A4, leftMargin=MARGIN, rightMargin=MARGIN,
                           topMargin=1.5 * cm, bottomMargin=1.9 * cm,
@@ -1301,6 +1313,8 @@ def build_report(month: str, output: Path | None = None, allow_network: bool = T
         PageTemplate(id="inner", frames=[frame], onPage=lambda c, d: on_page(c, d, month)),
     ])
     doc.build(story)
+    if data.fechado:  # o relatorio final substitui o parcial do mesmo mes
+        (PDF_DIR / f"carteira_recomendada_{month_key(month)}_parcial.pdf").unlink(missing_ok=True)
     return output
 
 

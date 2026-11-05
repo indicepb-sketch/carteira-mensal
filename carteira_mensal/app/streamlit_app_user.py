@@ -659,12 +659,14 @@ def render_history(f,capital,min_w,frac):
 def render_method():
     st.write('A plataforma mostra a versão executável do modelo: quantidade inteira de ações, exclusão de posições pequenas e saldo em CDI líquido. A simulação usa preços de referência; não é uma ordem executada.')
 def monthly_report_files()->list[Path]:
-    return sorted((ROOT/'output'/'pdf').glob('carteira_recomendada_20*_*.pdf'),reverse=True)
+    found=list((ROOT/'output'/'pdf').glob('carteira_recomendada_20*_*.pdf'))
+    final={p.stem for p in found if not p.stem.endswith('_parcial')}
+    return sorted([p for p in found if not (p.stem.endswith('_parcial') and p.stem[:-8] in final)],reverse=True)
 def render_reports_sidebar():
     reports=monthly_report_files()
     if not reports: return
     def label(path:Path)->str:
-        m=re.search(r'(20\d{2})_(\d{2})',path.stem); return month_label(f'{m.group(1)}-{m.group(2)}') if m else path.stem
+        m=re.search(r'(20\d{2})_(\d{2})',path.stem); return (month_label(f'{m.group(1)}-{m.group(2)}')+(' (parcial)' if path.stem.endswith('_parcial') else '')) if m else path.stem
     with st.sidebar.expander('Relatório mensal (PDF)'):
         chosen=st.selectbox('Mês',reports,format_func=label,label_visibility='collapsed')
         st.download_button('Baixar relatório',data=chosen.read_bytes(),file_name=chosen.name,mime='application/pdf',icon=':material/picture_as_pdf:',help='Carteira recomendada, desempenho do mês e gráfico de 12 meses de cada ação com os indicadores do robô.')
