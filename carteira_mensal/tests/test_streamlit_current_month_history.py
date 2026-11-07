@@ -129,3 +129,12 @@ def test_previous_open_partial_is_display_only(monkeypatch, tmp_path):
 
     details["status"] = "fechamento_mes"
     assert app.latest_previous_open_partial(files, history) == (None, {})
+
+
+def test_sheet_cache_is_invalidated_when_a_file_is_regenerated_with_the_same_name(tmp_path):
+    import pandas as pd
+    path = tmp_path / "historico.xlsx"
+    pd.DataFrame({"a": [1]}).to_excel(path, sheet_name="Mes a Mes", index=False)
+    assert app.sheet(str(path), "Mes a Mes")["a"].tolist() == [1]
+    pd.DataFrame({"a": [1, 2, 3]}).to_excel(path, sheet_name="Mes a Mes", index=False)
+    assert app.sheet(str(path), "Mes a Mes")["a"].tolist() == [1, 2, 3]

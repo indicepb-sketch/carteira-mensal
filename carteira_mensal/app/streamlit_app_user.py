@@ -76,9 +76,14 @@ def files()->AppFiles:
     partial_path=latest_official_partial(manifest['month'],forward.name,manifest['version'])
     return AppFiles(forward, partial_path, latest('historico_v2_top15_capital.xlsx') or latest('shadow_teste49_top15_regime_capital.xlsx') or latest('shadow_teste46_carteira_executavel.xlsx') or latest('shadow_teste45_consolidacao_final_t44a.xlsx'),manifest['version'],load_methodology_display_name(manifest['version'],ROOT))
 @st.cache_data(show_spinner=False)
-def sheet(path:str,name:str)->pd.DataFrame:
+def _sheet_cached(path:str,name:str,stamp:tuple)->pd.DataFrame:
     try: return pd.read_excel(path,sheet_name=name)
     except Exception: return pd.DataFrame()
+def sheet(path:str,name:str)->pd.DataFrame:
+    # a chave do cache inclui data e tamanho do arquivo: um arquivo regenerado com o mesmo nome (ex.: historico_v2) nao serve dados antigos
+    try: st_=Path(path).stat(); stamp=(st_.st_mtime_ns,st_.st_size)
+    except OSError: stamp=(0,0)
+    return _sheet_cached(path,name,stamp)
 @st.cache_data(show_spinner=False)
 def calendar_cdi_monthly()->pd.DataFrame:
     if not CDI_MONTHLY_PATH.exists(): return pd.DataFrame()
