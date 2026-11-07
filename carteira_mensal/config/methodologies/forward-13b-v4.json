@@ -1,0 +1,61 @@
+{
+  "version": "forward-13b-v4",
+  "engine": "shadow.forward_test",
+  "selection": {
+    "regime_classifier": "13B conservador",
+    "portfolio_size": "unrestricted",
+    "uptrend_signal": "V3_MOMENTUM",
+    "downtrend_signal": "SINAL_A_DEFENSIVO",
+    "beta_target_lambda": 1.5,
+    "cv_lambda": 0.5,
+    "max_stocks_per_sector": 2,
+    "max_stock_weight": 0.25,
+    "exposure_by_regime": {
+      "alta": 1.0,
+      "oportunidade": 1.0,
+      "queda_leve": 0.6,
+      "queda_forte": 0.3,
+      "indefinido": 1.0
+    },
+    "complete_candidate_features": true,
+    "min_one_share_per_position": true,
+    "weighting": {
+      "method": "min_variance_lw",
+      "window_trading_days": 120,
+      "max_weight": 0.25,
+      "shrinkage": "ledoit_wolf_2004_scaled_identity",
+      "uses_historical_mean_return": false
+    }
+  },
+  "execution": {
+    "scenario": "TOP15",
+    "max_stocks": 15,
+    "ranking": [
+      "nota_final_desc",
+      "peso_recomendado_desc"
+    ],
+    "min_weight_default": 0.01,
+    "fractional_default": true,
+    "capital_reference": 10000.0,
+    "quantity_rule": "floor_to_whole_shares_or_lots_of_100",
+    "unallocated_to": "CDI"
+  },
+  "changelog": {
+    "vs": "forward-13b-v3",
+    "change": "Pesos de minima variancia com encolhimento de Ledoit-Wolf entre as acoes ja escolhidas: covariancia dos 120 pregoes anteriores a data de selecao, long-only, teto de 25% por papel, sem retorno medio historico (o otimizador anterior minimizava risco/retorno medio historico, entrada ruidosa). Posicoes com peso abaixo de 1% saem e o peso e renormalizado; depois seguem a regra de 1 acao (v3) e a execucao com acoes inteiras.",
+    "evidence": "Testes de sombra T79 e T80 (motor real, 2022-01..2026-10, regra de 1 acao e lotes inteiros): retorno 58 meses +105,5% vs +74,2%, Sharpe 0,50 vs 0,21, queda maxima -8,7% vs -13,8%, vol. 12,8% vs 16,5%; diferenca de retorno medio NAO significativa (IC95 -0,35 a +0,89 pp/mes; p do Sharpe 0,125); vantagem concentrada em 2022 e 2026; perde em 2023 e 2025. Apoio teorico: DeMiguel, Garlappi e Uppal (2009); Ledoit e Wolf (2004). Decisao do responsavel pelo produto em 2026-11-07. Historico refeito retroativamente (backtest, nao desempenho operado).",
+    "unchanged": "selecao das acoes, regime 13B, sinais, exposicao por regime, nota v2, regra de 1 acao e regras de execucao",
+    "changelog_v3": {
+      "vs": "forward-13b-v2",
+      "change": "Regra de viabilidade: cada posicao da carteira precisa comportar pelo menos 1 acao ao preco de entrada no capital de referencia (R$ 10.000). Posicoes cujo valor alvo (peso x exposicao x capital) nao paga 1 acao saem da carteira e o peso e redistribuido proporcionalmente as demais. Ex.: FLRY3 em nov/2026 (alvo R$ 13,94 contra acao a R$ 20,47).",
+      "evidence": "Decisao do responsavel pelo produto: nao se inclui na carteira o que nao e possivel comprar",
+      "unchanged": "nota de 5 componentes (v2), regime, sinais, otimizador, exposicao por regime e regras de execucao",
+      "changelog_v2": {
+        "vs": "forward-13b-v1",
+        "change": "A nota usa os cinco componentes (tendencia, timing, fundamentos, setor, risco). Na v1, as bases de 2026 nao traziam em 'Candidatas Risco' as colunas lidas pelo score (medias moveis, preco, retorno YTD, ROE, ROIC, margem bruta, P/L, tendencia setorial), e tendencia e fundamentos saiam 0. A v2 completa essas colunas a partir da aba 'Analise Preliminar' da mesma base mensal (dados de formacao).",
+        "evidence": "Testes de sombra 59, 68, 69 e 70: restaura a consistencia com o sistema testado em 2022-2025; efeito medido em jan-out/2026 de +1,04 p.p., sem significancia estatistica",
+        "unchanged": "regime, sinais, otimizador, exposicao por regime e regras de execucao"
+      }
+    }
+  }
+}

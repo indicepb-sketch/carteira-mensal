@@ -49,15 +49,15 @@ def test_rule_applies_from_the_v3_effective_month_only():
     assert ft.min_one_share_capital("2027-01") == 10_000.0
 
 
-def test_official_november_portfolio_only_has_buyable_positions_and_no_flry3():
+def test_official_november_portfolio_only_has_buyable_positions():
     path, manifest = load_active(ROOT)
-    assert manifest["month"] == "2026-11" and manifest["version"] == "forward-13b-v3"
+    assert manifest["month"] == "2026-11" and manifest["version"] == "forward-13b-v4"
     carteira = pd.read_excel(path, sheet_name="Carteira Aplicada")
     stocks = carteira[carteira["ticker"] != "CDI"]
-    assert "FLRY3.SA" not in set(stocks["ticker"])
     shares = np.floor(stocks["peso_recomendado"] * 10_000.0 / stocks["preco_entrada_fechamento_mes_anterior"])
     assert (shares >= 1).all()
     assert carteira["peso_recomendado"].sum() == pytest.approx(1.0)
     summary = dict(zip(*pd.read_excel(path, sheet_name="Resumo Forward").iloc[:, :2].T.values))
-    assert "FLRY3.SA" in str(summary["posicoes_removidas_por_inviabilidade"])
+    assert "posicoes_removidas_por_inviabilidade" in summary and summary["regra_pesos"].startswith("minima variancia")
+    assert "FLRY3.SA" not in str(summary["posicoes_removidas_por_inviabilidade"])      # com os pesos da v4 o FLRY3 comporta mais de 1 acao
     assert pd.read_excel(path, sheet_name="Validacao")["ok"].all()

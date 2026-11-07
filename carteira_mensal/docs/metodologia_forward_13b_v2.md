@@ -63,3 +63,28 @@ dela é redistribuído proporcionalmente às demais (a soma do modelo é preserv
   (ex.: CEAB3 em 2024, YDUQ3 em 2025, FLRY3 em nov/2026). Com o peso redistribuído, o acumulado passou de +75,1% para **+74,2%**.
 - A carteira do forward registra `regra_minimo_1_acao` e `posicoes_removidas_por_inviabilidade` em `Resumo Forward` e a validação
   `todas_posicoes_compraveis_1_acao`. Manifestos anteriores ficam em `output/production/superseded/`.
+
+## Atualização: forward-13b-v4 (vigente desde novembro/2026)
+**Pesos de mínima variância com encolhimento de Ledoit-Wolf** entre as ações já escolhidas pelo motor. Seleção, regime, sinais,
+exposição por regime, nota v2 e regra de 1 ação (v3) não mudam. O otimizador anterior minimizava risco ÷ retorno médio histórico
+(entrada ruidosa); a v4 usa só a covariância dos 120 pregões anteriores à data de seleção, long-only, teto de 25% por papel. Posições
+com peso abaixo de 1% saem e o peso é renormalizado. Módulo: `src/weighting.py`; aplicação: `forward_test.apply_weighting`.
+
+- **Evidência (testes de sombra 79 e 80, motor real, 2022-01..2026-10, 1 ação e lotes inteiros):** retorno de 58 meses **+105,9%**
+  (v3: +74,2%; IBOV +60,2%); Sharpe 0,50 contra 0,21; queda máxima −8,7% contra −13,8%; volatilidade 12,8% contra 16,5%; captura de baixa 36% contra 69%.
+- **Ano a ano (v4 / v3 / IBOV):** 2022 +16,8% / +1,6% / +5,0%; 2023 +22,7% / +32,5% / +22,0%; 2024 −2,1% / −4,5% / −10,4%;
+  2025 +33,6% / +39,3% / +34,0%; 2026 (jan–out) +9,9% / −2,8% / +4,2%.
+- **Limites (importante):** a diferença de retorno médio mensal **não é estatisticamente significativa** (IC95 −0,35 a +0,89 pp/mês;
+  p do Sharpe 0,125). A vantagem se concentra em 2022 e 2026; a v4 perde em 2023 e 2025 (menor captura de alta, 74% contra 85%).
+  A carteira fica mais concentrada (≈ 6 posições efetivas contra 11). A v4 foi escolhida depois de testes sobre estes mesmos meses:
+  **o histórico exibido é um backtest aplicado retroativamente, não desempenho operado.** A referência da v3 está em
+  `output/excel/historico_v3_referencia_top15_capital.xlsx`.
+- **Novembro/2026 refeito pela v4** (regime queda forte, 30% em ações): PETR3, GGBR4, FLRY3, EMBJ3, WEGE3, BBSE3, PRIO3 e SUZB3.
+  O FLRY3 volta à carteira porque, com os pesos de mínima variância, o valor alvo comporta mais de 1 ação (regra da v3 cumprida).
+  Manifesto anterior (v3) em `output/production/superseded/2026-11_forward-13b-v3.json`.
+- A regra de 1 ação (v3) continua valendo, mas com os pesos da v4 as posições são maiores e ela atuou em 3 dos 58 meses (EMBJ3 em dez/2024, ago/2026 e set/2026).
+- A carteira forward registra `regra_pesos`, `encolhimento_ledoit_wolf` e `posicoes_removidas_peso_minimo` em `Resumo Forward`;
+  a coluna `peso_otimizador_original` guarda o peso que o otimizador teria dado.
+- **Dependência de preços:** a formação mensal precisa dos preços diários ajustados (cache `data/history_cache/precos_ajustados.csv`,
+  atualizado pelo yfinance quando defasado). Se não houver preços, a geração falha em vez de usar outra regra de pesos.
+

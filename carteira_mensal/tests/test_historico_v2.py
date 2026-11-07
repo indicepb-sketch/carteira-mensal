@@ -23,6 +23,17 @@ def monthly() -> pd.DataFrame:
     return frame
 
 
+def frame_oct() -> float:
+    return float(monthly().set_index("mes").loc["2026-10", "retorno"])
+
+
+def test_history_is_labelled_as_v4_retroactive_backtest():
+    notes = dict(zip(*pd.read_excel(HISTORY, sheet_name="Metodologia").iloc[:, :2].T.values))
+    assert "forward-13b-v4" in str(notes["versao_metodologia"])
+    assert "BACKTEST" in str(notes["aplicacao_retroativa"]) and "minima variancia" in str(notes["regra_pesos"])
+    assert (ROOT / "output" / "excel" / "historico_v3_referencia_top15_capital.xlsx").exists()
+
+
 def test_history_covers_every_month_from_2022_to_october_2026():
     frame = monthly()
     expected = list(pd.period_range("2022-01", "2026-10", freq="M").astype(str))
@@ -50,12 +61,14 @@ def test_returns_follow_the_portfolio_rows():
     assert (by_month - frame["retorno"]).abs().max() < 1e-9
 
 
-def test_october_matches_the_official_closed_partial_and_september_is_close():
+def test_october_history_is_the_v4_backtest_while_the_issued_v2_partial_keeps_its_own_result():
+    """O historico e a v4 aplicada retroativamente (backtest): outubro difere da carteira v2 que foi de fato emitida e fechou -11,43%."""
     frame = monthly().set_index("mes")
     partial = sorted((ROOT / "output" / "excel").glob("parcial_carteira_forward_2026_10_v*.xlsx"))[-1]
     summary = dict(zip(*pd.read_excel(partial, sheet_name="Resumo Parcial").iloc[:, :2].T.values))
     assert "fechamento" in str(summary["status"])
-    assert frame.loc["2026-10", "retorno"] == pytest.approx(float(summary["retorno_modelo_executavel"]), abs=2e-4)
+    assert float(summary["retorno_modelo_executavel"]) == pytest.approx(-0.1143, abs=3e-4)       # resultado da carteira v2 emitida
+    assert frame.loc["2026-10", "retorno"] != pytest.approx(float(summary["retorno_modelo_executavel"]), abs=2e-4)
     assert frame.loc["2026-10", "retorno_ibov"] == pytest.approx(float(summary["retorno_ibov_parcial"]), abs=1e-6)
 
 
@@ -67,7 +80,7 @@ def test_platform_reads_the_v2_history_and_keeps_its_structure():
     assert months[0] == "2022-01" and "2026-10" in months and months == sorted(months)
     assert {"retorno_modelo", "retorno_expost_ibov"}.issubset(history.columns)
     row = history[history["mes"].astype(str).str[:7] == "2026-10"].iloc[0]
-    assert row["retorno_modelo"] == pytest.approx(-0.1143, abs=3e-4)
+    assert row["retorno_modelo"] == pytest.approx(frame_oct(), abs=1e-9)
 
 
 def test_one_share_rule_is_applied_to_every_historical_month():
@@ -78,5 +91,5 @@ def test_one_share_rule_is_applied_to_every_historical_month():
     audit = pd.read_excel(HISTORY, sheet_name="Auditoria")
     assert "removidas_por_inviabilidade_1_acao" in audit.columns
     removed = audit["removidas_por_inviabilidade_1_acao"].fillna("").astype(str)
-    assert (removed != "").sum() >= 20                                                  # a regra atua em boa parte dos meses
-    assert removed[audit["mes"].astype(str) == "2024-06"].iloc[0].startswith("CEAB3")  # exemplo conferido
+    assert (removed != "").sum() >= 1                                                   # com os pesos da v4 as posicoes sao maiores: a regra atua em poucos meses
+    assert removed[audit["mes"].astype(str) == "2026-09"].iloc[0].startswith("EMBJ3")  # exemplo conferido (v4)

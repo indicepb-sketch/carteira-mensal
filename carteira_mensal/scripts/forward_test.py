@@ -376,6 +376,82 @@ def drop_unbuyable_positions(portfolio: pd.DataFrame, exposure: float, capital: 
     return kept, removed
 
 
+ADJ_PRICES_CACHE = ROOT / "data" / "history_cache" / "precos_ajustados.csv"
+
+
+def weighting_policy(month: str, force: bool | None = None) -> dict[str, Any] | None:
+    """Regra de pesos da metodologia vigente (v4 em diante: minima variancia Ledoit-Wolf). None = pesos do otimizador (v1-v3).
+
+    `force=True` ignora a data de vigencia e usa a metodologia atual (refazer o historico na metodologia vigente).
+    """
+    import json
+
+    from production_registry import load_methodology
+
+    policy = json.loads((ROOT / "config" / "production_methodology.json").read_text(encoding="utf-8"))
+    if force is None and month < str(policy.get("effective_from", "9999-12")):
+        return None
+    method = load_methodology(policy["version"], ROOT)
+    cfg = (method["selection"].get("weighting") or {})
+    if cfg.get("method") != "min_variance_lw":
+        return None
+    return {"method": cfg["method"], "window": int(cfg.get("window_trading_days", 120)), "cap": float(cfg.get("max_weight", 0.25)),
+            "min_weight": float(method["execution"].get("min_weight_default", 0.01)), "version": policy["version"]}
+
+
+def load_adjusted_prices(tickers: list[str], cutoff: pd.Timestamp) -> pd.DataFrame:
+    """Fechamentos ajustados diarios (cache em data/history_cache). Atualiza pelo yfinance se faltar ticker ou o cache estiver defasado."""
+    wide = pd.read_csv(ADJ_PRICES_CACHE, index_col=0, parse_dates=True) if ADJ_PRICES_CACHE.exists() else pd.DataFrame()
+    missing = [t for t in tickers if t not in wide.columns]
+    stale = wide.empty or wide.index.max() < cutoff - pd.Timedelta(days=5)
+    if missing or stale:
+        try:
+            import yfinance as yf
+
+            wanted = sorted(set(wide.columns) | set(tickers))
+            raw = yf.download(wanted, start="2021-06-01", end=(cutoff + pd.Timedelta(days=3)).date().isoformat(), auto_adjust=False, progress=False, group_by="column", threads=True)
+            adj = raw["Adj Close"] if isinstance(raw.columns, pd.MultiIndex) else raw
+            adj.index = pd.to_datetime(adj.index).tz_localize(None)
+            wide = adj.astype(float).sort_index().dropna(how="all")
+            ADJ_PRICES_CACHE.parent.mkdir(parents=True, exist_ok=True)
+            wide.to_csv(ADJ_PRICES_CACHE)
+        except Exception as exc:  # noqa: BLE001
+            raise RuntimeError(f"Precos diarios indisponiveis para os pesos de minima variancia (v4): {exc}") from exc
+    still_missing = [t for t in tickers if t not in wide.columns]
+    if still_missing:
+        raise RuntimeError(f"Sem precos diarios para: {still_missing}")
+    return wide
+
+
+def apply_weighting(portfolio: pd.DataFrame, month: str, cutoff: pd.Timestamp, prices: pd.DataFrame | None = None,
+                    force: bool | None = None) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Troca os pesos do otimizador pelos de minima variancia (v4), preservando a soma do modelo.
+
+    Posicoes com peso abaixo do minimo (1%) saem e o peso e renormalizado. Sem retorno medio historico e sem olhar alem de `cutoff`.
+    """
+    cfg = weighting_policy(month, force)
+    if cfg is None or portfolio.empty:
+        return portfolio, {"ativa": False}
+    from weighting import min_variance_for_tickers
+
+    out = portfolio.copy()
+    tickers = out["ticker"].astype(str).str.upper().tolist()
+    total = float(pd.to_numeric(out["peso_recomendado"], errors="coerce").fillna(0.0).sum())
+    price_table = prices if prices is not None else load_adjusted_prices(tickers, cutoff)
+    weights, info = min_variance_for_tickers(tickers, price_table, cutoff, cfg["window"], cfg["cap"])
+    out["peso_otimizador_original"] = pd.to_numeric(out["peso_recomendado"], errors="coerce")
+    out["peso_recomendado"] = weights.to_numpy()
+    small = out["peso_recomendado"] < cfg["min_weight"]
+    removed = [{"ticker": str(r["ticker"]), "peso_minvar": float(r["peso_recomendado"])} for _, r in out[small].iterrows()]
+    out = out[~small].copy()
+    if out.empty:                      # nunca deixar a carteira vazia: mantem os pesos do otimizador
+        return portfolio, {"ativa": False, "aviso": "todos os pesos de minima variancia abaixo do minimo"}
+    out["peso_recomendado"] = out["peso_recomendado"] / out["peso_recomendado"].sum() * total
+    info.update({"ativa": True, "metodo": cfg["method"], "versao": cfg["version"], "janela": cfg["window"], "teto": cfg["cap"],
+                 "removidas_abaixo_do_minimo": removed, "posicoes": int(len(out))})
+    return out, info
+
+
 def build_forward_tables(
     mes_key: str,
     base_workbook: Path,
@@ -395,8 +471,10 @@ def build_forward_tables(
     prices = entry_prices(base_workbook, portfolio["ticker"].astype(str).tolist() if not portfolio.empty and "ticker" in portfolio else [])
     unbuyable_capital = min_one_share_capital(mes_key)
     removed_unbuyable: list[dict[str, Any]] = []
+    weighting_info: dict[str, Any] = {"ativa": False}
     if not portfolio.empty:
         portfolio["preco_entrada_fechamento_mes_anterior"] = portfolio["ticker"].map(prices)
+        portfolio, weighting_info = apply_weighting(portfolio, mes_key, selection_cutoff)
         if unbuyable_capital:
             portfolio, removed_unbuyable = drop_unbuyable_positions(portfolio, exposure, unbuyable_capital)
         portfolio["data_preco_entrada"] = selection_cutoff.date().isoformat()
@@ -480,6 +558,13 @@ def build_forward_tables(
             {"campo": "comando_mensal", "valor": command},
         ]
     )
+    if weighting_info.get("ativa"):
+        dropped_text = "; ".join(f"{r['ticker']} ({r['peso_minvar']:.2%})" for r in weighting_info["removidas_abaixo_do_minimo"]) or "nenhuma"
+        regime = pd.concat([regime, pd.DataFrame([
+            {"campo": "regra_pesos", "valor": f"minima variancia com encolhimento Ledoit-Wolf ({weighting_info['versao']}): {weighting_info['janela']} pregoes ate {selection_cutoff.date().isoformat()}, teto {weighting_info['teto']:.0%} por papel, sem retorno medio historico"},
+            {"campo": "encolhimento_ledoit_wolf", "valor": weighting_info["encolhimento"]},
+            {"campo": "posicoes_removidas_peso_minimo", "valor": dropped_text},
+        ])], ignore_index=True)
     if unbuyable_capital:
         removed_text = "; ".join(f"{r['ticker']} (alvo R$ {r['valor_alvo']:.2f} < 1 acao a R$ {r['preco']:.2f})" for r in removed_unbuyable) or "nenhuma"
         regime = pd.concat([regime, pd.DataFrame([
