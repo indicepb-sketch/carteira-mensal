@@ -615,7 +615,7 @@ def render_previous_portfolios(f):
     st.dataframe(previous_portfolio_table(rows),hide_index=True,use_container_width=True)
 def render_history(f,capital,min_w,frac):
     st.subheader('Histórico do modelo executável'); df=monthly(f,capital,min_w,frac)
-    st.caption('Histórico de jan/2022 a out/2026 refeito pela metodologia v4 (pesos de mínima variância) aplicada retroativamente: é um backtest, não desempenho operado. A v4 foi escolhida após testes sobre estes mesmos meses.')
+    st.caption('Histórico de jan/2022 a out/2026 refeito pela metodologia vigente (v4) aplicada retroativamente: é um backtest, não desempenho operado. A v4 foi escolhida após testes sobre estes mesmos meses.')
     previous_path,previous_ps=latest_previous_open_partial(f,df)
     if previous_path:
         month=str(previous_ps['mes'])[:7]
