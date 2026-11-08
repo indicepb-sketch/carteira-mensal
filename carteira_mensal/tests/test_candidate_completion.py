@@ -81,8 +81,8 @@ def test_each_version_only_adds_its_own_flag_to_the_previous_definition():
 
 def test_registry_serves_the_right_version_per_month_and_keeps_the_history():
     active_path, active = load_active(ROOT)
-    assert active["version"] == "forward-13b-v4" and active["month"] == "2026-11"
-    expected = {"2026-10": ("forward-13b-v2", "forward-13b-v1"), "2026-11": ("forward-13b-v4", "forward-13b-v3")}
+    assert active["version"] == "forward-13b-v5" and active["month"] == "2026-11"
+    expected = {"2026-10": ("forward-13b-v2", "forward-13b-v1"), "2026-11": ("forward-13b-v5", "forward-13b-v4")}
     for month, (version, previous) in expected.items():
         _, manifest = load_month(month, ROOT)
         assert manifest["version"] == version and manifest["supersedes"]["version"] == previous

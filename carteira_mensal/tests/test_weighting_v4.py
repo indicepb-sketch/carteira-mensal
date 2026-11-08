@@ -54,7 +54,7 @@ def test_weighting_policy_is_v4_min_variance_from_effective_month_only():
     assert ft.weighting_policy("2026-10") is None             # outubro nasceu na v2: pesos do otimizador
     for month in ("2026-11", "2027-01"):
         cfg = ft.weighting_policy(month)
-        assert cfg["method"] == "min_variance_lw" and cfg["window"] == 120 and cfg["cap"] == 0.25 and cfg["version"] == "forward-13b-v4"
+        assert cfg["method"] == "min_variance_lw" and cfg["window"] == 120 and cfg["cap"] == 0.25 and cfg["version"] == "forward-13b-v5"
     assert ft.weighting_policy("2024-05", force=True)["method"] == "min_variance_lw"      # historico refeito na metodologia vigente
 
 

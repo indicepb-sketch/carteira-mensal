@@ -51,7 +51,7 @@ def test_rule_applies_from_the_v3_effective_month_only():
 
 def test_official_november_portfolio_only_has_buyable_positions():
     path, manifest = load_active(ROOT)
-    assert manifest["month"] == "2026-11" and manifest["version"] == "forward-13b-v4"
+    assert manifest["month"] == "2026-11" and manifest["version"] == "forward-13b-v5"
     carteira = pd.read_excel(path, sheet_name="Carteira Aplicada")
     stocks = carteira[carteira["ticker"] != "CDI"]
     shares = np.floor(stocks["peso_recomendado"] * 10_000.0 / stocks["preco_entrada_fechamento_mes_anterior"])

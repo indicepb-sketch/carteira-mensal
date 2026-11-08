@@ -29,7 +29,7 @@ def frame_oct() -> float:
 
 def test_history_is_labelled_as_v4_retroactive_backtest():
     notes = dict(zip(*pd.read_excel(HISTORY, sheet_name="Metodologia").iloc[:, :2].T.values))
-    assert "forward-13b-v4" in str(notes["versao_metodologia"])
+    assert "forward-13b-v5" in str(notes["versao_metodologia"])
     assert "BACKTEST" in str(notes["aplicacao_retroativa"]) and "minima variancia" in str(notes["regra_pesos"])
     assert (ROOT / "output" / "excel" / "historico_v3_referencia_top15_capital.xlsx").exists()
 
@@ -92,4 +92,4 @@ def test_one_share_rule_is_applied_to_every_historical_month():
     assert "removidas_por_inviabilidade_1_acao" in audit.columns
     removed = audit["removidas_por_inviabilidade_1_acao"].fillna("").astype(str)
     assert (removed != "").sum() >= 1                                                   # com os pesos da v4 as posicoes sao maiores: a regra atua em poucos meses
-    assert removed[audit["mes"].astype(str) == "2026-09"].iloc[0].startswith("EMBJ3")  # exemplo conferido (v4)
+    assert removed[audit["mes"].astype(str) == "2025-08"].iloc[0].startswith("EMBJ3")  # exemplo conferido (v5)

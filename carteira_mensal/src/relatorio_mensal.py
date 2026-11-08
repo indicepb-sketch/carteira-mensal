@@ -108,7 +108,11 @@ def fnum(value: Any, default: float = np.nan) -> float:
         return float(default)
 
 
+DECIMALS = 2      # regra do relatorio: todos os numeros com duas casas decimais (o argumento `digits` das chamadas e ignorado)
+
+
 def fmt_pct(value: Any, digits: int = 2, signed: bool = False) -> str:
+    digits = DECIMALS
     number = fnum(value)
     if np.isnan(number):
         return "-"
@@ -117,6 +121,7 @@ def fmt_pct(value: Any, digits: int = 2, signed: bool = False) -> str:
 
 
 def fmt_pp(value: Any, digits: int = 2) -> str:
+    digits = DECIMALS
     number = fnum(value)
     if np.isnan(number):
         return "-"
@@ -124,6 +129,7 @@ def fmt_pp(value: Any, digits: int = 2) -> str:
 
 
 def fmt_num(value: Any, digits: int = 1) -> str:
+    digits = DECIMALS
     number = fnum(value)
     if np.isnan(number):
         return "-"
@@ -692,7 +698,7 @@ def chart_stock(ticker: str, series: dict[str, Any], cutoff: pd.Timestamp, end: 
     ax_rsi.axhline(30, color=GREEN, linewidth=0.8, linestyle="--")
     ax_rsi.plot(rsi_values.index, rsi_values.values, color=TEAL, linewidth=1.3)
     ax_rsi.scatter([rsi_values.index[-1]], [rsi_values.iloc[-1]], color=TEAL, s=22, zorder=5)
-    ax_rsi.annotate(f"{rsi_values.iloc[-1]:.1f}".replace(".", ","), (rsi_values.index[-1], rsi_values.iloc[-1]),
+    ax_rsi.annotate(f"{rsi_values.iloc[-1]:.2f}".replace(".", ","), (rsi_values.index[-1], rsi_values.iloc[-1]),
                     xytext=(-6, 7), textcoords="offset points", fontsize=7.5, color=TEAL,
                     fontweight="bold", ha="right")
     ax_rsi.set_ylim(0, 100)

@@ -196,23 +196,93 @@ def make_forward_d3(original_d3):
     return wrapped
 
 
-def forward_13b_inputs(mes_key: str, workbook: Path) -> dict[str, Any]:
+IBOV_DAILY_CSV = ROOT / "data" / "history_cache" / "ibov_diario.csv"
+
+
+def regime_policy(month: str, force: bool | None = None) -> dict[str, Any] | None:
+    """Parametros do regime da metodologia vigente (v5 em diante). None = comportamento original (v1-v4).
+
+    `force=True` ignora a data de vigencia (refazer o historico na metodologia vigente).
+    """
+    import json
+
+    from production_registry import load_methodology
+
+    policy = json.loads((ROOT / "config" / "production_methodology.json").read_text(encoding="utf-8"))
+    if force is None and month < str(policy.get("effective_from", "9999-12")):
+        return None
+    selection = load_methodology(policy["version"], ROOT)["selection"]
+    trigger = selection.get("regime_trigger")
+    if not trigger:
+        return None
+    return {"trend_below": float(trigger["trend_favorable_below"]), "uniform_inputs": bool(trigger.get("uniform_inputs_all_months", False)),
+            "exposure_queda_forte": float(selection["exposure_by_regime"]["queda_forte"]), "version": policy["version"]}
+
+
+def _weekly_rsi_ibov(cutoff: pd.Timestamp, periods: int = 14) -> float:
+    if not IBOV_DAILY_CSV.exists():
+        return float("nan")
+    close = pd.read_csv(IBOV_DAILY_CSV, index_col=0, parse_dates=True)["close"]
+    weekly = close[close.index <= cutoff].resample("W-FRI").last().dropna()
+    delta = weekly.diff()
+    up = delta.clip(lower=0).ewm(alpha=1 / periods, adjust=False).mean()
+    down = (-delta.clip(upper=0)).ewm(alpha=1 / periods, adjust=False).mean()
+    return float(100 - 100 / (1 + up.iloc[-1] / down.iloc[-1])) if len(weekly) > periods and down.iloc[-1] > 0 else float("nan")
+
+
+def reconstruct_regime_inputs(workbook: Path, cutoff: pd.Timestamp) -> dict[str, float]:
+    """Reconstroi, a partir da aba 'Analise Preliminar' do proprio mes, os campos de amplitude que as bases de 2022-2025 nao guardam."""
+    frame = pd.read_excel(workbook, sheet_name="Analise Preliminar")
+    num = lambda col: pd.to_numeric(frame[col], errors="coerce") if col in frame else pd.Series(dtype=float)  # noqa: E731
+    ret1m, price, ma50, rsi = num("retorno_acumulado_1m"), num("preco_atual"), num("mm50"), num("rsi")
+    out = {}
+    if ret1m.notna().any():
+        out["pct_ativos_positivos_1m"] = float((ret1m > 0)[ret1m.notna()].mean())
+    both = price.notna() & ma50.notna()
+    if both.any():
+        out["pct_preco_acima_mm50"] = float((price > ma50)[both].mean())
+    if rsi.notna().any():
+        out["pct_rsi_50_70"] = float(((rsi >= 50) & (rsi <= 70))[rsi.notna()].mean())
+    out["rsi_ibov"] = _weekly_rsi_ibov(cutoff)
+    return out
+
+
+def forward_13b_inputs(mes_key: str, workbook: Path, force: bool | None = None) -> dict[str, Any]:
     # Usa somente dados da planilha-base de formacao; sem ex-post/futuro.
     rg14.MONTHS = {mes_key: workbook.name}
     data = rg14.month_audit_inputs(mes_key, pd.DataFrame(columns=["mes", "ticker", "retorno_realizado_periodo"]))
     data["ibov_expost"] = np.nan
     data["label_expost"] = "em_aberto"
+    policy = regime_policy(mes_key, force)
+    if policy and policy["uniform_inputs"]:           # v5: as mesmas regras em todos os anos (so preenche o que esta ausente)
+        year, month = (int(x) for x in mes_key.split("-"))
+        for key, value in reconstruct_regime_inputs(workbook, pd.Timestamp(year, month, 1) - pd.Timedelta(days=1)).items():
+            if pd.isna(data.get(key, np.nan)) and pd.notna(value):
+                data[key] = value
     return data
 
 
-def classify_forward_13b(mes_key: str, workbook: Path) -> tuple[str, str, dict[str, Any]]:
-    inputs = forward_13b_inputs(mes_key, workbook)
-    bucket, reason = rg14.anti_false_positive_conservative(inputs)
+def classify_regime(inputs: dict[str, Any], month: str, force: bool | None = None) -> tuple[str, str]:
+    """13B conservador com o limiar de tendencia da metodologia vigente (v1-v4: 35%; v5: 20%)."""
+    policy = regime_policy(month, force)
+    if policy is None:
+        return rg14.anti_false_positive_conservative(inputs)
+    limit, trend = policy["trend_below"], inputs.get("pct_tendencia_favoravel", np.nan)
+    if pd.notna(trend) and trend < limit:
+        return "queda_forte", f"13B conservador: tendencia favoravel <{limit:.0%} ({trend:.1%})"
+    if limit < 0.35 and pd.notna(trend) and trend < 0.35:          # impede que a regra original de 35% dispare
+        inputs = {**inputs, "pct_tendencia_favoravel": 0.35}
+    return rg14.anti_false_positive_conservative(inputs)
+
+
+def classify_forward_13b(mes_key: str, workbook: Path, force: bool | None = None) -> tuple[str, str, dict[str, Any]]:
+    inputs = forward_13b_inputs(mes_key, workbook, force)
+    bucket, reason = classify_regime(inputs, mes_key, force)
     return bucket, reason, inputs
 
 
-def make_forward_profiles(mes_key: str, workbook: Path, original_beta_profile, original_downturn_profile):
-    bucket, reason, _inputs = classify_forward_13b(mes_key, workbook)
+def make_forward_profiles(mes_key: str, workbook: Path, original_beta_profile, original_downturn_profile, force: bool | None = None):
+    bucket, reason, _inputs = classify_forward_13b(mes_key, workbook, force)
 
     def beta_target_profile(path: Path, settings: dict) -> dict[str, Any]:
         base = dict(original_beta_profile(path, settings))
@@ -257,7 +327,7 @@ def run_forward_portfolio(mes_key: str, workbook: Path, base_settings: dict, for
     original_beta_profile = sh.beta_target_profile
     original_downturn_profile = sh.downturn_regime_profile
     try:
-        bucket, reason, beta_profile, downturn_profile = make_forward_profiles(mes_key, workbook, original_beta_profile, original_downturn_profile)
+        bucket, reason, beta_profile, downturn_profile = make_forward_profiles(mes_key, workbook, original_beta_profile, original_downturn_profile, force_completion)
         sh.build_free_size_portfolio = sc.consolidated_build_free_size_portfolio
         sh.technical_veto_to_penalty_in_opportunity = make_forward_d3(original_d3)
         sh.beta_target_profile = beta_profile
@@ -332,11 +402,14 @@ def entry_prices(base_workbook: Path, tickers: list[str]) -> dict[str, Any]:
 
 
 
-def exposure_for_metrics(metrics: dict[str, Any]) -> tuple[float, str]:
+def exposure_for_metrics(metrics: dict[str, Any], month: str | None = None, force: bool | None = None) -> tuple[float, str]:
     regime = str(metrics.get("subtipo_queda", "") or "").strip()
     exposure = float(EXPOSURE_BY_REGIME.get(regime, 1.0))
+    policy = regime_policy(month, force) if month else None
     if regime == "queda_forte":
-        return exposure, "queda_forte: 30% em acoes e 70% em CDI/Tesouro Selic liquido de IR"
+        if policy:
+            exposure = policy["exposure_queda_forte"]
+        return exposure, f"queda_forte: {exposure:.0%} em acoes e {1 - exposure:.0%} em CDI/Tesouro Selic liquido de IR"
     if regime == "queda_leve":
         return exposure, "queda_leve: 60% em acoes e 40% em CDI/Tesouro Selic liquido de IR"
     if regime in {"alta", "oportunidade"}:
@@ -464,7 +537,7 @@ def build_forward_tables(
 ) -> dict[str, pd.DataFrame]:
     portfolio = result.get("portfolio", pd.DataFrame()).copy()
     metrics = result.get("metrics", {})
-    exposure, exposure_reason = exposure_for_metrics(metrics)
+    exposure, exposure_reason = exposure_for_metrics(metrics, mes_key)
     candidates = result.get("candidates", pd.DataFrame()).copy()
     regime_fields = fields_from_sheet(base_workbook, "Regime Mercado")
     data_base_fields = fields_from_sheet(base_workbook, "Data Base Carteira")
@@ -716,7 +789,7 @@ def main() -> None:
     else:
         weights = sh.format_weights(sh.weights_map(tables.get("Carteira Forward", portfolio)))   # ja sem posicoes inviaveis (regra de 1 acao)
         metrics = result.get("metrics", {})
-        exposure, exposure_reason = exposure_for_metrics(metrics)
+        exposure, exposure_reason = exposure_for_metrics(metrics, mes_key)
         log(f"Carteira forward modelo 100%: {weights}")
         log(f"Exposicao aplicada: {exposure:.0%}; CDI/Tesouro Selic: {1.0 - exposure:.0%}; motivo={exposure_reason}")
         log(
