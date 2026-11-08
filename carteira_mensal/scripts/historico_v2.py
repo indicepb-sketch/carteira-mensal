@@ -1,7 +1,7 @@
 """Historico mensal da carteira refeito pelo motor de producao (metodologia forward-13b-v2).
 
 Gera `output/excel/historico_v2_top15_capital.xlsx` no mesmo formato do T49 (cenario TOP15, R$ 10 mil),
-para 2022-01..2026-10, de modo que o historico exibido na plataforma e nos relatorios seja produzido pelo
+para 2021-01..2026-10, de modo que o historico exibido na plataforma e nos relatorios seja produzido pelo
 MESMO motor que forma as carteiras oficiais (nota com 5 componentes, regime 13B conservador, Sinal A / V3,
 Top 15, minimo de 1%, quantidades inteiras).
 
@@ -41,13 +41,17 @@ ADJ_CACHE = CACHE_DIR / "precos_ajustados.csv"
 OUT = EXCEL_DIR / "historico_v2_top15_capital.xlsx"
 IBOV_CSV = ROOT / "data" / "processed" / "ibov_mensal_oficial.csv"
 CDI_CSV = ROOT / "data" / "processed" / "cdi_mensal_ipeadata.csv"
-FIRST, LAST = "2022-01", "2026-10"
+FIRST, LAST = "2021-01", "2026-10"
+IBOV_DAILY_CSV = CACHE_DIR / "ibov_diario.csv"
 CAPITAL, MIN_WEIGHT, MAX_STOCKS, CDI_IR = 10_000.0, 0.01, 15, 0.225
 VERSION = "forward-13b-v5 (nota v2 + regra de 1 acao + pesos de minima variancia + regime de defesa v5; aplicada retroativamente a todo o historico)"
 
 
 def month_workbook(month: str) -> Path:
     year, mon = month.split("-")
+    corrected = EXCEL_DIR / f"carteira_historica_{year}_{mon}_corrigida.xlsx"      # corte no ultimo pregao do mes anterior; fundamentos CVM sem olhar o futuro
+    if corrected.exists():
+        return corrected
     historic = EXCEL_DIR / f"carteira_historica_{year}_{mon}.xlsx"
     if historic.exists():
         return historic
@@ -107,7 +111,20 @@ def t49_cdi_fallback(month: str) -> float:
     return float(rows["retorno_periodo"].iloc[0]) if len(rows) else np.nan
 
 
+def benchmark_2021(month: str) -> tuple[float, float, str]:
+    """IBOV (do IBOV diario) e CDI liquido (serie IPEA, outubro interpolado) para os meses anteriores a 2022."""
+    close = pd.read_csv(IBOV_DAILY_CSV, index_col=0, parse_dates=True)["close"]
+    monthly = close.groupby(close.index.to_period("M")).last()
+    monthly.index = monthly.index.astype(str)
+    previous = str(pd.Period(month, "M") - 1)
+    cdi = pd.read_csv(CDI_CSV).set_index("mes")["cdi_bruto_mensal"].astype(float)
+    cdi = cdi.reindex(pd.period_range(cdi.index.min(), cdi.index.max(), freq="M").astype(str)).interpolate()
+    return float(monthly[month] / monthly[previous] - 1), float(cdi[month]) * (1 - CDI_IR), "IBOV diario + serie IPEA (2021)"
+
+
 def benchmark_returns(month: str) -> tuple[float, float, str]:
+    if month < "2022-01":
+        return benchmark_2021(month)
     ibov = pd.read_csv(IBOV_CSV)
     ibov["mes"] = ibov["mes"].astype(str).str[:7]
     cdi = pd.read_csv(CDI_CSV)
@@ -219,14 +236,14 @@ def main() -> None:
     validation["qtd_ok_top15"] = validation["qtd_acoes"] <= MAX_STOCKS
     notes = pd.DataFrame({"item": [
         "versao_metodologia", "gerado_em", "periodo", "execucao", "regime",
-        "nota", "fundamentos_jan_jun_2026", "precos_e_retornos", "cdi_e_ibov", "limitacao_2022_2025", "ordem_de_grandeza", "regra_1_acao", "regra_pesos", "aplicacao_retroativa"],
+        "nota", "fundamentos", "precos_e_retornos", "cdi_e_ibov", "bases_mensais", "ordem_de_grandeza", "regra_1_acao", "regra_pesos", "aplicacao_retroativa"],
         "valor": [VERSION, f"{datetime.now():%Y-%m-%d %H:%M}", f"{FIRST} a {LAST}", "Top 15, minimo de 1%, quantidades inteiras, R$ 10 mil, saldo no CDI",
                   "13B conservador do motor forward (amplitude de tendencia; demais entradas so existem a partir de 2026)",
                   "5 componentes (tendencia, timing, fundamentos, setor, risco); colunas ausentes completadas da aba Analise Preliminar da mesma base",
-                  "fundamentos do Fundamentus coletados depois da formacao (look-ahead leve); validos a partir de jul/2026",
+                  "balancos da CVM (DFP/ITR) usando so o que ja tinha sido divulgado na data (sem olhar o futuro)",
                   "yfinance ajustado: entrada no fechamento da data de selecao, saida no ultimo pregao do mes",
                   "CDI liquido de IR 22,5% (IPEA ate jul/2026; depois parcial fechada) e IBOV oficial (CSV; depois parcial fechada)",
-                  "Em 2022-2025 o regime usa so a amplitude de tendencia, pois as bases historicas nao guardam as demais entradas do 13B",
+                  "Bases mensais de 2021-2026 geradas com corte no ultimo pregao do mes anterior (corrigidas); campos de amplitude ausentes reconstruidos da aba Analise Preliminar para que as regras do regime valham igualmente em todos os anos",
                   "Substitui o historico anterior (T49 ate jun/2026 + parciais): ver docs/metodologia_forward_13b_v2.md",
                   "Cada posicao precisa comportar pelo menos 1 acao no capital de referencia (R$ 10 mil); as que nao comportam saem da carteira e o peso e redistribuido proporcionalmente (aba Auditoria)",
                   "pesos de minima variancia sobre as acoes escolhidas e regime de defesa da v5, com as mesmas regras do classificador em todos os anos (campos ausentes de 2022-2025 reconstruidos da aba Analise Preliminar)",

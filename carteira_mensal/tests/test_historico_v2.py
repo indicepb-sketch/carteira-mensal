@@ -34,9 +34,9 @@ def test_history_is_labelled_as_v4_retroactive_backtest():
     assert (ROOT / "output" / "excel" / "historico_v3_referencia_top15_capital.xlsx").exists()
 
 
-def test_history_covers_every_month_from_2022_to_october_2026():
+def test_history_covers_every_month_from_2021_to_october_2026():
     frame = monthly()
-    expected = list(pd.period_range("2022-01", "2026-10", freq="M").astype(str))
+    expected = list(pd.period_range("2021-01", "2026-10", freq="M").astype(str))
     assert frame["mes"].tolist() == expected
     assert set(frame["cenario"]) == {"TOP15"} and set(frame["capital"]) == {10000.0}
 
@@ -77,7 +77,7 @@ def test_platform_reads_the_v2_history_and_keeps_its_structure():
     assert files.operational is not None and files.operational.name == "historico_v2_top15_capital.xlsx"
     history = app.monthly(files)
     months = history["mes"].astype(str).str[:7].tolist()
-    assert months[0] == "2022-01" and "2026-10" in months and months == sorted(months)
+    assert months[0] == "2021-01" and "2026-10" in months and months == sorted(months)
     assert {"retorno_modelo", "retorno_expost_ibov"}.issubset(history.columns)
     row = history[history["mes"].astype(str).str[:7] == "2026-10"].iloc[0]
     assert row["retorno_modelo"] == pytest.approx(frame_oct(), abs=1e-9)
