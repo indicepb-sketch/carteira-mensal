@@ -10,8 +10,8 @@ from production_registry import load_methodology
 
 def test_production_version_includes_the_execution_rule(monkeypatch):
     files = app.files()
-    assert files.display_name == "Modelo v5.0.0"
-    assert files.version == "forward-13b-v5"
+    assert files.display_name == "Modelo v6.0.0"
+    assert files.version == "forward-13b-v6"
     method = load_methodology(files.version, app.ROOT)
     execution = method["execution"]
     assert method["selection"]["portfolio_size"] == "unrestricted"

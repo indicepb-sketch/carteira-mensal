@@ -44,7 +44,7 @@ tetos por ativo e setor, exposição por regime (100% / 30%) e regras de execuç
 A plataforma e os relatórios PDF passam a ler `historico_v2_top15_capital.xlsx`; o T49 fica como arquivo de pesquisa/reserva.
 
 ## Pontos de atenção
-- Fundamentos: de jan a jun/2026 as bases históricas usaram fundamentos do Fundamentus coletados depois da formação
+- (Superado pela v6: o historico foi refeito com os fundamentos da CVM, ver metodologia_forward_13b_v6.md.) Fundamentos: de jan a jun/2026 as bases históricas usaram fundamentos do Fundamentus coletados depois da formação
   (look-ahead; Teste 59). A partir de julho são coletados na própria data de formação.
 - P/L histórico das bases da CVM é pouco confiável (valores ausentes ou implausíveis em ~65% dos casos).
 - Resultados de backtest dependem de momento/tendência e de execução próxima do fechamento (Testes 61, 64 e 65).

@@ -63,7 +63,7 @@ O Excel contem abas de auditoria: resumo da carteira, ranking, indicadores tecni
 ## Fontes de dados
 
 - Precos historicos e indices: `yfinance`.
-- Fundamentos: tentativa automatica via Fundamentus.
+- Fundamentos: balancos da CVM (DFP/ITR) a partir da metodologia forward-13b-v6 (formacao de dez/2026 em diante); ate a v5, Fundamentus. Ver docs/metodologia_forward_13b_v6.md.
 - Taxa livre de risco: configurada em `settings.yaml` na primeira versao.
 
 Se uma coleta falhar, o erro e registrado no log e nas abas de fontes/log. Dados fundamentalistas ausentes ficam como `NaN`; o sistema nao preenche zero artificialmente.
