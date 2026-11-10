@@ -1,0 +1,59 @@
+2026-11-09 21:06:11,735 INFO main - Iniciando carteira mensal para 76 ativos
+2026-11-09 21:06:19,835 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: IEEX.SA"}}}
+2026-11-09 21:06:20,293 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-11-09 21:06:20,297 ERROR yfinance - 
+1 Failed download:
+2026-11-09 21:06:20,298 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-11-09 21:06:21,550 ERROR yfinance - HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: IEEX.SA"}}}
+2026-11-09 21:06:21,884 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-11-09 21:06:21,889 ERROR yfinance - 
+1 Failed download:
+2026-11-09 21:06:21,891 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-11-09 21:06:22,904 ERROR yfinance - $IEEX.SA: possibly delisted; no timezone found
+2026-11-09 21:06:22,908 ERROR yfinance - 
+1 Failed download:
+2026-11-09 21:06:22,910 ERROR yfinance - ['IEEX.SA']: possibly delisted; no timezone found
+2026-11-09 21:06:25,912 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-11-09 21:06:25,916 ERROR yfinance - 
+1 Failed download:
+2026-11-09 21:06:25,918 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-11-09 21:06:26,427 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-11-09 21:06:26,429 ERROR yfinance - 
+1 Failed download:
+2026-11-09 21:06:26,429 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-11-09 21:06:27,438 ERROR yfinance - $ELET6.SA: possibly delisted; no timezone found
+2026-11-09 21:06:27,442 ERROR yfinance - 
+1 Failed download:
+2026-11-09 21:06:27,442 ERROR yfinance - ['ELET6.SA']: possibly delisted; no timezone found
+2026-11-09 21:07:44,456 INFO main - Data-base: formacao=2026-11-03 limite_selecao=2026-10-30 avaliacao=2026-10-30
+2026-11-09 21:07:50,207 INFO main - AUDITORIA_RSI_PRIO3: timeframe=1W periodo=14 ultimo_fechamento=2026-10-30 00:00:00 fechamento=71.4900 rsi=63.2030
+2026-11-09 21:07:50,213 INFO main - AUDITORIA_RSI_PRIO3_ULTIMAS_20_SEMANAS:
+data_fechamento  fechamento  variacao    ganho     perda  media_ganho_wilder  media_perda_wilder       rs       rsi
+     2026-06-19   57.200001 -4.139999 0.000000  4.139999            1.308760            1.346727 0.971808 49.285119
+     2026-06-26   53.290001 -3.910000 0.000000  3.910000            1.215277            1.529818 0.794393 44.270855
+     2026-07-03   52.959999 -0.330002 0.000000  0.330002            1.128471            1.444117 0.781427 43.865219
+     2026-07-10   55.450001  2.490002 2.490002 -0.000000            1.225723            1.340965 0.914060 47.755047
+     2026-07-17   57.849998  2.399998 2.399998 -0.000000            1.309600            1.245182 1.051734 51.260735
+     2026-07-24   58.820000  0.970001 0.970001 -0.000000            1.285343            1.156241 1.111657 52.643829
+     2026-07-31   60.849998  2.029999 2.029999 -0.000000            1.338533            1.073652 1.246710 55.490477
+     2026-08-07   57.450001 -3.399998 0.000000  3.399998            1.242923            1.239819 1.002503 50.062508
+     2026-08-14   58.630001  1.180000 1.180000 -0.000000            1.238429            1.151261 1.075715 51.823832
+     2026-08-21   62.849998  4.219997 4.219997 -0.000000            1.451398            1.069028 1.357680 57.585424
+     2026-08-28   60.540001 -2.309998 0.000000  2.309998            1.347727            1.157669 1.164173 53.792974
+     2026-09-04   60.189999 -0.350002 0.000000  0.350002            1.251461            1.099978 1.137714 53.221055
+     2026-09-11   64.190002  4.000004 4.000004 -0.000000            1.447785            1.021408 1.417440 58.633926
+     2026-09-18   63.240002 -0.950001 0.000000  0.950001            1.344372            1.016308 1.322800 56.948507
+     2026-09-25   59.349998 -3.890003 0.000000  3.890003            1.248345            1.221572 1.021917 50.541992
+     2026-10-02   63.009998  3.660000 3.660000 -0.000000            1.420606            1.134317 1.252390 55.602706
+     2026-10-09   64.449997  1.439999 1.439999 -0.000000            1.421991            1.053294 1.350042 57.447574
+     2026-10-16   70.099998  5.650002 5.650002 -0.000000            1.723992            0.978059 1.762667 63.803097
+     2026-10-23   73.800003  3.700005 3.700005 -0.000000            1.865136            0.908197 2.053668 67.252497
+     2026-10-30   71.489998 -2.310005 0.000000  2.310005            1.731912            1.008327 1.717610 63.202964
+2026-11-09 21:07:54,983 INFO main - Auditoria beta/correlacao: janela_inicio=2026-07-01 janela_fim=2026-10-30 benchmark=^BVSP fonte=yfinance tipo_preco=adjusted_close observacoes_ibov=86 ativos_auditados=14 beta_ibov=1.0000000000000002 correlacao_ibov=1.0 beta_batendo=14 beta_divergencias=0 beta_divergentes= correlacao_batendo=14 correlacao_divergencias=0 correlacao_divergentes=
+2026-11-09 21:07:54,984 INFO main - Arquivos gerados: C:\Users\amade\Documents\Codex\2026-06-26\wt_score_v2\carteira_mensal\output\excel\carteira_recomendada_2026_11_v2.xlsx, C:\Users\amade\Documents\Codex\2026-06-26\wt_score_v2\carteira_mensal\output\pdf\relatorio_carteira_2026_11_v1.pdf
+2026-11-09 21:07:54,985 INFO main - Resumo: analisados=76 preliminares=14 risco=14 liberados=12 selecionados=8 peso_zero=6 valida=True
+2026-11-09 21:07:54,988 INFO main - Comparativo regime: [{'quantidade de acoes': 5, 'CV': nan, 'beta': nan, 'correlacao_carteira_ibov': nan, 'score_aderencia_regime': nan, 'maior_peso_setorial': nan, 'setor_mais_concentrado': '', 'quantidade_blocos_risco_duplicados': 0, 'carteira_elegivel_para_escolha_final': False, 'motivo de escolha ou rejeicao': 'limites individuais de peso tornam a carteira inviavel'}, {'quantidade de acoes': 6, 'CV': nan, 'beta': nan, 'correlacao_carteira_ibov': nan, 'score_aderencia_regime': nan, 'maior_peso_setorial': nan, 'setor_mais_concentrado': '', 'quantidade_blocos_risco_duplicados': 0, 'carteira_elegivel_para_escolha_final': False, 'motivo de escolha ou rejeicao': 'limites individuais de peso tornam a carteira inviavel'}, {'quantidade de acoes': 8, 'CV': 5.150260636979583, 'beta': 0.3640624872176982, 'correlacao_carteira_ibov': 0.29467250535334993, 'score_aderencia_regime': 100.0, 'maior_peso_setorial': 0.2, 'setor_mais_concentrado': 'Siderurgia e Metalurgia', 'quantidade_blocos_risco_duplicados': 1, 'carteira_elegivel_para_escolha_final': True, 'motivo de escolha ou rejeicao': 'escolhida entre carteiras elegiveis por regime/setor/bloco: diversificacao antes do CV, depois Sharpe e beta/correlacao'}, {'quantidade de acoes': 10, 'CV': 4.256242471708568, 'beta': 0.3549194791418776, 'correlacao_carteira_ibov': 0.2831987703904931, 'score_aderencia_regime': 100.0, 'maior_peso_setorial': 0.2, 'setor_mais_concentrado': 'Siderurgia e Metalurgia', 'quantidade_blocos_risco_duplicados': 1, 'carteira_elegivel_para_escolha_final': True, 'motivo de escolha ou rejeicao': 'rejeitada: diversificacao/CV/Sharpe inferior ao da carteira escolhida entre carteiras aderentes'}]
+2026-11-09 21:07:54,993 INFO main - Ativos bloqueados por aderencia ao regime: []
+2026-11-09 21:07:54,993 INFO main - Ativos bloqueados por beta/correlacao negativa em mercado favoravel: []
+2026-11-09 21:07:54,993 INFO main - Ativos bloqueados por beta/correlacao muito baixos em mercado favoravel: []
+2026-11-09 21:07:54,993 INFO main - Carteira escolhida: motivo=escolhida entre carteiras elegiveis por regime/setor/bloco: diversificacao antes do CV, depois Sharpe e beta/correlacao ativos=PETR3.SA, GOAU4.SA, GGBR4.SA, FLRY3.SA, EMBJ3.SA, WEGE3.SA, CXSE3.SA, BBSE3.SA pesos=PETR3.SA: 10.00%; GOAU4.SA: 10.00%; GGBR4.SA: 10.00%; FLRY3.SA: 20.00%; EMBJ3.SA: 10.00%; WEGE3.SA: 20.00%; CXSE3.SA: 10.00%; BBSE3.SA: 10.00% retorno=0.0021707279248713695 risco=0.011179814585057388 CV=5.150260636979583 beta=0.3640624872176982 Sharpe=0.14454293540238056 maior_peso_setorial=0.2 setor_concentrado=Siderurgia e Metalurgia blocos_duplicados=GERDAU_GOAU: 2 ativos/20.00% perf_carteira=0.0 perf_ibov=0.0 alfa=0.0

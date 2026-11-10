@@ -9,6 +9,7 @@ import sys
 import time
 import zipfile
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -31,6 +32,47 @@ from utils import load_settings  # noqa: E402
 HEADERS = {"User-Agent": "Mozilla/5.0"}
 CVM_BASE = "https://dados.cvm.gov.br/dados/CIA_ABERTA/DOC/{kind}/DADOS/{lower}_cia_aberta_{year}.zip"
 _CVM_ZIP_CACHE: dict[tuple[str, int], zipfile.ZipFile] = {}
+CVM_CACHE_DIR = ROOT / "data" / "cvm_cache"      # zips da CVM em disco (nao versionado): evita baixar de novo e protege contra falhas de rede
+CVM_RETRIES, CVM_TIMEOUT = 4, 180
+
+
+def _cvm_cache_max_age_hours(year: int) -> float:
+    """Arquivos do ano corrente e do anterior ainda recebem documentos (ITR trimestral, DFP em marco/abril): cache de 12 h; anos antigos: 30 dias."""
+    return 12.0 if int(year) >= datetime.now().year - 1 else 24.0 * 30
+
+
+def download_cvm_zip(kind: str, year: int) -> bytes:
+    """Zip da CVM (DFP/ITR) com cache em disco, novas tentativas e, se a rede falhar de vez, o cache vencido em vez de abortar a formacao mensal."""
+    url = CVM_BASE.format(kind=kind, lower=kind.lower(), year=year)
+    path = CVM_CACHE_DIR / f"{kind.lower()}_{year}.zip"
+    try:
+        if path.exists() and (time.time() - path.stat().st_mtime) / 3600.0 < _cvm_cache_max_age_hours(year) and zipfile.is_zipfile(path):
+            return path.read_bytes()
+    except OSError:
+        pass
+    last: Exception | None = None
+    for attempt in range(CVM_RETRIES):
+        try:
+            response = requests.get(url, timeout=CVM_TIMEOUT, headers=HEADERS)
+            response.raise_for_status()
+            content = response.content
+            if not zipfile.is_zipfile(io.BytesIO(content)):
+                raise ValueError(f"resposta da CVM nao e um zip valido: {url}")
+            try:
+                CVM_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+                temporary = path.with_suffix(".tmp")
+                temporary.write_bytes(content)
+                temporary.replace(path)
+            except OSError:
+                pass
+            return content
+        except (requests.RequestException, ValueError) as exc:
+            last = exc
+            time.sleep(min(5 * 3 ** attempt, 60))
+    if path.exists() and zipfile.is_zipfile(path):
+        print(f"AVISO: CVM indisponivel ({last}); usando o arquivo em cache de {datetime.fromtimestamp(path.stat().st_mtime):%Y-%m-%d %H:%M}: {path.name}", flush=True)
+        return path.read_bytes()
+    raise RuntimeError(f"Nao foi possivel baixar {url} apos {CVM_RETRIES} tentativas") from last
 
 
 @dataclass(frozen=True)
@@ -189,11 +231,7 @@ class CVMStore:
             for year in years:
                 key = (kind, year)
                 if key not in _CVM_ZIP_CACHE:
-                    lower = kind.lower()
-                    url = CVM_BASE.format(kind=kind, lower=lower, year=year)
-                    response = requests.get(url, timeout=90)
-                    response.raise_for_status()
-                    _CVM_ZIP_CACHE[key] = zipfile.ZipFile(io.BytesIO(response.content))
+                    _CVM_ZIP_CACHE[key] = zipfile.ZipFile(io.BytesIO(download_cvm_zip(kind, year)))
                 self.zips[key] = _CVM_ZIP_CACHE[key]
 
     def read(self, kind: str, year: int, part: str | None = None) -> pd.DataFrame:

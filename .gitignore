@@ -13,3 +13,6 @@ carteira_mensal/tmp/
 .env
 .env.*
 secrets.toml
+
+# zips da CVM baixados pela formacao mensal (cache local)
+carteira_mensal/data/cvm_cache/

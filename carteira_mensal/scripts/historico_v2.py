@@ -1,7 +1,7 @@
-"""Historico mensal da carteira refeito pelo motor de producao (metodologia forward-13b-v2).
+"""Historico mensal da carteira refeito pelo motor de producao (metodologia forward-13b-v6: fundamentos da CVM).
 
 Gera `output/excel/historico_v2_top15_capital.xlsx` no mesmo formato do T49 (cenario TOP15, R$ 10 mil),
-para 2021-01..2026-10, de modo que o historico exibido na plataforma e nos relatorios seja produzido pelo
+para 2020-01..2026-10, de modo que o historico exibido na plataforma e nos relatorios seja produzido pelo
 MESMO motor que forma as carteiras oficiais (nota com 5 componentes, regime 13B conservador, Sinal A / V3,
 Top 15, minimo de 1%, quantidades inteiras).
 
@@ -41,15 +41,18 @@ ADJ_CACHE = CACHE_DIR / "precos_ajustados.csv"
 OUT = EXCEL_DIR / "historico_v2_top15_capital.xlsx"
 IBOV_CSV = ROOT / "data" / "processed" / "ibov_mensal_oficial.csv"
 CDI_CSV = ROOT / "data" / "processed" / "cdi_mensal_ipeadata.csv"
-FIRST, LAST = "2021-01", "2026-10"
+FIRST, LAST = "2020-01", "2026-10"
 IBOV_DAILY_CSV = CACHE_DIR / "ibov_diario.csv"
 CAPITAL, MIN_WEIGHT, MAX_STOCKS, CDI_IR = 10_000.0, 0.01, 15, 0.225
-VERSION = "forward-13b-v5 (nota v2 + regra de 1 acao + pesos de minima variancia + regime de defesa v5; aplicada retroativamente a todo o historico)"
+VERSION = "forward-13b-v6 (nota v2 + regra de 1 acao + pesos de minima variancia + regime de defesa v5 + fundamentos da CVM; aplicada retroativamente a todo o historico)"
 
 
 def month_workbook(month: str) -> Path:
     year, mon = month.split("-")
-    corrected = EXCEL_DIR / f"carteira_historica_{year}_{mon}_corrigida.xlsx"      # corte no ultimo pregao do mes anterior; fundamentos CVM sem olhar o futuro
+    cvm_ttm = EXCEL_DIR / f"carteira_historica_{year}_{mon}_corrigida2.xlsx"        # v6: fundamentos da CVM em 12 meses moveis, base do controlador (sem olhar o futuro)
+    if cvm_ttm.exists():
+        return cvm_ttm
+    corrected = EXCEL_DIR / f"carteira_historica_{year}_{mon}_corrigida.xlsx"      # corte no ultimo pregao do mes anterior; fundamentos da base anterior
     if corrected.exists():
         return corrected
     historic = EXCEL_DIR / f"carteira_historica_{year}_{mon}.xlsx"
@@ -240,10 +243,10 @@ def main() -> None:
         "valor": [VERSION, f"{datetime.now():%Y-%m-%d %H:%M}", f"{FIRST} a {LAST}", "Top 15, minimo de 1%, quantidades inteiras, R$ 10 mil, saldo no CDI",
                   "13B conservador do motor forward (amplitude de tendencia; demais entradas so existem a partir de 2026)",
                   "5 componentes (tendencia, timing, fundamentos, setor, risco); colunas ausentes completadas da aba Analise Preliminar da mesma base",
-                  "balancos da CVM (DFP/ITR) usando so o que ja tinha sido divulgado na data (sem olhar o futuro)",
+                  "balancos da CVM (DFP/ITR), 12 meses moveis, base do controlador, ROE sobre PL medio e ROIC = NOPAT/(passivo oneroso + PL); so o que ja tinha sido divulgado na data (sem olhar o futuro). Em jan-mai/2020 a quantidade de acoes usa o primeiro arquivo da CVM com esse dado (so o P/L desses meses olha um pouco adiante)",
                   "yfinance ajustado: entrada no fechamento da data de selecao, saida no ultimo pregao do mes",
                   "CDI liquido de IR 22,5% (IPEA ate jul/2026; depois parcial fechada) e IBOV oficial (CSV; depois parcial fechada)",
-                  "Bases mensais de 2021-2026 geradas com corte no ultimo pregao do mes anterior (corrigidas); campos de amplitude ausentes reconstruidos da aba Analise Preliminar para que as regras do regime valham igualmente em todos os anos",
+                  "Bases mensais de 2020-2026 geradas com corte no ultimo pregao do mes anterior (corrigidas); campos de amplitude ausentes reconstruidos da aba Analise Preliminar para que as regras do regime valham igualmente em todos os anos",
                   "Substitui o historico anterior (T49 ate jun/2026 + parciais): ver docs/metodologia_forward_13b_v2.md",
                   "Cada posicao precisa comportar pelo menos 1 acao no capital de referencia (R$ 10 mil); as que nao comportam saem da carteira e o peso e redistribuido proporcionalmente (aba Auditoria)",
                   "pesos de minima variancia sobre as acoes escolhidas e regime de defesa da v5, com as mesmas regras do classificador em todos os anos (campos ausentes de 2022-2025 reconstruidos da aba Analise Preliminar)",

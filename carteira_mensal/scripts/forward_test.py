@@ -141,9 +141,23 @@ def generate_base_workbook(year: int, month: int, selection_cutoff: pd.Timestamp
         out.index = idx
         return out.loc[out.index <= selection_cutoff].copy()
 
+    captured: dict[str, pd.DataFrame] = {}
+
     def fetch_prices_cut(*args, **kwargs):
         prices, records = original_fetch_prices(*args, **kwargs)
-        return trim_frame(prices), records
+        trimmed = trim_frame(prices)
+        captured["prices"] = trimmed
+        return trimmed, records
+
+    original_collect = prod_main.collect_fundamentals
+
+    def collect_fundamentals_cvm(tickers):
+        """v6: fundamentos so da CVM (documentos divulgados antes da formacao); preco = ultimo fechamento ate a data de selecao."""
+        import fundamentos_cvm_live as cvm_live
+
+        frame = captured.get("prices", pd.DataFrame())
+        last = frame.ffill().iloc[-1] if not frame.empty else pd.Series(dtype=float)
+        return cvm_live.collect_fundamentals_cvm(tickers, formation_date, {ticker: last.get(ticker, np.nan) for ticker in tickers})
 
     def fetch_indexes_cut(*args, **kwargs):
         prices, records = original_fetch_indexes(*args, **kwargs)
@@ -153,6 +167,10 @@ def generate_base_workbook(year: int, month: int, selection_cutoff: pd.Timestamp
     prod_main.load_settings = configured_settings
     prod_main.fetch_yfinance_prices = fetch_prices_cut
     prod_main.fetch_index_prices = fetch_indexes_cut
+    source = fundamentals_source(f"{year:04d}-{month:02d}")
+    if source == "cvm":
+        prod_main.collect_fundamentals = collect_fundamentals_cvm
+    log(f"Fundamentos da formacao {year:04d}-{month:02d}: fonte = {source}")
     try:
         log(
             f"Gerando base mensal {year:04d}-{month:02d}: formacao={formation_date.date()} "
@@ -163,6 +181,7 @@ def generate_base_workbook(year: int, month: int, selection_cutoff: pd.Timestamp
         prod_main.load_settings = original_load_settings
         prod_main.fetch_yfinance_prices = original_fetch_prices
         prod_main.fetch_index_prices = original_fetch_indexes
+        prod_main.collect_fundamentals = original_collect
 
     after = set(EXCEL_DIR.glob(f"carteira_recomendada_{year:04d}_{month:02d}_v*.xlsx"))
     created = sorted(after - before, key=lambda p: p.stat().st_mtime)
@@ -315,6 +334,19 @@ def candidate_completion_enabled(month: str) -> bool:
     if month < str(policy.get("effective_from", "9999-12")):
         return False
     return bool(load_methodology(policy["version"], ROOT)["selection"].get("complete_candidate_features", False))
+
+
+def fundamentals_source(month: str, force: bool | None = None) -> str:
+    """Fonte dos fundamentos da formacao mensal: 'cvm' (v6 em diante) ou 'fundamentus' (v1 a v5 e meses anteriores a vigencia)."""
+    import json
+
+    from production_registry import load_methodology
+
+    policy = json.loads((ROOT / "config" / "production_methodology.json").read_text(encoding="utf-8"))
+    if force is None and month < str(policy.get("effective_from", "9999-12")):
+        return "fundamentus"
+    source = str(load_methodology(policy["version"], ROOT)["selection"].get("fundamentals_source", "fundamentus")).lower()
+    return source if source in {"cvm", "fundamentus"} else "fundamentus"
 
 
 def run_forward_portfolio(mes_key: str, workbook: Path, base_settings: dict, force_completion: bool | None = None) -> dict[str, Any]:
