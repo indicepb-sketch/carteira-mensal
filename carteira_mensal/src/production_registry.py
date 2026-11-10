@@ -13,6 +13,8 @@ from pathlib import Path
 
 import pandas as pd
 
+import perfil as profiles
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -97,18 +99,18 @@ def validate_workbook(path: Path, month: str) -> dict:
     return {"formation_date": formation, "selection_cutoff": cutoff, "sha256": _sha256(path)}
 
 
-def load_active(root: Path = ROOT) -> tuple[Path, dict]:
-    production = root / "output" / "production"
+def load_active(root: Path = ROOT, perfil: str | None = None) -> tuple[Path, dict]:
+    production = profiles.production_dir(perfil, root)
     manifest = _read_json(production / "active.json")
-    path, monthly = load_month(manifest["month"], root)
+    path, monthly = load_month(manifest["month"], root, perfil)
     if monthly != manifest:
         raise ValueError("Registro ativo difere do arquivo mensal imutavel")
     return path, manifest
 
 
-def load_month(month: str, root: Path = ROOT) -> tuple[Path, dict]:
-    """Carrega e valida a carteira imutavel de um mes ja ativado (ativo ou anterior)."""
-    production = root / "output" / "production"
+def load_month(month: str, root: Path = ROOT, perfil: str | None = None) -> tuple[Path, dict]:
+    """Carrega e valida a carteira imutavel de um mes ja ativado (ativo ou anterior), do perfil indicado (padrao: Moderado)."""
+    production = profiles.production_dir(perfil, root)
     manifest = _read_json(production / f"{month}.json")
     if manifest.get("month") != month:
         raise ValueError("Registro mensal nao corresponde ao mes solicitado")
@@ -118,24 +120,25 @@ def load_month(month: str, root: Path = ROOT) -> tuple[Path, dict]:
     method = load_methodology(manifest["version"], root)
     if manifest["version"] == policy["version"] and method["engine"] != policy["engine"]:
         raise ValueError("Motor da metodologia diverge da politica de producao")
-    path = root / "output" / "excel" / manifest["file"]
+    path = profiles.excel_dir(perfil, root) / manifest["file"]
     if path.name != manifest["file"] or validate_workbook(path, month)["sha256"] != manifest["sha256"]:
         raise ValueError("Arquivo oficial mudou ou esta invalido")
     return path, manifest
 
 
-def activate_month(month: str, workbook: Path, root: Path = ROOT) -> dict:
+def activate_month(month: str, workbook: Path, root: Path = ROOT, perfil: str | None = None) -> dict:
     root = root.resolve()
     workbook = workbook.resolve()
-    if workbook.parent != (root / "output" / "excel").resolve():
-        raise ValueError("O arquivo deve estar em output/excel")
+    perfil = profiles.normalize(perfil)
+    if workbook.parent != profiles.excel_dir(perfil, root).resolve():
+        raise ValueError(f"O arquivo deve estar em {profiles.excel_dir(perfil, root).relative_to(root).as_posix()}")
     policy = _read_json(root / "config" / "production_methodology.json")
     if policy.get("status") != "production" or month < policy["effective_from"]:
         raise ValueError("Mes fora da vigencia da metodologia de producao")
     if load_methodology(policy["version"], root)["engine"] != policy["engine"]:
         raise ValueError("Motor da metodologia diverge da politica de producao")
     details = validate_workbook(workbook, month)
-    production = root / "output" / "production"
+    production = profiles.production_dir(perfil, root)
     monthly_path = production / f"{month}.json"
     active_path = production / "active.json"
     if active_path.exists():
@@ -156,12 +159,14 @@ def activate_month(month: str, workbook: Path, root: Path = ROOT) -> dict:
             **details,
             "activated_at_utc": datetime.now(timezone.utc).isoformat(),
         }
+        if perfil != profiles.DEFAULT_PROFILE:
+            manifest["perfil"] = perfil
         _write_json(monthly_path, manifest)
     _write_json(active_path, manifest)
     return manifest
 
 
-def supersede_month(month: str, workbook: Path, reason: str, root: Path = ROOT) -> dict:
+def supersede_month(month: str, workbook: Path, reason: str, root: Path = ROOT, perfil: str | None = None) -> dict:
     """Troca a carteira de um mes ja formado por uma nova versao de metodologia, de forma auditavel.
 
     O manifesto anterior nao e apagado: fica em output/production/superseded/<mes>_<versao>.json,
@@ -173,14 +178,15 @@ def supersede_month(month: str, workbook: Path, reason: str, root: Path = ROOT) 
         raise ValueError("Informe o motivo da substituicao")
     root = root.resolve()
     workbook = workbook.resolve()
-    if workbook.parent != (root / "output" / "excel").resolve():
-        raise ValueError("O arquivo deve estar em output/excel")
+    perfil = profiles.normalize(perfil)
+    if workbook.parent != profiles.excel_dir(perfil, root).resolve():
+        raise ValueError(f"O arquivo deve estar em {profiles.excel_dir(perfil, root).relative_to(root).as_posix()}")
     policy = _read_json(root / "config" / "production_methodology.json")
     if policy.get("status") != "production" or month < policy["effective_from"]:
         raise ValueError("Mes fora da vigencia da metodologia de producao")
     if load_methodology(policy["version"], root)["engine"] != policy["engine"]:
         raise ValueError("Motor da metodologia diverge da politica de producao")
-    production = root / "output" / "production"
+    production = profiles.production_dir(perfil, root)
     active_path, monthly_path = production / "active.json", production / f"{month}.json"
     if not monthly_path.exists():
         raise ValueError("Mes sem manifesto: use activate_month")
@@ -198,6 +204,8 @@ def supersede_month(month: str, workbook: Path, reason: str, root: Path = ROOT) 
                           "superseded_by_version": policy["version"], "reason": reason.strip()})
     manifest = {"month": month, "version": policy["version"], "file": workbook.name, **details, "activated_at_utc": now,
                 "supersedes": {"file": previous["file"], "version": previous["version"], "sha256": previous["sha256"]}}
+    if perfil != profiles.DEFAULT_PROFILE:
+        manifest["perfil"] = perfil
     _write_json(monthly_path, manifest)
     if active_path.exists() and _read_json(active_path)["month"] == month:
         _write_json(active_path, manifest)
@@ -207,11 +215,12 @@ def supersede_month(month: str, workbook: Path, reason: str, root: Path = ROOT) 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Ativa uma carteira mensal validada em producao.")
     parser.add_argument("--mes", required=True)
+    parser.add_argument("--perfil", default=None, help="Perfil da carteira (moderado ou arrojado); padrao: moderado")
     parser.add_argument("--arquivo", type=Path, required=True)
     parser.add_argument("--substituir", metavar="MOTIVO", default=None,
                         help="Substitui a carteira ativa do mes por nova versao de metodologia, arquivando o manifesto anterior")
     arguments = parser.parse_args()
     if arguments.substituir:
-        print(json.dumps(supersede_month(arguments.mes, arguments.arquivo, arguments.substituir), ensure_ascii=False, indent=2))
+        print(json.dumps(supersede_month(arguments.mes, arguments.arquivo, arguments.substituir, perfil=arguments.perfil), ensure_ascii=False, indent=2))
     else:
-        print(json.dumps(activate_month(arguments.mes, arguments.arquivo), ensure_ascii=False, indent=2))
+        print(json.dumps(activate_month(arguments.mes, arguments.arquivo, perfil=arguments.perfil), ensure_ascii=False, indent=2))

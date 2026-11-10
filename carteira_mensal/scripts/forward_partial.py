@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 from portfolio_execution import executable_portfolio, practical_partial_return
 from production_registry import load_active, load_methodology, load_month
+import perfil as profiles
 
 EXCEL_DIR = ROOT / "output" / "excel"
 LOG_DIR = ROOT / "output" / "logs"
@@ -26,6 +27,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Calcula parcial do forward-test mensal.")
     parser.add_argument("--mes", required=True, help="Mes no formato YYYY-MM")
     parser.add_argument("--arquivo", default=None, help="Arquivo forward especifico opcional")
+    parser.add_argument("--perfil", default="moderado", help="Perfil da carteira (moderado ou arrojado). Padrao: moderado.")
     parser.add_argument("--data-avaliacao", default=None, help="Data final da avaliacao no formato YYYY-MM-DD. Se omitida, usa a data atual.")
     parser.add_argument("--allow-network", action="store_true", help="Autoriza consulta ao yfinance com os tickers da carteira. Sem esta flag, usa apenas cache local para precos.")
     parser.add_argument("--cdi-auto", action="store_true", help="Busca CDI diario automaticamente no Banco Central/SGS e calcula retorno liquido de IR da parcela defensiva. Nao envia tickers.")
@@ -256,13 +258,17 @@ def require_price_on(series: pd.Series, date: pd.Timestamp, ticker: str) -> None
 def main() -> None:
     args = parse_args()
     year, month, mes_key = parse_month(args.mes)
-    forward, manifest = load_active(ROOT)
+    global EXCEL_DIR
+    perfil = profiles.normalize(getattr(args, "perfil", None))
+    if perfil != profiles.DEFAULT_PROFILE:
+        EXCEL_DIR = EXCEL_DIR / perfil                        # as funcoes abaixo leem e gravam na pasta do perfil (o Moderado usa a pasta de sempre)
+    forward, manifest = load_active(ROOT) if perfil == profiles.DEFAULT_PROFILE else load_active(ROOT, perfil)
     closing_past_month = mes_key < manifest["month"]
     if mes_key > manifest["month"]:
         raise ValueError(f"Parcial oficial somente para o mes ativo ou anteriores: {manifest['month']}")
     if closing_past_month:
         # Mes ja encerrado: so e permitido o fechamento, com data de avaliacao explicita.
-        forward, manifest = load_month(mes_key, ROOT)
+        forward, manifest = load_month(mes_key, ROOT) if perfil == profiles.DEFAULT_PROFILE else load_month(mes_key, ROOT, perfil)
         if not args.data_avaliacao:
             raise ValueError("Fechar mes anterior exige --data-avaliacao (ultimo dia util do mes)")
     if args.arquivo and (ROOT / args.arquivo).resolve() != forward.resolve():

@@ -1,14 +1,14 @@
 {
-  "activated_at_utc": "2026-11-10T00:08:37.782283+00:00",
-  "file": "carteira_forward_2026_11_v20261109_210758.xlsx",
+  "activated_at_utc": "2026-11-10T11:22:52.013204+00:00",
+  "file": "carteira_forward_2026_11_v20261110_082221.xlsx",
   "formation_date": "2026-11-03",
   "month": "2026-11",
   "selection_cutoff": "2026-10-30",
-  "sha256": "0d3ae1a804da150e9c7e23eddc02813cea0a94858999de9888ba88cba8915f88",
+  "sha256": "c1430e0a0c14362ac86aaa5c858aaa73a9c753a013e6096ab69211cbadbc4846",
   "supersedes": {
-    "file": "carteira_forward_2026_11_v20261108_114052.xlsx",
-    "sha256": "374535a073af3a6c8503ec1d0a6fdc444acf4e58ffe19df5068b0d0ece7377cd",
-    "version": "forward-13b-v5"
+    "file": "carteira_forward_2026_11_v20261109_210758.xlsx",
+    "sha256": "0d3ae1a804da150e9c7e23eddc02813cea0a94858999de9888ba88cba8915f88",
+    "version": "forward-13b-v6"
   },
-  "version": "forward-13b-v6"
+  "version": "forward-13b-v7"
 }

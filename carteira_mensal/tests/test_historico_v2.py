@@ -29,7 +29,7 @@ def frame_oct() -> float:
 
 def test_history_is_labelled_as_v4_retroactive_backtest():
     notes = dict(zip(*pd.read_excel(HISTORY, sheet_name="Metodologia").iloc[:, :2].T.values))
-    assert "forward-13b-v6" in str(notes["versao_metodologia"])
+    assert "forward-13b-v7" in str(notes["versao_metodologia"])
     assert "BACKTEST" in str(notes["aplicacao_retroativa"]) and "minima variancia" in str(notes["regra_pesos"])
     assert (ROOT / "output" / "excel" / "historico_v3_referencia_top15_capital.xlsx").exists()
 

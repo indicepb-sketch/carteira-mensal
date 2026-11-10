@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import io
 import json
+import perfil as profiles
 import re
 from dataclasses import dataclass
 from datetime import datetime
@@ -60,6 +61,8 @@ from technical_indicators import (
 ROOT = Path(__file__).resolve().parents[1]
 EXCEL_DIR = ROOT / "output" / "excel"
 PDF_DIR = ROOT / "output" / "pdf"
+PRODUCTION_DIR = ROOT / "output" / "production"
+PROFILE = "moderado"          # perfil do relatorio em geracao (v7: moderado e arrojado)
 CACHE_DIR = ROOT / "data" / "report_cache"
 CDI_MONTHLY_PATH = ROOT / "data" / "processed" / "cdi_mensal_ipeadata.csv"
 IBOV_MONTHLY_PATH = ROOT / "data" / "processed" / "ibov_mensal_oficial.csv"
@@ -239,7 +242,7 @@ class MonthData:
 def load_month_data(month: str) -> MonthData:
     key = month_key(month)
     forward_path = EXCEL_DIR / f"carteira_forward_{key}.xlsx"
-    manifest = ROOT / "output" / "production" / f"{month}.json"
+    manifest = PRODUCTION_DIR / f"{month}.json"
     if manifest.exists():   # carteira oficial do mes (pode ser uma versao posterior a original, ver superseded/)
         official = EXCEL_DIR / str(json.loads(manifest.read_text(encoding="utf-8")).get("file", ""))
         if official.is_file():
@@ -1040,7 +1043,21 @@ def paragraph(text: str, style: str = "body") -> Paragraph:
     return Paragraph(text, STYLES[style])
 
 
-def build_report(month: str, output: Path | None = None, allow_network: bool = True) -> Path:
+def build_report(month: str, output: Path | None = None, allow_network: bool = True, perfil: str | None = None) -> Path:
+    """PDF do mes. O Moderado usa os caminhos de sempre; o Arrojado le e grava nas suas subpastas (output/excel/arrojado etc.)."""
+    global EXCEL_DIR, PDF_DIR, PRODUCTION_DIR, PROFILE
+    perfil = profiles.normalize(perfil)
+    saved = (EXCEL_DIR, PDF_DIR, PRODUCTION_DIR, PROFILE)
+    if perfil != profiles.DEFAULT_PROFILE:
+        EXCEL_DIR, PDF_DIR, PRODUCTION_DIR = EXCEL_DIR / perfil, PDF_DIR / perfil, PRODUCTION_DIR / perfil
+    PROFILE = perfil
+    try:
+        return _build_report(month, output, allow_network)
+    finally:
+        EXCEL_DIR, PDF_DIR, PRODUCTION_DIR, PROFILE = saved
+
+
+def _build_report(month: str, output: Path | None = None, allow_network: bool = True) -> Path:
     data = load_month_data(month)
     perf = month_performance(data)
     history = load_history(month)
@@ -1052,12 +1069,15 @@ def build_report(month: str, output: Path | None = None, allow_network: bool = T
     ret_by_ticker = ({r["ticker"]: fnum(r["retorno_periodo"]) for _, r in table.iterrows()}
                      if "retorno_periodo" in table else {})
 
+    label = profile_label(month)
     if data.fechado:
         status_text = f"Fechamento do mês · avaliação em {data.end:%d/%m/%Y}"
     elif data.partial:
         status_text = f"Parcial do mês · avaliação até {data.end:%d/%m/%Y}"
     else:
         status_text = f"Carteira do mês · parcial oficial ainda não disponível · preços até {data.end:%d/%m/%Y}"
+    if label:
+        status_text = f"Perfil {label} · {status_text}"
     regime_name = pt_fix(data.forward.get("regime_mercado", "-")).capitalize()
     subtype = ""
     for key in ("subtipo_queda", "subtipo_mercado_favoravel"):
@@ -1298,12 +1318,12 @@ def build_report(month: str, output: Path | None = None, allow_network: bool = T
     # ---- Metodologia --------------------------------------------------------
     story.append(SectionTitle("Metodologia", "Como a carteira é montada"))
     story.append(Spacer(1, 0.2 * cm))
-    for title, text in METHOD_SECTIONS:
+    for title, text in method_sections(month):
         story.append(paragraph(title, "h2"))
         story.append(paragraph(text))
     story.append(Spacer(1, 0.4 * cm))
     story.append(paragraph(
-        f"<b>Dados e fontes:</b> preços ajustados via yfinance; fundamentos via Fundamentus; CDI via Banco Central "
+        f"<b>Dados e fontes:</b> preços ajustados via yfinance; fundamentos via {fundamentals_source_label(month)}; CDI via Banco Central "
         f"(SGS 12); IBOV oficial (^BVSP). {methodology_note(month)}"
         f"Relatório gerado em {datetime.now():%d/%m/%Y %H:%M}.", "small"))
     story.append(Spacer(1, 0.3 * cm))
@@ -1318,7 +1338,7 @@ def build_report(month: str, output: Path | None = None, allow_network: bool = T
     output.parent.mkdir(parents=True, exist_ok=True)
     doc = BaseDocTemplate(str(output), pagesize=A4, leftMargin=MARGIN, rightMargin=MARGIN,
                           topMargin=1.5 * cm, bottomMargin=1.9 * cm,
-                          title=f"Carteira Recomendada - {month_label(month)}",
+                          title=f"Carteira Recomendada{(' ' + label) if label else ''} - {month_label(month)}",
                           author="Carteira Mensal", subject="Relatório mensal da carteira")
     frame = Frame(MARGIN, 1.9 * cm, CONTENT_W, PAGE_H - 1.5 * cm - 1.9 * cm, id="main", leftPadding=0,
                   rightPadding=0, topPadding=0, bottomPadding=0)
@@ -1333,8 +1353,47 @@ def build_report(month: str, output: Path | None = None, allow_network: bool = T
     return output
 
 
+def _month_methodology(month: str) -> dict:
+    """Metodologia do manifesto do mes (do perfil em geracao); {} se nao houver."""
+    manifest = PRODUCTION_DIR / f"{month}.json"
+    if not manifest.exists():
+        return {}
+    try:
+        version = json.loads(manifest.read_text(encoding="utf-8")).get("version")
+        method_path = ROOT / "config" / "methodologies" / f"{version}.json"
+        return json.loads(method_path.read_text(encoding="utf-8")) if version and method_path.exists() else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def profile_label(month: str) -> str:
+    """'Moderado' ou 'Arrojado' quando a metodologia do mes define perfis (v7 em diante); vazio nas versoes anteriores."""
+    selection = _month_methodology(month).get("selection", {})
+    return profiles.display_name(PROFILE) if selection.get("profiles") else ""
+
+
+def fundamentals_source_label(month: str) -> str:
+    selection = _month_methodology(month).get("selection", {})
+    return "balanços da CVM (DFP/ITR)" if str(selection.get("fundamentals_source", "")).lower() == "cvm" else "Fundamentus"
+
+
+def method_sections(month: str) -> list[tuple[str, str]]:
+    """Secoes de metodologia; a exposicao em queda depende do perfil (sem detalhar a regra)."""
+    label = profile_label(month)
+    if not label:
+        return METHOD_SECTIONS
+    if PROFILE == "arrojado":
+        exposure = ("O robô lê o regime do IBOV (RSI, Bollinger, amplitude do mercado e tendência dos ativos). No perfil Arrojado, "
+                    "a exposição em ações é mantida também nos regimes de queda, sem reserva defensiva.")
+    else:
+        exposure = ("O robô lê o regime do IBOV (RSI, Bollinger, amplitude do mercado e tendência dos ativos) e decide quanto "
+                    "investir em ações. No perfil Moderado, em regimes de queda a exposição cai e o restante vai para CDI/"
+                    "Tesouro Selic líquido de IR.")
+    return [(title, exposure if title.startswith("4.") else text) for title, text in METHOD_SECTIONS]
+
+
 def methodology_note(month: str) -> str:
-    manifest = ROOT / "output" / "production" / f"{month}.json"
+    manifest = PRODUCTION_DIR / f"{month}.json"
     if not manifest.exists():
         return ""
     import json
