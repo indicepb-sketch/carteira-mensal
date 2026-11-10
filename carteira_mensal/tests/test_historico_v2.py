@@ -92,4 +92,5 @@ def test_one_share_rule_is_applied_to_every_historical_month():
     assert "removidas_por_inviabilidade_1_acao" in audit.columns
     removed = audit["removidas_por_inviabilidade_1_acao"].fillna("").astype(str)
     assert (removed != "").sum() >= 1                                                   # com os pesos da v4 as posicoes sao maiores: a regra atua em poucos meses
-    assert removed[audit["mes"].astype(str) == "2024-10"].iloc[0].startswith("EMBJ3")  # exemplo conferido (v6)
+    assert "EMBJ3" in removed[audit["mes"].astype(str) == "2024-10"].iloc[0]           # exemplo conferido (v7, preco nominal)
+    assert "HAPV3 (R$ 43.10 < R$ 62.14)" in removed[audit["mes"].astype(str) == "2020-10"].iloc[0]   # preco da epoca: o ajustado por grupamento mostrava R$ 192

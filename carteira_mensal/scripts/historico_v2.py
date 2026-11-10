@@ -36,6 +36,7 @@ import shadow_teste49_top15_regime_capital as t49  # noqa: E402
 from portfolio_execution import executable_portfolio, is_cdi  # noqa: E402
 from utils import load_settings  # noqa: E402
 import perfil as profiles  # noqa: E402
+import precos_nominais as pn  # noqa: E402
 
 EXCEL_DIR = ROOT / "output" / "excel"
 CACHE_DIR = ROOT / "data" / "history_cache"
@@ -122,6 +123,9 @@ def load_prices(tickers: list[str], allow_network: bool) -> pd.DataFrame:
     return wide
 
 
+NOMINAL: pd.DataFrame | None = None      # precos nominais (data/history_cache/precos_nominais.csv); None = usa o ajustado (comportamento antigo)
+
+
 def last_price(series: pd.Series, date: pd.Timestamp) -> float:
     window = series[series.index <= date].dropna()
     return float(window.iloc[-1]) if len(window) else np.nan
@@ -182,7 +186,11 @@ def form_month(month: str, settings: dict, prices: pd.DataFrame) -> dict[str, An
     exposure, _ = ft.exposure_for_metrics(result.get("metrics", {}), month, force=True)
     portfolio["ticker"] = portfolio["ticker"].astype(str).str.upper()
     cutoff, end = selection_cutoff(month), month_end(month)
-    portfolio["preco_entrada_fechamento_mes_anterior"] = portfolio["ticker"].map(lambda t: last_price(prices[t], cutoff) if t in prices.columns else np.nan)
+    adjusted_entry = portfolio["ticker"].map(lambda t: last_price(prices[t], cutoff) if t in prices.columns else np.nan)     # ajustado (dividendos e eventos): so para o RETORNO
+    # regra de 1 acao e quantidades usam o preco NOMINAL da epoca (o ajustado multiplica o preco antigo apos grupamentos e o reduz com dividendos)
+    nominal_entry = portfolio["ticker"].map(lambda t: last_price(NOMINAL[t], cutoff) if NOMINAL is not None and t in NOMINAL.columns else np.nan)
+    portfolio["preco_entrada_fechamento_mes_anterior"] = nominal_entry.where(nominal_entry.notna(), adjusted_entry)
+    portfolio["preco_entrada_ajustado"] = adjusted_entry
     # regra de viabilidade (v3), aplicada a TODO o historico: posicao que nao comporta 1 acao no capital de referencia nao entra na
     # carteira e o peso e redistribuido proporcionalmente (mesma funcao usada na formacao oficial)
     # v4: pesos de minima variancia (Ledoit-Wolf) sobre as acoes escolhidas, com precos ate a data de selecao (sem informacao posterior)
@@ -190,7 +198,7 @@ def form_month(month: str, settings: dict, prices: pd.DataFrame) -> dict[str, An
     portfolio, removed = ft.drop_unbuyable_positions(portfolio, exposure, CAPITAL)
     portfolio["peso_recomendado"] = pd.to_numeric(portfolio["peso_recomendado"], errors="coerce").fillna(0.0) * exposure
     portfolio["preco_fim"] = portfolio["ticker"].map(lambda t: last_price(prices[t], end) if t in prices.columns else np.nan)
-    portfolio["retorno_periodo"] = portfolio["preco_fim"] / portfolio["preco_entrada_fechamento_mes_anterior"] - 1
+    portfolio["retorno_periodo"] = portfolio["preco_fim"] / portfolio["preco_entrada_ajustado"] - 1
     return {"portfolio": portfolio, "bucket": str(result.get("metrics", {}).get("forward_13b_bucket", "")), "exposure": float(exposure),
             "workbook": workbook.name, "removed_unbuyable": removed}
 
@@ -253,6 +261,8 @@ def build_history(perfil: str) -> None:
     out = OUT if perfil == profiles.DEFAULT_PROFILE else profiles.history_file(perfil, ROOT)
     out.parent.mkdir(parents=True, exist_ok=True)
     allow_network = "--offline" not in sys.argv
+    global NOMINAL
+    NOMINAL = pn.load_nominal() if pn.NOMINAL_CSV.exists() else None
     months = list(pd.period_range(FIRST, LAST, freq="M").astype(str))
     settings = load_settings()
     universe = set()
@@ -297,7 +307,7 @@ def build_history(perfil: str) -> None:
                   "CDI liquido de IR 22,5% (IPEA ate jul/2026; depois parcial fechada) e IBOV oficial (CSV; depois parcial fechada)",
                   "Bases mensais de 2020-2026 geradas com corte no ultimo pregao do mes anterior (corrigidas); campos de amplitude ausentes reconstruidos da aba Analise Preliminar para que as regras do regime valham igualmente em todos os anos",
                   "Substitui o historico anterior (T49 ate jun/2026 + parciais): ver docs/metodologia_forward_13b_v2.md",
-                  "Cada posicao precisa comportar pelo menos 1 acao no capital de referencia (R$ 10 mil); as que nao comportam saem da carteira e o peso e redistribuido proporcionalmente (aba Auditoria)",
+                  "Cada posicao precisa comportar pelo menos 1 acao no capital de referencia (R$ 10 mil); as que nao comportam saem da carteira e o peso e redistribuido proporcionalmente (aba Auditoria). O teste e as quantidades usam o preco NOMINAL da epoca (reconstruido: fechamento ajustado so por eventos x razoes dos eventos posteriores; data/history_cache/precos_nominais.csv); o retorno usa o preco ajustado por dividendos e eventos",
                   "pesos de minima variancia sobre as acoes escolhidas e regime de defesa da v5, com as mesmas regras do classificador em todos os anos (campos ausentes de 2022-2025 reconstruidos da aba Analise Preliminar)",
                   "ATENCAO: a v5 foi escolhida depois de testes de sombra sobre estes mesmos meses; o historico e um BACKTEST retroativo, nao desempenho operado. Referencias anteriores: historico_v3_referencia_top15_capital.xlsx e historico_v4_referencia_top15_capital.xlsx", f"{profiles.display_name(perfil)} ({perfil})", "25 candidatas ate a v6; 35 candidatas (maiores retornos no ano) na v7"]})
     with pd.ExcelWriter(out, engine="openpyxl") as writer:

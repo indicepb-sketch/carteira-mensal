@@ -32,3 +32,6 @@ Somente a fonte e a convencao dos fundamentos. Selecao, pesos de minima varianci
 ## Historico
 Refeito retroativamente e estendido a jan/2020 (82 meses): modelo +127,1% contra IBOV +44,8%. E um backtest, nao desempenho operado. A versao anterior fica em `output/excel/historico_v5_fundamentos_anteriores_referencia.xlsx`.
 Limitacoes conhecidas: em jan-mai/2020 a quantidade de acoes usa o primeiro arquivo da CVM com esse dado (so o P/L desses meses olha um pouco adiante); o universo e a composicao atual do IBOV (vies de sobrevivencia).
+
+## Preco nominal na regra de 1 acao (historico)
+A regra de 1 acao e as quantidades do historico usam o preco NOMINAL da epoca (reconstruido por scripts/precos_nominais.py a partir do fechamento ajustado so por eventos e dos desdobramentos e grupamentos de cada papel); o retorno continua usando o preco ajustado por dividendos e eventos. Antes, o preco ajustado fazia aparecer, por exemplo, HAPV3 a R$ 192 em out/2020 e retirava o papel da carteira por artefato.
