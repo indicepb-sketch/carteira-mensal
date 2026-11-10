@@ -33,7 +33,7 @@ def test_policy_applies_from_the_effective_month_and_force_ignores_the_date():
     assert ft.regime_policy("2026-10") is None
     for month in ("2026-11", "2027-01"):
         cfg = ft.regime_policy(month)
-        assert cfg["trend_below"] == 0.20 and cfg["exposure_queda_forte"] == 0.20 and cfg["version"] == "forward-13b-v6"
+        assert cfg["trend_below"] == 0.20 and cfg["exposure_queda_forte"] == 0.20 and cfg["version"] == "forward-13b-v7"
     assert ft.regime_policy("2024-05", force=True)["trend_below"] == 0.20
 
 

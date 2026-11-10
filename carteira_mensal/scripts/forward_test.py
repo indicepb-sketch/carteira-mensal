@@ -30,6 +30,16 @@ import shadow_consolidado_14_13b as rg14  # noqa: E402
 EXCEL_DIR = ROOT / "output" / "excel"
 LOG_DIR = ROOT / "output" / "logs"
 LAMBDA_BETA_FORWARD = 1.5
+PROFILE = "moderado"          # perfil em formacao (v7: moderado e arrojado); muda so a exposicao na queda forte
+
+
+def set_profile(perfil: str | None) -> str:
+    """Define o perfil das proximas formacoes. O Moderado reproduz exatamente o comportamento das versoes anteriores."""
+    global PROFILE
+    import perfil as profiles
+
+    PROFILE = profiles.normalize(perfil)
+    return PROFILE
 FORWARD_MODE_NAME = "shadow.forward_test"
 EXPOSURE_BY_REGIME = {
     "alta": 1.00,
@@ -44,6 +54,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Forma a carteira forward-test em modo sombra consolidado.")
     parser.add_argument("--mes", default=None, help="Mes de referencia no formato YYYY-MM. Default: mes atual.")
     parser.add_argument("--force-base", action="store_true", help="Gera nova base mensal mesmo se ja existir.")
+    parser.add_argument("--perfil", default="todos", help="Perfil a formar (moderado, arrojado ou todos os da metodologia vigente). Padrao: todos.")
     return parser.parse_args()
 
 
@@ -131,6 +142,9 @@ def generate_base_workbook(year: int, month: int, selection_cutoff: pd.Timestamp
         settings["strategy"]["usar_primeiro_dia_util_mes"] = True
         settings["strategy"]["data_formacao_carteira"] = formation_date.date().isoformat()
         settings["strategy"]["data_avaliacao_carteira"] = formation_date.date().isoformat()
+        funnel = candidate_funnel_size(f"{year:04d}-{month:02d}")
+        if funnel:
+            settings["strategy"]["pre_risk_candidates"] = funnel
         return settings
 
     def trim_frame(frame: pd.DataFrame) -> pd.DataFrame:
@@ -234,8 +248,14 @@ def regime_policy(month: str, force: bool | None = None) -> dict[str, Any] | Non
     trigger = selection.get("regime_trigger")
     if not trigger:
         return None
+    import perfil as profiles
+
+    defined = profiles.methodology_profiles(selection)
+    if PROFILE not in defined:
+        raise ValueError(f"Perfil {PROFILE!r} nao existe na metodologia {policy['version']}")
+    exposure = defined[PROFILE].get("exposure_by_regime", {}).get("queda_forte", selection["exposure_by_regime"]["queda_forte"])
     return {"trend_below": float(trigger["trend_favorable_below"]), "uniform_inputs": bool(trigger.get("uniform_inputs_all_months", False)),
-            "exposure_queda_forte": float(selection["exposure_by_regime"]["queda_forte"]), "version": policy["version"]}
+            "exposure_queda_forte": float(exposure), "version": policy["version"]}
 
 
 def _weekly_rsi_ibov(cutoff: pd.Timestamp, periods: int = 14) -> float:
@@ -334,6 +354,26 @@ def candidate_completion_enabled(month: str) -> bool:
     if month < str(policy.get("effective_from", "9999-12")):
         return False
     return bool(load_methodology(policy["version"], ROOT)["selection"].get("complete_candidate_features", False))
+
+
+def profiles_for_month(month: str, force: bool | None = None) -> list[str]:
+    """Perfis formados no mes: os da metodologia vigente (v7: moderado e arrojado); antes da vigencia ou nas versoes anteriores, so o Moderado."""
+    import perfil as profiles
+
+    return profiles.profiles_for_month(month, ROOT, force)
+
+
+def candidate_funnel_size(month: str, force: bool | None = None) -> int | None:
+    """Numero de candidatas do funil de entrada definido pela metodologia vigente (v7: 35); None = valor de settings.yaml (25)."""
+    import json
+
+    from production_registry import load_methodology
+
+    policy = json.loads((ROOT / "config" / "production_methodology.json").read_text(encoding="utf-8"))
+    if force is None and month < str(policy.get("effective_from", "9999-12")):
+        return None
+    value = load_methodology(policy["version"], ROOT)["selection"].get("pre_risk_candidates")
+    return int(value) if value else None
 
 
 def fundamentals_source(month: str, force: bool | None = None) -> str:
@@ -743,10 +783,14 @@ def build_forward_tables(
     }
 
 
-def write_forward_workbook(tables: dict[str, pd.DataFrame], year: int, month: int) -> Path:
-    path = EXCEL_DIR / f"carteira_forward_{year:04d}_{month:02d}.xlsx"
+def write_forward_workbook(tables: dict[str, pd.DataFrame], year: int, month: int, perfil: str | None = None) -> Path:
+    import perfil as profiles
+
+    directory = profiles.excel_dir(perfil or PROFILE, ROOT)
+    directory.mkdir(parents=True, exist_ok=True)
+    path = directory / f"carteira_forward_{year:04d}_{month:02d}.xlsx"
     if path.exists():
-        path = EXCEL_DIR / f"carteira_forward_{year:04d}_{month:02d}_v{datetime.now():%Y%m%d_%H%M%S}.xlsx"
+        path = directory / f"carteira_forward_{year:04d}_{month:02d}_v{datetime.now():%Y%m%d_%H%M%S}.xlsx"
     with pd.ExcelWriter(path, engine="xlsxwriter") as writer:
         for name, frame in tables.items():
             data = frame if isinstance(frame, pd.DataFrame) else pd.DataFrame(frame)
@@ -799,38 +843,52 @@ def main() -> None:
 
     base_settings = copy.deepcopy(base_settings)
     base_settings.setdefault("shadow", {})["forward_test"] = True
-    result = run_forward_portfolio(mes_key, base_workbook, base_settings)
-    portfolio = result.get("portfolio", pd.DataFrame())
-    command = r".\.venv\Scripts\python.exe scripts\forward_test.py --mes YYYY-MM"
-    command_this_month = rf".\.venv\Scripts\python.exe scripts\forward_test.py --mes {mes_key}"
-    tables = build_forward_tables(mes_key, base_workbook, result, anchor, settings_check, formation_date, selection_cutoff, command, )
-    tables["Comando Mensal"].loc[len(tables["Comando Mensal"])] = {"item": f"comando_{year:04d}_{month:02d}", "valor": command_this_month}
-    output = write_forward_workbook(tables, year, month)
-
-    valid = tables["Validacao"]
-    valid_applied = tables["Validacao Aplicada"]
-    if not bool(valid["ok"].all()) or not bool(valid_applied["ok"].all()):
-        log("REGRESSAO/VALIDACAO: alguma restricao da carteira forward falhou.")
+    available = profiles_for_month(mes_key)
+    wanted = available if str(args.perfil).lower() == "todos" else [str(args.perfil).lower()]
+    unknown = [name for name in wanted if name not in available]
+    if unknown:
+        log(f"Perfil(is) {unknown} nao existe(m) na metodologia vigente para {mes_key} (disponiveis: {available}).")
         log_path.write_text("\n".join(logs), encoding="utf-8")
         raise SystemExit(1)
-    log(f"Base mensal usada: {base_workbook.name}")
-    log(f"Arquivo forward gerado: {output}")
-    log(f"Data formacao: {formation_date.date()} | limite selecao/preco entrada: {selection_cutoff.date()}")
-    if portfolio.empty:
-        log("Carteira forward nao foi formada.")
-    else:
-        weights = sh.format_weights(sh.weights_map(tables.get("Carteira Forward", portfolio)))   # ja sem posicoes inviaveis (regra de 1 acao)
-        metrics = result.get("metrics", {})
-        exposure, exposure_reason = exposure_for_metrics(metrics, mes_key)
-        log(f"Carteira forward modelo 100%: {weights}")
-        log(f"Exposicao aplicada: {exposure:.0%}; CDI/Tesouro Selic: {1.0 - exposure:.0%}; motivo={exposure_reason}")
-        log(
-            f"Bucket13B={metrics.get('forward_13b_bucket', '')}; regime={metrics.get('subtipo_queda', '')}; sinal={metrics.get('sinal_quedas_aplicado', '')}; "
-            f"beta_alvo={metrics.get('beta_target', np.nan)}; beta_real={metrics.get('beta_carteira', np.nan)}"
-        )
+    command = r".\.venv\Scripts\python.exe scripts\forward_test.py --mes YYYY-MM"
+    command_this_month = rf".\.venv\Scripts\python.exe scripts\forward_test.py --mes {mes_key}"
+    failed = False
+    for perfil in wanted:
+        set_profile(perfil)
+        tag = f"[{perfil}] " if len(available) > 1 else ""
+        result = run_forward_portfolio(mes_key, base_workbook, base_settings)
+        portfolio = result.get("portfolio", pd.DataFrame())
+        tables = build_forward_tables(mes_key, base_workbook, result, anchor, settings_check, formation_date, selection_cutoff, command, )
+        tables["Comando Mensal"].loc[len(tables["Comando Mensal"])] = {"item": f"comando_{year:04d}_{month:02d}", "valor": command_this_month}
+        output = write_forward_workbook(tables, year, month, perfil)
+
+        valid = tables["Validacao"]
+        valid_applied = tables["Validacao Aplicada"]
+        if not bool(valid["ok"].all()) or not bool(valid_applied["ok"].all()):
+            log(f"{tag}REGRESSAO/VALIDACAO: alguma restricao da carteira forward falhou.")
+            failed = True
+            continue
+        log(f"{tag}Base mensal usada: {base_workbook.name}")
+        log(f"{tag}Arquivo forward gerado: {output}")
+        log(f"{tag}Data formacao: {formation_date.date()} | limite selecao/preco entrada: {selection_cutoff.date()}")
+        if portfolio.empty:
+            log(f"{tag}Carteira forward nao foi formada.")
+        else:
+            weights = sh.format_weights(sh.weights_map(tables.get("Carteira Forward", portfolio)))   # ja sem posicoes inviaveis (regra de 1 acao)
+            metrics = result.get("metrics", {})
+            exposure, exposure_reason = exposure_for_metrics(metrics, mes_key)
+            log(f"{tag}Carteira forward modelo 100%: {weights}")
+            log(f"{tag}Exposicao aplicada: {exposure:.0%}; CDI/Tesouro Selic: {1.0 - exposure:.0%}; motivo={exposure_reason}")
+            log(
+                f"{tag}Bucket13B={metrics.get('forward_13b_bucket', '')}; regime={metrics.get('subtipo_queda', '')}; sinal={metrics.get('sinal_quedas_aplicado', '')}; "
+                f"beta_alvo={metrics.get('beta_target', np.nan)}; beta_real={metrics.get('beta_carteira', np.nan)}"
+            )
+    set_profile("moderado")
     log(f"Comando mensal: {command}")
     log_path.write_text("\n".join(logs), encoding="utf-8")
     print(f"Log gerado: {log_path}")
+    if failed:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

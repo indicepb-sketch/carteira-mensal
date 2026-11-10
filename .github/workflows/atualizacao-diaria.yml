@@ -49,9 +49,13 @@ jobs:
           commit_message: "Atualiza carteira diaria"
           file_pattern: |
             carteira_mensal/output/excel/*.xlsx
+            carteira_mensal/output/excel/arrojado/*.xlsx
             carteira_mensal/output/production/*.json
+            carteira_mensal/output/production/arrojado/*.json
+            carteira_mensal/output/production/superseded/*.json
             carteira_mensal/output/logs/*.log
             carteira_mensal/output/pdf/carteira_recomendada_*.pdf
+            carteira_mensal/output/pdf/arrojado/carteira_recomendada_*.pdf
             carteira_mensal/data/report_cache/*.csv
             carteira_mensal/data/raw/*
             carteira_mensal/data/processed/*.csv

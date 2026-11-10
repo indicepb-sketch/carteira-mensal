@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import openpyxl
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -34,6 +35,7 @@ import shadow_simulacao as sh  # noqa: E402
 import shadow_teste49_top15_regime_capital as t49  # noqa: E402
 from portfolio_execution import executable_portfolio, is_cdi  # noqa: E402
 from utils import load_settings  # noqa: E402
+import perfil as profiles  # noqa: E402
 
 EXCEL_DIR = ROOT / "output" / "excel"
 CACHE_DIR = ROOT / "data" / "history_cache"
@@ -44,14 +46,44 @@ CDI_CSV = ROOT / "data" / "processed" / "cdi_mensal_ipeadata.csv"
 FIRST, LAST = "2020-01", "2026-10"
 IBOV_DAILY_CSV = CACHE_DIR / "ibov_diario.csv"
 CAPITAL, MIN_WEIGHT, MAX_STOCKS, CDI_IR = 10_000.0, 0.01, 15, 0.225
-VERSION = "forward-13b-v6 (nota v2 + regra de 1 acao + pesos de minima variancia + regime de defesa v5 + fundamentos da CVM; aplicada retroativamente a todo o historico)"
+VERSION = "forward-13b-v7 (nota v2 + regra de 1 acao + pesos de minima variancia + regime de defesa v5 + fundamentos da CVM + funil de 35 candidatas; perfis Moderado e Arrojado; aplicada retroativamente a todo o historico)"
+
+
+def funnel_workbook(source: Path, month: str, funnel: int) -> Path:
+    """Base mensal com o funil de `funnel` candidatas (maiores retornos no ano; desempate pela nota final).
+
+    As bases historicas guardam as 25 candidatas do coletor. A aba 'Analise Preliminar' tem todas as acoes com todas as colunas, na mesma ordem do funil do coletor
+    (conferido: as 25 primeiras reproduzem a aba 'Candidatas Risco' nos 82 meses), entao as `funnel` primeiras sao exatamente as que o coletor produziria com esse tamanho.
+    O arquivo derivado (..._c35.xlsx) nao e versionado.
+    """
+    target = source.with_name(source.stem + f"_c{funnel}.xlsx")
+    if target.exists() and target.stat().st_mtime >= source.stat().st_mtime:
+        return target
+    prelim = pd.read_excel(source, sheet_name="Analise Preliminar")
+    ordered = prelim.assign(_k=pd.to_numeric(prelim["retorno_ytd"], errors="coerce")).sort_values(["_k", "nota_final"], ascending=[False, False]).head(funnel)
+    book = openpyxl.load_workbook(source)
+    for sheet in ("Candidatas Risco", "Otimizacao"):
+        ws = book[sheet]
+        header = [c.value for c in ws[1]]
+        ws.delete_rows(2, ws.max_row)
+        for _, row in ordered.iterrows():
+            values = []
+            for name in header:
+                value = row.get(name)
+                if isinstance(value, np.generic):
+                    value = value.item()
+                values.append(None if (value is None or (not isinstance(value, (list, dict)) and pd.isna(value))) else (value.to_pydatetime() if isinstance(value, pd.Timestamp) else value))
+            ws.append(values)
+    book.save(target)
+    return target
 
 
 def month_workbook(month: str) -> Path:
     year, mon = month.split("-")
     cvm_ttm = EXCEL_DIR / f"carteira_historica_{year}_{mon}_corrigida2.xlsx"        # v6: fundamentos da CVM em 12 meses moveis, base do controlador (sem olhar o futuro)
     if cvm_ttm.exists():
-        return cvm_ttm
+        funnel = ft.candidate_funnel_size(month, force=True)
+        return funnel_workbook(cvm_ttm, month, funnel) if funnel and funnel != 25 else cvm_ttm
     corrected = EXCEL_DIR / f"carteira_historica_{year}_{mon}_corrigida.xlsx"      # corte no ultimo pregao do mes anterior; fundamentos da base anterior
     if corrected.exists():
         return corrected
@@ -203,6 +235,23 @@ def build_rows(month: str, formed: dict[str, Any], ibov: float, cdi: float) -> t
 
 
 def main() -> None:
+    wanted = "todos"
+    if "--perfil" in sys.argv:
+        wanted = sys.argv[sys.argv.index("--perfil") + 1].lower()
+    available = profiles.profiles_for_month(LAST, ROOT, force=True)
+    for perfil in (available if wanted == "todos" else [wanted]):
+        if perfil not in available:
+            raise SystemExit(f"Perfil {perfil!r} inexistente na metodologia vigente (disponiveis: {available}).")
+        ft.set_profile(perfil)
+        try:
+            build_history(perfil)
+        finally:
+            ft.set_profile("moderado")
+
+
+def build_history(perfil: str) -> None:
+    out = OUT if perfil == profiles.DEFAULT_PROFILE else profiles.history_file(perfil, ROOT)
+    out.parent.mkdir(parents=True, exist_ok=True)
     allow_network = "--offline" not in sys.argv
     months = list(pd.period_range(FIRST, LAST, freq="M").astype(str))
     settings = load_settings()
@@ -239,7 +288,7 @@ def main() -> None:
     validation["qtd_ok_top15"] = validation["qtd_acoes"] <= MAX_STOCKS
     notes = pd.DataFrame({"item": [
         "versao_metodologia", "gerado_em", "periodo", "execucao", "regime",
-        "nota", "fundamentos", "precos_e_retornos", "cdi_e_ibov", "bases_mensais", "ordem_de_grandeza", "regra_1_acao", "regra_pesos", "aplicacao_retroativa"],
+        "nota", "fundamentos", "precos_e_retornos", "cdi_e_ibov", "bases_mensais", "ordem_de_grandeza", "regra_1_acao", "regra_pesos", "aplicacao_retroativa", "perfil", "funil_de_entrada"],
         "valor": [VERSION, f"{datetime.now():%Y-%m-%d %H:%M}", f"{FIRST} a {LAST}", "Top 15, minimo de 1%, quantidades inteiras, R$ 10 mil, saldo no CDI",
                   "13B conservador do motor forward (amplitude de tendencia; demais entradas so existem a partir de 2026)",
                   "5 componentes (tendencia, timing, fundamentos, setor, risco); colunas ausentes completadas da aba Analise Preliminar da mesma base",
@@ -250,8 +299,8 @@ def main() -> None:
                   "Substitui o historico anterior (T49 ate jun/2026 + parciais): ver docs/metodologia_forward_13b_v2.md",
                   "Cada posicao precisa comportar pelo menos 1 acao no capital de referencia (R$ 10 mil); as que nao comportam saem da carteira e o peso e redistribuido proporcionalmente (aba Auditoria)",
                   "pesos de minima variancia sobre as acoes escolhidas e regime de defesa da v5, com as mesmas regras do classificador em todos os anos (campos ausentes de 2022-2025 reconstruidos da aba Analise Preliminar)",
-                  "ATENCAO: a v5 foi escolhida depois de testes de sombra sobre estes mesmos meses; o historico e um BACKTEST retroativo, nao desempenho operado. Referencias anteriores: historico_v3_referencia_top15_capital.xlsx e historico_v4_referencia_top15_capital.xlsx"]})
-    with pd.ExcelWriter(OUT, engine="openpyxl") as writer:
+                  "ATENCAO: a v5 foi escolhida depois de testes de sombra sobre estes mesmos meses; o historico e um BACKTEST retroativo, nao desempenho operado. Referencias anteriores: historico_v3_referencia_top15_capital.xlsx e historico_v4_referencia_top15_capital.xlsx", f"{profiles.display_name(perfil)} ({perfil})", "25 candidatas ate a v6; 35 candidatas (maiores retornos no ano) na v7"]})
+    with pd.ExcelWriter(out, engine="openpyxl") as writer:
         summary.to_excel(writer, sheet_name="Resumo Capital", index=False)
         by_year.to_excel(writer, sheet_name="Resumo Ano", index=False)
         by_regime.to_excel(writer, sheet_name="Resumo Regime", index=False)
@@ -261,7 +310,7 @@ def main() -> None:
         pd.DataFrame(audits).to_excel(writer, sheet_name="Auditoria", index=False)
         notes.to_excel(writer, sheet_name="Metodologia", index=False)
     comp = lambda s: float((1 + s).prod() - 1)  # noqa: E731
-    print(f"\nArquivo: {OUT}\nMeses: {len(monthly)} | modelo {comp(monthly['retorno']):+.1%} | IBOV {comp(monthly['retorno_ibov']):+.1%}")
+    print(f"\nArquivo: {out}\nPerfil: {perfil}\nMeses: {len(monthly)} | modelo {comp(monthly['retorno']):+.1%} | IBOV {comp(monthly['retorno_ibov']):+.1%}")
 
 
 if __name__ == "__main__":

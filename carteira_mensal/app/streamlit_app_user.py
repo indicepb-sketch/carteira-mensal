@@ -4,6 +4,7 @@ from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 from zoneinfo import ZoneInfo
+import contextvars
 import json
 import re
 import sys
@@ -19,6 +20,7 @@ except Exception:
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
 from production_registry import load_active, load_methodology, load_methodology_display_name
+import perfil as profiles
 from portfolio_execution import (
     executable_portfolio as build_executable_portfolio,
     is_cdi,
@@ -26,6 +28,23 @@ from portfolio_execution import (
     practical_partial_return as calculate_practical_partial_return,
 )
 EXCEL_DIR=ROOT/'output'/'excel'
+_PROFILE=contextvars.ContextVar('perfil_ativo',default=profiles.DEFAULT_PROFILE)   # por sessao (thread-safe); o Moderado usa as pastas de sempre
+def _scoped(base:Path)->Path:
+    perfil=_PROFILE.get(); return base if perfil==profiles.DEFAULT_PROFILE else base/perfil
+def excel_dir()->Path: return _scoped(EXCEL_DIR)
+def production_dir()->Path: return _scoped(ROOT/'output'/'production')
+def pdf_dir()->Path: return _scoped(ROOT/'output'/'pdf')
+def K(name:str)->str: return f'{name}_{_PROFILE.get()}'
+def with_profile(perfil:str,fn,*args,**kwargs):
+    token=_PROFILE.set(perfil)
+    try: return fn(*args,**kwargs)
+    finally: _PROFILE.reset(token)
+def available_profiles()->list[str]:
+    """Perfis com carteira ativa (o Moderado sempre primeiro)."""
+    found=[profiles.DEFAULT_PROFILE]
+    for perfil in profiles.PROFILES:
+        if perfil!=profiles.DEFAULT_PROFILE and (ROOT/'output'/'production'/perfil/'active.json').is_file(): found.append(perfil)
+    return found
 CDI_MONTHLY_PATH=ROOT/'data'/'processed'/'cdi_mensal_ipeadata.csv'
 IBOV_MONTHLY_PATH=ROOT/'data'/'processed'/'ibov_mensal_oficial.csv'
 SCENARIO='TOP15'; SCENARIO_LABEL='Top 15 operacional'; PLATFORM_MAX_STOCKS=15; HISTORY_CAPITAL=10000.0
@@ -45,9 +64,9 @@ def file_sort_key(path:Path):
         mtime=0
     return (month_key, version_key, mtime, path.name)
 def latest(pattern:str)->Path|None:
-    files=sorted(EXCEL_DIR.glob(pattern), key=file_sort_key); return files[-1] if files else None
+    files=sorted(excel_dir().glob(pattern), key=file_sort_key); return files[-1] if files else None
 def latest_official_partial(month:str,forward_name:str,version:str)->Path|None:
-    candidates=sorted(EXCEL_DIR.glob(f'parcial_carteira_forward_{month.replace("-","_")}_v*.xlsx'),key=file_sort_key,reverse=True)
+    candidates=sorted(excel_dir().glob(f'parcial_carteira_forward_{month.replace("-","_")}_v*.xlsx'),key=file_sort_key,reverse=True)
     for path in candidates:
         try:
             frame=pd.read_excel(path,sheet_name='Resumo Parcial')
@@ -64,7 +83,7 @@ def latest_official_partial(month:str,forward_name:str,version:str)->Path|None:
             continue
     return None
 def files()->AppFiles:
-    forward,manifest=load_active(ROOT)
+    perfil=_PROFILE.get(); forward,manifest=load_active(ROOT) if perfil==profiles.DEFAULT_PROFILE else load_active(ROOT,perfil)
     execution=load_methodology(manifest['version'],ROOT)['execution']
     if (execution['scenario']!=SCENARIO or execution['max_stocks']!=PLATFORM_MAX_STOCKS
         or execution['ranking']!=['nota_final_desc','peso_recomendado_desc']
@@ -224,11 +243,11 @@ def historical_executable_portfolios(f):
             if not extra.empty: df=pd.concat([df,extra],ignore_index=True,sort=False)
     return df
 def finalized_partial_files()->list[Path]:
-    return sorted(EXCEL_DIR.glob('parcial_carteira_forward_2026_*.xlsx'), key=file_sort_key)
+    return sorted(excel_dir().glob('parcial_carteira_forward_2026_*.xlsx'), key=file_sort_key)
 def finalized_partial_forward(ps:dict[str,Any],mes:str)->Path|None:
     name=str(ps.get('arquivo_forward_usado') or '').strip()
     if name:
-        p=EXCEL_DIR/name
+        p=excel_dir()/name
         if p.exists(): return p
     key=mes.replace('-','_')
     return latest(f'carteira_forward_{key}*.xlsx')
@@ -385,7 +404,7 @@ def latest_previous_open_partial(f,history:pd.DataFrame)->tuple[Path|None,dict[s
         return None,{}
     if 'mes' in history and history['mes'].astype(str).str[:7].eq(previous).any():
         return None,{}
-    manifest_path=ROOT/'output'/'production'/f'{previous}.json'
+    manifest_path=production_dir()/f'{previous}.json'
     try:
         manifest=json.loads(manifest_path.read_text(encoding='utf-8'))
     except (OSError,ValueError):
@@ -522,7 +541,7 @@ def render_start(f,port,capital,min_w,frac):
     else:
         columns=['Ativo','Quantidade','Valor estimado','Peso final','Preco','Empresa']
         st.dataframe(orders[columns].rename(columns={'Preco':'Preço ref.','Valor estimado':'Valor planejado','Peso final':'Peso'}),hide_index=True,use_container_width=True)
-    st.download_button('Baixar carteira-base do modelo',data=f.forward.read_bytes(),file_name=f.forward.name,mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',icon=':material/download:',help='Arquivo oficial da seleção; não inclui ajustes do valor simulado acima.')
+    st.download_button('Baixar carteira-base do modelo',key=K('baixar_carteira'),data=f.forward.read_bytes(),file_name=f.forward.name,mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',icon=':material/download:',help='Arquivo oficial da seleção; não inclui ajustes do valor simulado acima.')
     if not removed.empty:
         names=', '.join(removed['ticker'].astype(str).str.replace('.SA','',regex=False))
         st.caption(f'Fora do plano executável com os ajustes atuais: {names}.')
@@ -569,7 +588,7 @@ def render_tracking(f,port,capital,min_w,frac):
 def render_assets(port,capital,min_w,frac):
     ex,removed,_=executable_portfolio(port,capital,min_w,frac); stocks=ex[~ex.apply(is_cdi,axis=1)].copy() if not ex.empty else pd.DataFrame()
     if stocks.empty: st.info('Nao ha acoes compraveis.'); return
-    ticker=st.selectbox('Escolha uma acao',[str(t) for t in stocks['ticker'].dropna()]); r=stocks[stocks['ticker'].astype(str).eq(ticker)].iloc[0]
+    ticker=st.selectbox('Escolha uma acao',[str(t) for t in stocks['ticker'].dropna()],key=K('acao')); r=stocks[stocks['ticker'].astype(str).eq(ticker)].iloc[0]
     a,b=st.columns(2)
     a.metric('Quantidade',str(int(fnum(r.get('quantidade'),0))))
     b.metric('Valor planejado',money(r.get('valor_estimado')))
@@ -609,7 +628,7 @@ def previous_portfolio_table(rows:pd.DataFrame)->pd.DataFrame:
 def render_previous_portfolios(f):
     st.subheader('Carteiras anteriores'); hist=historical_executable_portfolios(f); perf=monthly(f)
     if hist.empty: st.info('Nenhuma carteira anterior encontrada.'); return
-    hist['mes']=hist['mes'].astype(str).str[:7]; selected=st.selectbox('Escolha o mes',sorted(hist['mes'].dropna().unique(),reverse=True)); rows=hist[hist['mes'].eq(selected)].copy(); p=perf[perf['mes'].astype(str).str[:7].eq(selected)].head(1)
+    hist['mes']=hist['mes'].astype(str).str[:7]; selected=st.selectbox('Escolha o mes',sorted(hist['mes'].dropna().unique(),reverse=True),key=K('mes_anterior')); rows=hist[hist['mes'].eq(selected)].copy(); p=perf[perf['mes'].astype(str).str[:7].eq(selected)].head(1)
     if not p.empty:
         r=p.iloc[0].to_dict(); a,b,c,d=st.columns(4); a.metric('Carteira',pct(r.get('retorno_modelo'))); b.metric('IBOV',pct(r.get('retorno_expost_ibov'))); c.metric('CDI liquido',pct(r.get('retorno_cdi_liquido_periodo'))); d.metric('Diferenca vs IBOV',pct(r.get('alfa')))
     st.dataframe(previous_portfolio_table(rows),hide_index=True,use_container_width=True)
@@ -665,7 +684,7 @@ def render_history(f,capital,min_w,frac):
 def render_method():
     st.write('A plataforma mostra a versão executável do modelo: quantidade inteira de ações, exclusão de posições pequenas e saldo em CDI líquido. A simulação usa preços de referência; não é uma ordem executada.')
 def monthly_report_files()->list[Path]:
-    found=list((ROOT/'output'/'pdf').glob('carteira_recomendada_20*_*.pdf'))
+    found=list(pdf_dir().glob('carteira_recomendada_20*_*.pdf'))
     final={p.stem for p in found if not p.stem.endswith('_parcial')}
     return sorted([p for p in found if not (p.stem.endswith('_parcial') and p.stem[:-8] in final)],reverse=True)
 def render_reports_sidebar():
@@ -673,34 +692,49 @@ def render_reports_sidebar():
     if not reports: return
     def label(path:Path)->str:
         m=re.search(r'(20\d{2})_(\d{2})',path.stem); return (month_label(f'{m.group(1)}-{m.group(2)}')+(' (parcial)' if path.stem.endswith('_parcial') else '')) if m else path.stem
-    with st.sidebar.expander('Relatório mensal (PDF)'):
-        chosen=st.selectbox('Mês',reports,format_func=label,label_visibility='collapsed')
-        st.download_button('Baixar relatório',data=chosen.read_bytes(),file_name=chosen.name,mime='application/pdf',icon=':material/picture_as_pdf:',help='Carteira recomendada, desempenho do mês e gráfico de 12 meses de cada ação com os indicadores do robô.')
+    title='Relatório mensal (PDF)'+(f' · {profiles.display_name(_PROFILE.get())}' if len(available_profiles())>1 else '')
+    with st.sidebar.expander(title):
+        chosen=st.selectbox('Mês',reports,format_func=label,label_visibility='collapsed',key=K('relatorio_mes'))
+        st.download_button('Baixar relatório',key=K('relatorio_baixar'),data=chosen.read_bytes(),file_name=chosen.name,mime='application/pdf',icon=':material/picture_as_pdf:',help='Carteira recomendada, desempenho do mês e gráfico de 12 meses de cada ação com os indicadores do robô.')
 def main():
-    try: f=files()
+    perfis=available_profiles()
+    try: fs={perfil:with_profile(perfil,files) for perfil in perfis}
     except (OSError,ValueError,KeyError) as exc:
         st.error(f'Carteira oficial indisponivel: {exc}')
         st.stop()
-    port=portfolio(f); css(); st.sidebar.title('Simular carteira'); capital=simulated_capital_input()
+    ports={perfil:with_profile(perfil,portfolio,fs[perfil]) for perfil in perfis}
+    css(); st.sidebar.title('Simular carteira'); capital=simulated_capital_input()
     with st.sidebar.expander('Ajustes da simulação'):
         frac=st.toggle('Permitir compra fracionária',value=True)
         min_w=st.slider('Remover pesos menores que',0.0,0.05,0.01,0.005,format='%.3f')
     with st.sidebar.expander('Atualização'):
         auto=st.toggle('Atualizar parcial automaticamente',value=True)
         mins=st.select_slider('Intervalo da parcial',options=[5,10,15,30,60],value=15)
-    render_reports_sidebar()
+    for perfil in perfis: with_profile(perfil,render_reports_sidebar)
     autorefresh(auto,mins)
-    ff=fields(f.forward,'Resumo Forward')
-    st.title(f'Carteira de {month_label(current_forward_month(f))}')
-    st.caption(f'{f.display_name or f.version} · Dados de seleção até {format_updated_at(ff.get("data_limite_dados_selecao"))} · Formação em {format_updated_at(ff.get("data_formacao_forward"))}')
+    many=len(perfis)>1
+    st.title(f'Carteira de {month_label(current_forward_month(fs[perfis[0]]))}')
+    for perfil in perfis:
+        f=fs[perfil]; ff=with_profile(perfil,fields,f.forward,'Resumo Forward')
+        prefix=f'Perfil {profiles.display_name(perfil)} · ' if many else ''
+        st.caption(f'{prefix}{f.display_name or f.version} · Dados de seleção até {format_updated_at(ff.get("data_limite_dados_selecao"))} · Formação em {format_updated_at(ff.get("data_formacao_forward"))}')
+    def section(perfil,fn,*args):
+        if many: st.markdown(f'## Perfil {profiles.display_name(perfil)}')
+        with_profile(perfil,fn,fs[perfil],*args)
     tabs=st.tabs(['Carteira','Acompanhamento','Histórico','Carteiras anteriores'])
-    with tabs[0]: render_start(f,port,capital,min_w,frac)
-    with tabs[1]: render_tracking(f,port,capital,min_w,frac)
-    with tabs[2]: render_history(f,capital,min_w,frac)
-    with tabs[3]: render_previous_portfolios(f)
+    with tabs[0]:
+        for perfil in perfis: section(perfil,render_start,ports[perfil],capital,min_w,frac)
+    with tabs[1]:
+        for perfil in perfis: section(perfil,render_tracking,ports[perfil],capital,min_w,frac)
+    with tabs[2]:
+        for perfil in perfis: section(perfil,render_history,capital,min_w,frac)
+    with tabs[3]:
+        for perfil in perfis: section(perfil,render_previous_portfolios)
     with st.expander('Sobre o modelo e os dados'):
         render_method()
-        st.write({'Carteira oficial':f.forward.name,'Modelo':f.display_name or f.version,'Identificador interno':f.version,'Parcial':f.partial.name if f.partial else 'nao encontrada','Historico executavel':f.operational.name if f.operational else 'nao encontrado'})
+        for perfil in perfis:
+            f=fs[perfil]
+            st.write({'Perfil':profiles.display_name(perfil),'Carteira oficial':f.forward.name,'Modelo':f.display_name or f.version,'Identificador interno':f.version,'Parcial':f.partial.name if f.partial else 'nao encontrada','Historico executavel':f.operational.name if f.operational else 'nao encontrado'})
 if __name__=='__main__': main()
 
 

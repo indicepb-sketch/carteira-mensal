@@ -1,0 +1,109 @@
+{
+  "version": "forward-13b-v7",
+  "engine": "shadow.forward_test",
+  "selection": {
+    "regime_classifier": "13B conservador",
+    "portfolio_size": "unrestricted",
+    "uptrend_signal": "V3_MOMENTUM",
+    "downtrend_signal": "SINAL_A_DEFENSIVO",
+    "beta_target_lambda": 1.5,
+    "cv_lambda": 0.5,
+    "max_stocks_per_sector": 2,
+    "max_stock_weight": 0.25,
+    "exposure_by_regime": {
+      "alta": 1.0,
+      "oportunidade": 1.0,
+      "queda_leve": 0.6,
+      "queda_forte": 0.2,
+      "indefinido": 1.0
+    },
+    "complete_candidate_features": true,
+    "min_one_share_per_position": true,
+    "weighting": {
+      "method": "min_variance_lw",
+      "window_trading_days": 120,
+      "max_weight": 0.25,
+      "shrinkage": "ledoit_wolf_2004_scaled_identity",
+      "uses_historical_mean_return": false
+    },
+    "regime_trigger": {
+      "trend_favorable_below": 0.2,
+      "uniform_inputs_all_months": true
+    },
+    "fundamentals_source": "cvm",
+    "fundamentals": {
+      "source": "cvm",
+      "window": "ttm",
+      "basis": "controlador",
+      "roe": "lucro liquido do controlador (12 meses) / patrimonio liquido medio do controlador",
+      "roic": "NOPAT (EBIT x (1 - 34%)) / (passivo oneroso + patrimonio liquido)",
+      "pl": "valor de mercado / lucro do controlador (12 meses)",
+      "financial_institutions": "somente ROE e P/L",
+      "only_published_data": true
+    },
+    "pre_risk_candidates": 35,
+    "default_profile": "moderado",
+    "profiles": {
+      "moderado": {
+        "nome": "Moderado",
+        "exposure_by_regime": {
+          "queda_forte": 0.2
+        }
+      },
+      "arrojado": {
+        "nome": "Arrojado",
+        "exposure_by_regime": {
+          "queda_forte": 1.0
+        }
+      }
+    }
+  },
+  "execution": {
+    "scenario": "TOP15",
+    "max_stocks": 15,
+    "ranking": [
+      "nota_final_desc",
+      "peso_recomendado_desc"
+    ],
+    "min_weight_default": 0.01,
+    "fractional_default": true,
+    "capital_reference": 10000.0,
+    "quantity_rule": "floor_to_whole_shares_or_lots_of_100",
+    "unallocated_to": "CDI"
+  },
+  "changelog": {
+    "vs": "forward-13b-v6",
+    "change": "Dois perfis de investidor formados a cada mes a partir da mesma base: Moderado (defesa na queda forte: 20% em acoes e 80% em CDI) e Arrojado (sem defesa: 100% em acoes). O funil de entrada passa de 25 para 35 candidatas (maiores retornos no ano) nos dois perfis. Fundamentos, nota, regime, pesos de minima variancia, regra de 1 acao e execucao ficam como na v6.",
+    "evidence": "Testes de sombra T96, T97 e T98 (82 meses, 2020-01..2026-10, treino 2020-24 e teste 2025-26). Funil de 35 contra 25: taxa de acerto de 61,0% contra 53,7% (Moderado) e 59,8% contra 52,4% (Arrojado), queda maxima de -21,4% contra -22,7%, estavel em um patamar de 35 a 50 candidatas e consistente em 4 a 5 de 7 anos; retorno total sem diferenca estatisticamente significativa; a defesa nao tem poder preditivo (AUC 0,448). Muitos testes foram feitos sobre os mesmos meses: so 2027 dara validacao fora da amostra. Decisao do responsavel pelo produto em 2026-11-10. Historico refeito retroativamente (backtest, nao desempenho operado).",
+    "unchanged": "fundamentos da CVM, nota de 5 componentes, regime 13B e gatilho de 20%, pesos de minima variancia, regra de 1 acao e regras de execucao",
+    "changelog_v6": {
+      "vs": "forward-13b-v5",
+      "change": "Fundamentos (ROE, ROIC, margens e P/L) passam a vir exclusivamente das demonstracoes da CVM (DFP/ITR): 12 meses moveis, base do controlador, ROE sobre patrimonio liquido medio e ROIC = NOPAT / (passivo oneroso + patrimonio liquido). Bancos e holdings tratados pelo plano de contas; so o que ja foi divulgado na data de formacao. O mes corrente deixa de usar o Fundamentus.",
+      "evidence": "Testes de sombra T91/T92 (82 meses, 2020-01..2026-10): ranking das notas com correlacao 0,97 a 0,98 contra a base anterior, 99% das acoes escolhidas iguais entre as duas convencoes de ROE/ROIC, resultado sem diferenca significativa (v5 em 70 meses: R$ 23.280 com a base anterior e R$ 23.610 com a CVM); papeis sem dados por mes caem de 7-13 para 0-4. Decisao do responsavel pelo produto em 2026-11-09. Historico refeito retroativamente (backtest, nao desempenho operado) e estendido a jan/2020.",
+      "unchanged": "selecao das acoes, pesos de minima variancia, regime 13B e defesa da v5, regra de 1 acao e regras de execucao",
+      "changelog_v5": {
+        "vs": "forward-13b-v4",
+        "change": "Regime de defesa: o gatilho de queda forte por amplitude de tendencia passa de 35% para 20% e a exposicao em acoes na queda forte passa de 30% para 20%. As regras do classificador de regime passam a valer igualmente em todos os meses do historico (campos ausentes de 2022-2025 reconstruidos a partir da aba Analise Preliminar).",
+        "unchanged": "selecao das acoes, pesos de minima variancia, regra de 1 acao, regras de execucao e demais regimes",
+        "changelog_v4": {
+          "vs": "forward-13b-v3",
+          "change": "Pesos de minima variancia com encolhimento de Ledoit-Wolf entre as acoes ja escolhidas: covariancia dos 120 pregoes anteriores a data de selecao, long-only, teto de 25% por papel, sem retorno medio historico (o otimizador anterior minimizava risco/retorno medio historico, entrada ruidosa). Posicoes com peso abaixo de 1% saem e o peso e renormalizado; depois seguem a regra de 1 acao (v3) e a execucao com acoes inteiras.",
+          "evidence": "Testes de sombra T79 e T80 (motor real, 2022-01..2026-10, regra de 1 acao e lotes inteiros): retorno 58 meses +105,5% vs +74,2%, Sharpe 0,50 vs 0,21, queda maxima -8,7% vs -13,8%, vol. 12,8% vs 16,5%; diferenca de retorno medio NAO significativa (IC95 -0,35 a +0,89 pp/mes; p do Sharpe 0,125); vantagem concentrada em 2022 e 2026; perde em 2023 e 2025. Apoio teorico: DeMiguel, Garlappi e Uppal (2009); Ledoit e Wolf (2004). Decisao do responsavel pelo produto em 2026-11-07. Historico refeito retroativamente (backtest, nao desempenho operado).",
+          "unchanged": "selecao das acoes, regime 13B, sinais, exposicao por regime, nota v2, regra de 1 acao e regras de execucao",
+          "changelog_v3": {
+            "vs": "forward-13b-v2",
+            "change": "Regra de viabilidade: cada posicao da carteira precisa comportar pelo menos 1 acao ao preco de entrada no capital de referencia (R$ 10.000). Posicoes cujo valor alvo (peso x exposicao x capital) nao paga 1 acao saem da carteira e o peso e redistribuido proporcionalmente as demais. Ex.: FLRY3 em nov/2026 (alvo R$ 13,94 contra acao a R$ 20,47).",
+            "evidence": "Decisao do responsavel pelo produto: nao se inclui na carteira o que nao e possivel comprar",
+            "unchanged": "nota de 5 componentes (v2), regime, sinais, otimizador, exposicao por regime e regras de execucao",
+            "changelog_v2": {
+              "vs": "forward-13b-v1",
+              "change": "A nota usa os cinco componentes (tendencia, timing, fundamentos, setor, risco). Na v1, as bases de 2026 nao traziam em 'Candidatas Risco' as colunas lidas pelo score (medias moveis, preco, retorno YTD, ROE, ROIC, margem bruta, P/L, tendencia setorial), e tendencia e fundamentos saiam 0. A v2 completa essas colunas a partir da aba 'Analise Preliminar' da mesma base mensal (dados de formacao).",
+              "evidence": "Testes de sombra 59, 68, 69 e 70: restaura a consistencia com o sistema testado em 2022-2025; efeito medido em jan-out/2026 de +1,04 p.p., sem significancia estatistica",
+              "unchanged": "regime, sinais, otimizador, exposicao por regime e regras de execucao"
+            }
+          }
+        }
+      }
+    }
+  }
+}
