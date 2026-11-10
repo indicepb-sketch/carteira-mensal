@@ -632,6 +632,81 @@ def render_previous_portfolios(f):
     if not p.empty:
         r=p.iloc[0].to_dict(); a,b,c,d=st.columns(4); a.metric('Carteira',pct(r.get('retorno_modelo'))); b.metric('IBOV',pct(r.get('retorno_expost_ibov'))); c.metric('CDI liquido',pct(r.get('retorno_cdi_liquido_periodo'))); d.metric('Diferenca vs IBOV',pct(r.get('alfa')))
     st.dataframe(previous_portfolio_table(rows),hide_index=True,use_container_width=True)
+PROFILE_COLORS={'moderado':'#2f80ed','arrojado':'#a855f7'}
+def cumulative_profiles(dfs:dict[str,pd.DataFrame]):
+    """Evolucao acumulada dos perfis no MESMO grafico, com IBOV e CDI liquido (iguais nos dois perfis) como referencia."""
+    dfs={p:d for p,d in dfs.items() if d is not None and not d.empty}
+    if go is None or not dfs: return None
+    fig=go.Figure()
+    for perfil,df in dfs.items():
+        vals=pd.to_numeric(df['retorno_modelo'],errors='coerce').fillna(0)
+        fig.add_trace(go.Scatter(x=df['mes'].astype(str),y=(1+vals).cumprod()-1,mode='lines+markers',name=profiles.display_name(perfil),line=dict(color=PROFILE_COLORS.get(perfil,'#2f80ed'))))
+    base=next(iter(dfs.values()))
+    for col,label,color in [('retorno_expost_ibov','IBOV','#f97316'),('retorno_cdi_liquido_periodo','CDI liquido','#16a34a')]:
+        if col in base.columns:
+            vals=pd.to_numeric(base[col],errors='coerce').fillna(0); fig.add_trace(go.Scatter(x=base['mes'].astype(str),y=(1+vals).cumprod()-1,mode='lines',name=label,line=dict(color=color,dash='dot' if col!='retorno_expost_ibov' else 'solid')))
+    fig.update_layout(height=380,yaxis_tickformat='.1%',margin=dict(l=10,r=10,t=30,b=10),legend=dict(orientation='h'),template='plotly_dark',hovermode='x unified'); return fig
+def history_totals(df)->dict[str,float]:
+    model=df.get('retorno_modelo',pd.Series(dtype=float)); ibov=df.get('retorno_expost_ibov',pd.Series(dtype=float)); cdi=df.get('retorno_cdi_liquido_periodo',pd.Series(dtype=float))
+    total_model,total_ibov=compound(model),compound(ibov)
+    return {'modelo':total_model,'ibov':total_ibov,'ganho':total_model-total_ibov if not np.isnan(total_model) and not np.isnan(total_ibov) else np.nan,
+            'acerto':pd.to_numeric(df.get('alfa',pd.Series(dtype=float)),errors='coerce').gt(0).mean(),
+            'm_modelo':eq_month(model),'m_ibov':eq_month(ibov),'m_cdi':eq_month(cdi)}
+def render_history_compare(perfis,fs,capital,min_w,frac):
+    """Aba Historico com os perfis lado a lado, um unico grafico de evolucao e a tabela de rentabilidade com alternador de perfil."""
+    st.subheader('Histórico do modelo executável')
+    dfs={perfil:with_profile(perfil,monthly,fs[perfil],capital,min_w,frac) for perfil in perfis}
+    st.caption('Histórico de jan/2020 a out/2026 refeito pela metodologia vigente aplicada retroativamente: é um backtest, não desempenho operado. A metodologia vigente foi escolhida após testes sobre estes mesmos meses.')
+    previous={perfil:with_profile(perfil,latest_previous_open_partial,fs[perfil],dfs[perfil]) for perfil in perfis}
+    open_prev=[perfil for perfil in perfis if previous[perfil][0]]
+    if open_prev:
+        month=str(previous[open_prev[0]][1]['mes'])[:7]
+        st.subheader(f'Parcial de {month_label(month)}')
+        st.caption(f'Referência de {money(HISTORY_CAPITAL)}. Ainda não é fechamento e não entra nos totais, médias ou gráficos abaixo.')
+        for column,perfil in zip(st.columns(len(open_prev)),open_prev):
+            ps=previous[perfil][1]; model=fnum(ps.get('retorno_modelo_executavel')); ibov=fnum(first(ps,['retorno_ibov_parcial','retorno_ibov_periodo'])); cdi=fnum(first(ps,['retorno_cdi_liquido_periodo','retorno_cdi_periodo']))
+            with column:
+                st.markdown(f'#### {profiles.display_name(perfil)}'); a,b=st.columns(2); c,d=st.columns(2)
+                a.metric('Carteira',pct(model)); b.metric('IBOV',pct(ibov)); c.metric('CDI líquido',pct(cdi)); d.metric('Diferença vs IBOV',pct(model-ibov if not np.isnan(model) and not np.isnan(ibov) else np.nan))
+        st.divider()
+    if all(df.empty for df in dfs.values()): st.info('Histórico fechado ainda não encontrado.'); return
+    totals={perfil:history_totals(df) for perfil,df in dfs.items()}
+    st.subheader('Resultado acumulado')
+    for column,perfil in zip(st.columns(len(perfis)),perfis):
+        t=totals[perfil]
+        with column:
+            st.markdown(f'#### {profiles.display_name(perfil)}'); a,b=st.columns(2); c,d=st.columns(2)
+            a.metric('Modelo executável',pct(t['modelo'])); b.metric('IBOV',pct(t['ibov'])); c.metric('Ganho acima do IBOV',pct(t['ganho'])); d.metric('Meses que bateu',pct(t['acerto']))
+    st.subheader('Taxa média histórica')
+    for column,perfil in zip(st.columns(len(perfis)),perfis):
+        t=totals[perfil]
+        with column:
+            st.markdown(f'#### {profiles.display_name(perfil)}'); a,b=st.columns(2); c,d=st.columns(2)
+            a.metric('Modelo ao mês',pct(t['m_modelo']),delta=f"Ano: {pct((1+t['m_modelo'])**12-1)}"); b.metric('IBOV ao mês',pct(t['m_ibov']),delta=f"Ano: {pct((1+t['m_ibov'])**12-1)}")
+            c.metric('CDI líquido ao mês',pct(t['m_cdi']),delta=f"Ano: {pct((1+t['m_cdi'])**12-1)}"); d.metric('Ganho médio vs IBOV',pct(t['m_modelo']-t['m_ibov']),delta=f"Ano: {pct((1+t['m_modelo'])**12-(1+t['m_ibov'])**12)}")
+    st.subheader('Evolução acumulada')
+    fig=cumulative_profiles(dfs)
+    if fig is not None: st.plotly_chart(fig,use_container_width=True)
+    names={profiles.display_name(perfil):perfil for perfil in perfis}
+    chosen=names[st.radio('Perfil da tabela de rentabilidade histórica',list(names),horizontal=True,key='perfil_tabela_historica')]
+    html=historical_calendar_html(dfs[chosen],previous[chosen][1] if previous[chosen][0] else None)
+    if html: st.markdown(html,unsafe_allow_html=True)
+    labels={'mes':'Mes','peso_acoes_executavel':'Acoes','peso_cdi_executavel':'CDI','retorno_modelo':'Carteira','retorno_expost_ibov':'IBOV no mes','retorno_cdi_liquido_periodo':'CDI liquido','alfa':'Diferenca vs IBOV','bateu_ibov':'Bateu IBOV'}
+    def formatted(df):
+        view=df.copy()
+        for c in [c for c in view.columns if c.startswith('retorno') or c.startswith('alfa') or c.startswith('peso')]: view[c]=view[c].map(pct)
+        return view
+    with st.expander('Ver detalhamento mensal em linhas'):
+        for tab,perfil in zip(st.tabs([profiles.display_name(perfil) for perfil in perfis]),perfis):
+            with tab:
+                view=formatted(dfs[perfil]); cols=[c for c in labels if c in view.columns and c!='bateu_ibov' or c=='bateu_ibov' and 'bateu_ibov' in view.columns]
+                st.dataframe(view[cols].rename(columns=labels),hide_index=True,use_container_width=True,height=520)
+    audit_labels={'mes':'Mes','tipo_regime_expost':'Regime realizado','regime_previsto_norm':'Regime previsto','data_inicio_performance':'Inicio performance','data_avaliacao':'Fim performance'}
+    first_view=formatted(next(iter(dfs.values()))); audit_cols=[c for c in audit_labels if c in first_view.columns]
+    if audit_cols:
+        with st.expander('Auditoria tecnica'):
+            for tab,perfil in zip(st.tabs([profiles.display_name(perfil) for perfil in perfis]),perfis):
+                with tab: st.dataframe(formatted(dfs[perfil])[audit_cols].rename(columns=audit_labels),hide_index=True,use_container_width=True)
 def render_history(f,capital,min_w,frac):
     st.subheader('Histórico do modelo executável'); df=monthly(f,capital,min_w,frac)
     st.caption('Histórico de jan/2020 a out/2026 refeito pela metodologia vigente aplicada retroativamente: é um backtest, não desempenho operado. A metodologia vigente foi escolhida após testes sobre estes mesmos meses.')
@@ -727,7 +802,8 @@ def main():
     with tabs[1]:
         for perfil in perfis: section(perfil,render_tracking,ports[perfil],capital,min_w,frac)
     with tabs[2]:
-        for perfil in perfis: section(perfil,render_history,capital,min_w,frac)
+        if many: render_history_compare(perfis,fs,capital,min_w,frac)       # perfis lado a lado, um grafico, tabela com alternador
+        else: section(perfis[0],render_history,capital,min_w,frac)
     with tabs[3]:
         for perfil in perfis: section(perfil,render_previous_portfolios)
     with st.expander('Sobre o modelo e os dados'):
