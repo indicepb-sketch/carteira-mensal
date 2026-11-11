@@ -49,7 +49,7 @@ CDI_MONTHLY_PATH=ROOT/'data'/'processed'/'cdi_mensal_ipeadata.csv'
 IBOV_MONTHLY_PATH=ROOT/'data'/'processed'/'ibov_mensal_oficial.csv'
 SCENARIO='TOP15'; SCENARIO_LABEL='Top 15 operacional'; PLATFORM_MAX_STOCKS=15; HISTORY_CAPITAL=10000.0
 SOURCE_CDI_IR=0.225; PLATFORM_CDI_IR=0.225
-st.set_page_config(page_title='Carteira Mensal', page_icon='CM', layout='wide', initial_sidebar_state='expanded')
+st.set_page_config(page_title='Carteira Mensal', page_icon='CM', layout='wide', initial_sidebar_state='collapsed')
 @dataclass(frozen=True)
 class AppFiles:
     forward:Path|None; partial:Path|None; operational:Path|None; version:str; display_name:str|None=None
@@ -162,7 +162,8 @@ def simulated_capital_input()->float:
     if 'simulated_capital' not in st.session_state:
         st.session_state.simulated_capital=10000.0
         st.session_state.simulated_capital_text=format_brl_amount(10000.0)
-    with st.sidebar:
+    holder,_=st.columns([2,3])
+    with holder:
         st.markdown('Valor para simular')
         amount_col,minus_col,plus_col=st.columns([5,1,1],gap='small')
         with amount_col:
@@ -489,6 +490,7 @@ def css():
     .stApp,.stApp p,.stApp label,.stApp h1,.stApp h2,.stApp h3,.stApp h4,.stApp td,.stApp th,.stApp button p{font-family:'Inter',system-ui,sans-serif}
     div[data-baseweb="tab-highlight"]{background:#4cc9a0!important}
     section[data-testid="stSidebar"]{background:#0f1519}
+    section[data-testid="stSidebar"],div[data-testid="stSidebarCollapsedControl"],div[data-testid="collapsedControl"]{display:none!important}
     .stApp{background:radial-gradient(1200px 600px at 10% -10%,#16231f 0%,#0d1215 55%)}
     .block-container{padding-top:1.6rem;max-width:1400px}
     h1,h2,h3{letter-spacing:-.01em;font-weight:600}
@@ -782,14 +784,13 @@ def monthly_report_files()->list[Path]:
     found=list(pdf_dir().glob('carteira_recomendada_20*_*.pdf'))
     final={p.stem for p in found if not p.stem.endswith('_parcial')}
     return sorted([p for p in found if not (p.stem.endswith('_parcial') and p.stem[:-8] in final)],reverse=True)
-def render_reports_sidebar():
+def render_reports(f):
     reports=monthly_report_files()
-    if not reports: return
+    if not reports: st.info('Nenhum relatório mensal encontrado.'); return
     def label(path:Path)->str:
         m=re.search(r'(20\d{2})_(\d{2})',path.stem); return (month_label(f'{m.group(1)}-{m.group(2)}')+(' (parcial)' if path.stem.endswith('_parcial') else '')) if m else path.stem
-    title='Relatório mensal (PDF)'+(f' · {profiles.display_name(_PROFILE.get())}' if len(available_profiles())>1 else '')
-    with st.sidebar.expander(title):
-        chosen=st.selectbox('Mês',reports,format_func=label,label_visibility='collapsed',key=K('relatorio_mes'))
+    if True:
+        chosen=st.selectbox('Mês do relatório (PDF)',reports,format_func=label,key=K('relatorio_mes'))
         st.download_button('Baixar relatório',key=K('relatorio_baixar'),data=chosen.read_bytes(),file_name=chosen.name,mime='application/pdf',icon=':material/picture_as_pdf:',help='Carteira recomendada, desempenho do mês e gráfico de 12 meses de cada ação com os indicadores do robô.')
 def main():
     perfis=available_profiles()
@@ -798,14 +799,8 @@ def main():
         st.error(f'Carteira oficial indisponivel: {exc}')
         st.stop()
     ports={perfil:with_profile(perfil,portfolio,fs[perfil]) for perfil in perfis}
-    css(); st.sidebar.title('Simular carteira'); capital=simulated_capital_input()
-    with st.sidebar.expander('Ajustes da simulação'):
-        frac=st.toggle('Permitir compra fracionária',value=True)
-        min_w=st.slider('Remover pesos menores que',0.0,0.05,0.01,0.005,format='%.3f')
-    with st.sidebar.expander('Atualização'):
-        auto=st.toggle('Atualizar parcial automaticamente',value=True)
-        mins=st.select_slider('Intervalo da parcial',options=[5,10,15,30,60],value=15)
-    for perfil in perfis: with_profile(perfil,render_reports_sidebar)
+    css()
+    frac,min_w,auto,mins=True,0.01,True,15      # valores padrao (os paineis de ajuste foram retirados da barra lateral)
     autorefresh(auto,mins)
     many=len(perfis)>1
     st.title(f'Carteira de {month_label(current_forward_month(fs[perfis[0]]))}')
@@ -813,22 +808,23 @@ def main():
         f=fs[perfil]; ff=with_profile(perfil,fields,f.forward,'Resumo Forward')
         prefix=f'Perfil {profiles.display_name(perfil)} · ' if many else ''
         st.caption(f'{prefix}{f.display_name or f.version} · Dados de seleção até {format_updated_at(ff.get("data_limite_dados_selecao"))} · Formação em {format_updated_at(ff.get("data_formacao_forward"))}')
+    capital=simulated_capital_input()
     def section(perfil,fn,*args):
         if many: st.markdown(f'## Perfil {profiles.display_name(perfil)}')
         with_profile(perfil,fn,fs[perfil],*args)
-    tabs=st.tabs(['Carteira','Acompanhamento','Histórico','Carteiras anteriores'])
-    with tabs[0]:
+    tabs=st.tabs(['Carteira','Acompanhamento','Histórico','Carteiras anteriores','Relatórios'])
+    def side_by_side(fn,args):
         if many:       # perfis lado a lado, 50% da largura cada
             for column,perfil in zip(st.columns(len(perfis),gap='large'),perfis):
-                with column: section(perfil,render_start,ports[perfil],capital,min_w,frac)
-        else: section(perfis[0],render_start,ports[perfis[0]],capital,min_w,frac)
-    with tabs[1]:
-        for perfil in perfis: section(perfil,render_tracking,ports[perfil],capital,min_w,frac)
+                with column: section(perfil,fn,*args(perfil))
+        else: section(perfis[0],fn,*args(perfis[0]))
+    with tabs[0]: side_by_side(render_start,lambda p:(ports[p],capital,min_w,frac))
+    with tabs[1]: side_by_side(render_tracking,lambda p:(ports[p],capital,min_w,frac))
     with tabs[2]:
         if many: render_history_compare(perfis,fs,capital,min_w,frac)       # perfis lado a lado, um grafico, tabela com alternador
         else: section(perfis[0],render_history,capital,min_w,frac)
-    with tabs[3]:
-        for perfil in perfis: section(perfil,render_previous_portfolios)
+    with tabs[3]: side_by_side(render_previous_portfolios,lambda p:())
+    with tabs[4]: side_by_side(render_reports,lambda p:())      # relatorios mensais em PDF, um por perfil
     with st.expander('Sobre o modelo e os dados'):
         render_method()
         for perfil in perfis:
