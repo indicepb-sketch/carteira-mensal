@@ -485,10 +485,28 @@ def autorefresh(enabled: bool, minutes: int):
         components.html(f"<script>setTimeout(function(){{window.parent.location.reload();}}, {minutes * 60000});</script>", height=0)
 def css():
     st.markdown('''<style>
-    .block-container{padding-top:1.4rem;max-width:1400px}
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    .stApp,.stApp p,.stApp label,.stApp h1,.stApp h2,.stApp h3,.stApp h4,.stApp td,.stApp th,.stApp button p{font-family:'Inter',system-ui,sans-serif}
+    div[data-baseweb="tab-highlight"]{background:#4cc9a0!important}
+    section[data-testid="stSidebar"]{background:#0f1519}
+    .stApp{background:radial-gradient(1200px 600px at 10% -10%,#16231f 0%,#0d1215 55%)}
+    .block-container{padding-top:1.6rem;max-width:1400px}
+    h1,h2,h3{letter-spacing:-.01em;font-weight:600}
+    h2,h3{margin-top:1.4rem;padding-bottom:.35rem;border-bottom:1px solid #26323a}
+    h4{font-weight:600;color:#9fe3c8;letter-spacing:.02em;margin:.4rem 0}
+    div[data-baseweb="tab-list"]{gap:6px;border-bottom:1px solid #26323a}
+    button[role="tab"]{padding:10px 18px;border-radius:8px 8px 0 0;color:#9aa8a6}
+    button[role="tab"][aria-selected="true"]{color:#e8eeec;background:#151b1f}
+    div[data-testid="stExpander"]{border:1px solid #26323a;border-radius:10px;background:#11171a}
+    div[data-testid="stExpander"] summary{font-weight:500}
+    div[data-testid="stSidebar"],section[data-testid="stSidebar"]{border-right:1px solid #1f2a30}
+    .stButton>button,.stDownloadButton>button{border-radius:8px;border:1px solid #2f4a42;background:#16231f;color:#d4f4e8;transition:all .15s}
+    .stButton>button:hover,.stDownloadButton>button:hover{border-color:#4cc9a0;background:#1c2f29;color:#fff}
+    div[data-testid="stPlotlyChart"]{border:1px solid #26323a;border-radius:12px;padding:8px;background:#11171a}
+    div[data-testid="stDataFrame"]{border:1px solid #26323a;border-radius:10px}
     .note{color:#aab3b9;line-height:1.5}
     .pill{display:inline-block;padding:4px 9px;border-radius:4px;background:#20312d;color:#d4f4e8;border:1px solid #35594e;font-size:.85rem}
-    .hist-card{background:#171c21;border:1px solid #343d42;border-radius:8px;margin:18px 0;overflow-x:auto;scrollbar-color:#6b7b80 #20272b}
+    .hist-card{background:#151b1f;border:1px solid #2a3a40;border-radius:12px;margin:18px 0;overflow-x:auto;scrollbar-color:#6b7b80 #20272b}
     .hist-card::-webkit-scrollbar{height:12px}
     .hist-card::-webkit-scrollbar-track{background:#20272b}
     .hist-card::-webkit-scrollbar-thumb{background:#6b7b80;border-radius:6px}
@@ -516,9 +534,10 @@ def css():
       .hist-table td{min-width:0;min-height:105px;border-right:1px solid #30393e}
       .hist-table td::before{content:attr(data-label);display:block;color:#b7c1c0;font-size:.73rem;font-weight:700;margin-bottom:5px}
     }
-    div[data-testid="stMetric"]{background:#1b2225;border:1px solid #34423f;border-radius:6px;padding:14px 16px;min-height:104px}
+    div[data-testid="stMetric"]{background:linear-gradient(160deg,#1a2328,#141b1f);border:1px solid #2a3a40;border-radius:12px;padding:14px 18px;min-height:104px;box-shadow:0 2px 10px rgba(0,0,0,.25)}
     div[data-testid="stMetric"] label,div[data-testid="stMetric"] [data-testid="stMetricValue"]{color:#f4f7f5!important;overflow-wrap:anywhere}
-    div[data-testid="stMetric"] [data-testid="stMetricValue"]{font-size:1.8rem}
+    div[data-testid="stMetric"] [data-testid="stMetricValue"]{font-size:1.8rem;font-weight:600}
+    div[data-testid="stMetric"] label{color:#93a3a0!important;font-size:.8rem;letter-spacing:.03em}
     </style>''',unsafe_allow_html=True)
 def render_start(f,port,capital,min_w,frac):
     ff=fields(f.forward,'Resumo Forward'); ps,assets=partial(f)
