@@ -75,18 +75,27 @@ MAX_STOCKS = 15
 CDI_IR = 0.225
 MA_WINDOWS = (9, 21, 50, 100)
 
-NAVY = "#0B1F3A"
-NAVY_2 = "#16355E"
-TEAL = "#0E7C86"
-GOLD = "#C9A24B"
-INK = "#1F2937"
-MUTED = "#6B7280"
-LINE = "#D9DEE7"
-PAPER = "#F5F7FA"
-GREEN = "#1E8E5A"
-RED = "#C0392B"
-PURPLE = "#6B5B95"
-GREY = "#8A94A6"
+# Paleta escura, na mesma linha do app (fundo grafite-esverdeado, destaque verde-agua)
+BG = "#0D1215"          # fundo da pagina
+NAVY = "#16231F"        # faixas e cabecalhos de tabela
+NAVY_2 = "#1C2F29"
+CIRCLE = "#24403A"
+TITLE = "#E8EEEC"       # titulos e valores em destaque
+ACCENT = "#4CC9A0"      # filetes e detalhes decorativos
+TEAL = "#2FA98C"        # series de graficos
+GOLD = "#E0B85C"
+BLUE = "#6FA8DC"
+INK = "#E8EEEC"
+MUTED = "#93A3A0"
+LINE = "#2A3A40"
+PAPER = "#151B1F"       # cartoes
+ROW_ALT = "#11171A"
+GREEN = "#5FD3A0"
+RED = "#F0918F"
+PURPLE = "#B58CF0"
+GREY = "#8FA0A6"
+TINT_POS = "#1F6B4D"
+TINT_NEG = "#7A2F30"
 
 MONTHS_PT = ["Janeiro", "Fevereiro", "Marco", "Abril", "Maio", "Junho", "Julho",
              "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
@@ -433,7 +442,11 @@ def _style() -> None:
         "axes.spines.top": False,
         "axes.spines.right": False,
         "axes.grid": True,
-        "grid.color": "#E8ECF2",
+        "grid.color": "#1E2A30",
+        "text.color": INK,
+        "figure.facecolor": BG,
+        "axes.facecolor": BG,
+        "savefig.facecolor": BG,
         "grid.linewidth": 0.6,
         "axes.axisbelow": True,
         "legend.frameon": False,
@@ -442,7 +455,7 @@ def _style() -> None:
 
 def _png(fig: plt.Figure, width_cm: float, dpi: int = 200) -> Image:
     buffer = io.BytesIO()
-    fig.savefig(buffer, format="png", dpi=dpi, facecolor="white")
+    fig.savefig(buffer, format="png", dpi=dpi, facecolor=BG)
     plt.close(fig)
     buffer.seek(0)
     pixel_w, pixel_h = fig.get_size_inches() * dpi
@@ -453,9 +466,9 @@ def chart_allocation(stock_weight: float, cdi_weight: float) -> Image:
     _style()
     fig, ax = plt.subplots(figsize=(2.6, 2.8))
     ax.pie([stock_weight, cdi_weight], colors=[TEAL, GOLD], startangle=90, counterclock=False,
-           wedgeprops={"width": 0.34, "edgecolor": "white", "linewidth": 2})
+           wedgeprops={"width": 0.34, "edgecolor": BG, "linewidth": 2})
     ax.text(0, 0.1, fmt_pct(stock_weight, 0), ha="center", va="center", fontsize=17,
-            fontweight="bold", color=NAVY)
+            fontweight="bold", color=TITLE)
     ax.text(0, -0.22, "em ações", ha="center", va="center", fontsize=7.5, color=MUTED)
     ax.set(aspect="equal")
     ax.grid(False)
@@ -491,7 +504,7 @@ def chart_sectors(table: pd.DataFrame) -> Image:
     sectors = table.groupby("setor")["peso_modelo_total"].sum().sort_values()
     height = max(1.4, 0.2 * len(sectors) + 0.3)
     fig, ax = plt.subplots(figsize=(6.2, height))
-    ax.barh(range(len(sectors)), sectors.values, color=NAVY_2, height=0.6)
+    ax.barh(range(len(sectors)), sectors.values, color=BLUE, height=0.6)
     for i, val in enumerate(sectors.values):
         ax.text(val + 0.0015, i, fmt_pct(val, 1), va="center", fontsize=7.5, color=INK)
     ax.set_yticks(range(len(sectors)))
@@ -507,7 +520,7 @@ def chart_sectors(table: pd.DataFrame) -> Image:
 def chart_scores(table: pd.DataFrame) -> Image:
     _style()
     parts = [("score_tendencia", "Tendência", PURPLE), ("score_timing", "Timing", TEAL),
-             ("score_fundamentos", "Fundamentos", GOLD), ("score_setor", "Setor", NAVY_2),
+             ("score_fundamentos", "Fundamentos", GOLD), ("score_setor", "Setor", BLUE),
              ("score_risco", "Risco", GREY)]
     ordered = table.sort_values("nota_final", ascending=True)
     fig, ax = plt.subplots(figsize=(6.3, 0.22 * len(ordered) + 0.85))
@@ -533,7 +546,7 @@ def chart_month_compare(model: float, ibov: float, cdi: float, month: str) -> Im
     _style()
     labels = ["Carteira", "IBOV", "CDI líquido"]
     values = [model, ibov, cdi]
-    palette = [TEAL, NAVY_2, GOLD]
+    palette = [TEAL, BLUE, GOLD]
     fig, ax = plt.subplots(figsize=(2.85, 2.7))
     bars = ax.bar(labels, [v * 100 for v in values], color=palette, width=0.55)
     span = max(abs(v) for v in values if not np.isnan(v)) * 100
@@ -582,7 +595,7 @@ def chart_cumulative(history: pd.DataFrame) -> Image:
 
     fig, ax = plt.subplots(figsize=(7.4, 3.0))
     series = [("Carteira (execução R$ 10 mil)", curve(history["modelo"]), TEAL, 2.2),
-              ("IBOV", curve(history["ibov"]), NAVY_2, 1.5),
+              ("IBOV", curve(history["ibov"]), BLUE, 1.5),
               ("CDI líquido de IR", curve(history["cdi"]), GOLD, 1.5)]
     for label, values, color, width in series:
         ax.plot(x, values, color=color, linewidth=width, label=label)
@@ -672,20 +685,20 @@ def chart_stock(ticker: str, series: dict[str, Any], cutoff: pd.Timestamp, end: 
     for window in MA_WINDOWS:
         ax.plot(cut(series["ma"][window]).index, cut(series["ma"][window]).values,
                 color=ma_colors[window], linewidth=1.0, label=f"MM{window}")
-    ax.plot(price.index, price.values, color=NAVY, linewidth=1.7, label="Preço (fech. semanal)")
-    ax.scatter([price.index[-1]], [entry_price], color=NAVY, s=26, zorder=5)
+    ax.plot(price.index, price.values, color=TITLE, linewidth=1.7, label="Preço (fech. semanal)")
+    ax.scatter([price.index[-1]], [entry_price], color=TITLE, s=26, zorder=5)
 
     ax.axvspan(cutoff, end + pd.Timedelta(days=2), color=GOLD, alpha=0.11, linewidth=0)
     ax_rsi.axvspan(cutoff, end + pd.Timedelta(days=2), color=GOLD, alpha=0.11, linewidth=0)
     if not post.empty:
         path = pd.concat([pd.Series([entry_price], index=[series["last_date"]]), post])
-        ax.plot(path.index, path.values, color=NAVY, linewidth=1.1, linestyle=(0, (3, 1.5)))
+        ax.plot(path.index, path.values, color=TITLE, linewidth=1.1, linestyle=(0, (3, 1.5)))
         change = float(post.iloc[-1]) / entry_price - 1
         ax.text(cutoff + (end - cutoff) / 2, 0.97, fmt_pct(change, 1, True), transform=ax.get_xaxis_transform(),
                 ha="center", va="top", fontsize=8, fontweight="bold", color=sign_color(change), zorder=10,
-                bbox={"boxstyle": "round,pad=0.15", "facecolor": "white", "edgecolor": "none", "alpha": 0.9})
+                bbox={"boxstyle": "round,pad=0.15", "facecolor": BG, "edgecolor": "none", "alpha": 0.9})
     ax.text(cutoff + (end - cutoff) / 2, 0.015, month_short(end), transform=ax.get_xaxis_transform(),
-            ha="center", va="bottom", fontsize=5.6, color="#8C6D1F", fontweight="bold")
+            ha="center", va="bottom", fontsize=5.6, color=GOLD, fontweight="bold")
 
     handles, labels = ax.get_legend_handles_labels()
     order = [labels.index(n) for n in ("Preço (fech. semanal)", "MM9", "MM21", "MM50", "MM100",
@@ -733,11 +746,11 @@ def make_styles() -> dict[str, ParagraphStyle]:
         "tiny": ParagraphStyle("tiny", **{**base, "fontSize": 6.8, "leading": 8.6,
                                           "textColor": colors.HexColor(MUTED)}),
         "h1": ParagraphStyle("h1", **{**base, "fontName": "Helvetica-Bold", "fontSize": 17, "leading": 21,
-                                      "textColor": colors.HexColor(NAVY)}),
+                                      "textColor": colors.HexColor(TITLE)}),
         "h2": ParagraphStyle("h2", **{**base, "fontName": "Helvetica-Bold", "fontSize": 10.5, "leading": 14,
-                                      "textColor": colors.HexColor(NAVY), "spaceBefore": 6, "spaceAfter": 3}),
+                                      "textColor": colors.HexColor(TITLE), "spaceBefore": 6, "spaceAfter": 3}),
         "kicker": ParagraphStyle("kicker", **{**base, "fontName": "Helvetica-Bold", "fontSize": 7.5,
-                                              "textColor": colors.HexColor(TEAL), "leading": 10}),
+                                              "textColor": colors.HexColor(ACCENT), "leading": 10}),
         "cell": ParagraphStyle("cell", **{**base, "fontSize": 8, "leading": 10}),
         "cell_r": ParagraphStyle("cell_r", **{**base, "fontSize": 8, "leading": 10, "alignment": TA_RIGHT}),
         "cell_c": ParagraphStyle("cell_c", **{**base, "fontSize": 8, "leading": 10, "alignment": TA_CENTER}),
@@ -746,7 +759,7 @@ def make_styles() -> dict[str, ParagraphStyle]:
         "head_r": ParagraphStyle("head_r", **{**base, "fontName": "Helvetica-Bold", "fontSize": 7.5,
                                               "leading": 9.5, "textColor": colors.white, "alignment": TA_RIGHT}),
         "kpi_value": ParagraphStyle("kpi_value", **{**base, "fontName": "Helvetica-Bold", "fontSize": 17,
-                                                    "leading": 20, "textColor": colors.HexColor(NAVY),
+                                                    "leading": 20, "textColor": colors.HexColor(TITLE),
                                                     "alignment": TA_LEFT}),
         "kpi_label": ParagraphStyle("kpi_label", **{**base, "fontSize": 7.2, "leading": 9,
                                                     "textColor": colors.HexColor(MUTED)}),
@@ -768,13 +781,13 @@ class SectionTitle(Flowable):
 
     def draw(self) -> None:
         canvas = self.canv
-        canvas.setFillColor(colors.HexColor(TEAL))
+        canvas.setFillColor(colors.HexColor(ACCENT))
         canvas.setFont("Helvetica-Bold", 7.5)
         canvas.drawString(0, self.height - 9, self.kicker.upper())
-        canvas.setFillColor(colors.HexColor(NAVY))
+        canvas.setFillColor(colors.HexColor(TITLE))
         canvas.setFont("Helvetica-Bold", 17)
         canvas.drawString(0, self.height - 28, self.title)
-        canvas.setStrokeColor(colors.HexColor(GOLD))
+        canvas.setStrokeColor(colors.HexColor(ACCENT))
         canvas.setLineWidth(1.6)
         canvas.line(0, 1, 1.6 * cm, 1)
 
@@ -783,14 +796,14 @@ def kpi_cards(items: list[tuple[str, str, str | None]], width: float = CONTENT_W
     """items: (rotulo, valor, cor_do_valor)."""
     cells = []
     for label, value, color in items:
-        style = ParagraphStyle("kv", parent=STYLES["kpi_value"], textColor=colors.HexColor(color or NAVY))
+        style = ParagraphStyle("kv", parent=STYLES["kpi_value"], textColor=colors.HexColor(color or TITLE))
         cells.append([Paragraph(value, style), Paragraph(label, STYLES["kpi_label"])])
     column = width / len(items)
     table = Table([[c[0] for c in cells], [c[1] for c in cells]], colWidths=[column] * len(items))
     table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor(PAPER)),
-        ("LINEBEFORE", (1, 0), (-1, -1), 1.5, colors.white),
-        ("LINEABOVE", (0, 0), (-1, 0), 2, colors.HexColor(GOLD)),
+        ("LINEBEFORE", (1, 0), (-1, -1), 1.5, colors.HexColor(BG)),
+        ("LINEABOVE", (0, 0), (-1, 0), 2, colors.HexColor(ACCENT)),
         ("LEFTPADDING", (0, 0), (-1, -1), 10),
         ("TOPPADDING", (0, 0), (-1, 0), 9),
         ("BOTTOMPADDING", (0, 0), (-1, 0), 1),
@@ -819,7 +832,7 @@ def data_table(header: list[str], rows: list[list[str]], widths: list[float],
     ]
     if zebra:
         for i in range(2, len(body) + 1, 2):
-            style.append(("BACKGROUND", (0, i), (-1, i), colors.HexColor("#FAFBFD")))
+            style.append(("BACKGROUND", (0, i), (-1, i), colors.HexColor(ROW_ALT)))
     table.setStyle(TableStyle(style))
     return table
 
@@ -881,7 +894,7 @@ def stock_card(row: pd.Series, total_ret: float | None) -> Table:
     exec_text = (f"{fmt_brl(row['valor_alvo'])} · {int(row['quantidade'])} un."
                  if executable else "abaixo de 1% (não exec.)")
     rows = [
-        line("Peso na carteira", colored(fmt_pct(weight_total, 2), NAVY)),
+        line("Peso na carteira", colored(fmt_pct(weight_total, 2), TITLE)),
         line("Peso em ações", fmt_pct(row["peso_na_parte_acoes"], 1)),
         line("Alvo (R$ 10 mil)", exec_text),
         line("Nota final do robô", colored(f"{fnum(row['nota_final']):.0f} / 100", TEAL)),
@@ -901,19 +914,19 @@ def stock_card(row: pd.Series, total_ret: float | None) -> Table:
     table = Table(rows, colWidths=[3.0 * cm, CONTENT_W - 10.9 * cm - 3.0 * cm - 0.15 * cm])
     table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor(PAPER)),
-        ("LINEABOVE", (0, 0), (-1, 0), 2, colors.HexColor(TEAL)),
+        ("LINEABOVE", (0, 0), (-1, 0), 2, colors.HexColor(ACCENT)),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("TOPPADDING", (0, 0), (-1, -1), 4.2),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 4.2),
         ("LEFTPADDING", (0, 0), (-1, -1), 6),
         ("RIGHTPADDING", (0, 0), (-1, -1), 6),
-        ("LINEBELOW", (0, 0), (-1, -2), 0.3, colors.white),
+        ("LINEBELOW", (0, 0), (-1, -2), 0.3, colors.HexColor(LINE)),
     ]))
     return table
 
 
 def stock_header(row: pd.Series, rank: int) -> Table:
-    name = f'<font size="13" color="{NAVY}"><b>{short_ticker(row["ticker"])}</b></font>' \
+    name = f'<font size="13" color="{TITLE}"><b>{short_ticker(row["ticker"])}</b></font>' \
            f'<font size="9" color="{MUTED}">&nbsp;&nbsp;{title_name(row["nome"])} · {row["setor"]}</font>'
     pill = f'<font color="white" size="8"><b>#{rank} · {fmt_pct(row["peso_modelo_total"], 2)} da carteira</b></font>'
     table = Table([[Paragraph(name, STYLES["cell"]),
@@ -921,7 +934,7 @@ def stock_header(row: pd.Series, rank: int) -> Table:
                   colWidths=[CONTENT_W - 5.0 * cm, 5.0 * cm])
     table.setStyle(TableStyle([
         ("BACKGROUND", (1, 0), (1, 0), colors.HexColor(NAVY)),
-        ("LINEBELOW", (0, 0), (0, 0), 0.8, colors.HexColor(GOLD)),
+        ("LINEBELOW", (0, 0), (0, 0), 0.8, colors.HexColor(ACCENT)),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("LEFTPADDING", (0, 0), (0, 0), 0),
         ("TOPPADDING", (0, 0), (-1, -1), 5),
@@ -942,10 +955,10 @@ def heatmap_table(history: pd.DataFrame) -> Table:
                           ("LEFTPADDING", (0, 0), (-1, -1), 2), ("RIGHTPADDING", (0, 0), (-1, -1), 2)]
 
     def tint(value: float) -> colors.Color:
-        strength = min(abs(value) / 0.06, 1.0)
-        base = colors.HexColor(GREEN if value >= 0 else RED)
-        return colors.Color(1 - (1 - base.red) * strength * 0.85, 1 - (1 - base.green) * strength * 0.85,
-                            1 - (1 - base.blue) * strength * 0.85)
+        strength = min(abs(value) / 0.06, 1.0) * 0.9
+        base, card = colors.HexColor(TINT_POS if value >= 0 else TINT_NEG), colors.HexColor(PAPER)
+        return colors.Color(card.red + (base.red - card.red) * strength, card.green + (base.green - card.green) * strength,
+                            card.blue + (base.blue - card.blue) * strength)
 
     small = ParagraphStyle("hm", parent=STYLES["cell_c"], fontSize=7.2, leading=8.6)
     tiny = ParagraphStyle("hmi", parent=STYLES["cell_c"], fontSize=6.2, leading=7.4,
@@ -986,18 +999,26 @@ def heatmap_table(history: pd.DataFrame) -> Table:
 # ----------------------------------------------------------------------------
 # Paginas
 # ----------------------------------------------------------------------------
+def paint_background(canvas: Any) -> None:
+    canvas.saveState()
+    canvas.setFillColor(colors.HexColor(BG))
+    canvas.rect(0, 0, PAGE_W, PAGE_H, stroke=0, fill=1)
+    canvas.restoreState()
+
+
 def on_cover(canvas: Any, doc: Any, month: str, status_text: str) -> None:
+    paint_background(canvas)
     canvas.saveState()
     canvas.setFillColor(colors.HexColor(NAVY))
     canvas.rect(0, PAGE_H - 12.4 * cm, PAGE_W, 12.4 * cm, stroke=0, fill=1)
     canvas.setFillColor(colors.HexColor(NAVY_2))
     canvas.circle(PAGE_W - 2.2 * cm, PAGE_H - 3.0 * cm, 5.2 * cm, stroke=0, fill=1)
-    canvas.setFillColor(colors.HexColor("#1B4272"))
+    canvas.setFillColor(colors.HexColor(CIRCLE))
     canvas.circle(PAGE_W - 0.6 * cm, PAGE_H - 9.8 * cm, 2.6 * cm, stroke=0, fill=1)
-    canvas.setFillColor(colors.HexColor(GOLD))
+    canvas.setFillColor(colors.HexColor(ACCENT))
     canvas.rect(MARGIN, PAGE_H - 4.45 * cm, 1.8 * cm, 0.09 * cm, stroke=0, fill=1)
     canvas.setFont("Helvetica-Bold", 9)
-    canvas.setFillColor(colors.HexColor(GOLD))
+    canvas.setFillColor(colors.HexColor(ACCENT))
     canvas.drawString(MARGIN, PAGE_H - 3.7 * cm, "CARTEIRA MENSAL  ·  RELATÓRIO")
     canvas.setFillColor(colors.white)
     canvas.setFont("Helvetica-Bold", 38)
@@ -1024,16 +1045,17 @@ def footer(canvas: Any, doc: Any, month: str, cover: bool = False) -> None:
                       "Simulação de carteira-modelo, com fins informativos. Não constitui recomendação de investimento.")
     if not cover:
         canvas.setFont("Helvetica-Bold", 7.5)
-        canvas.setFillColor(colors.HexColor(NAVY))
+        canvas.setFillColor(colors.HexColor(TITLE))
         canvas.drawRightString(PAGE_W - MARGIN, 0.95 * cm, f"{month_label(month)}  ·  {doc.page}")
     canvas.restoreState()
 
 
 def on_page(canvas: Any, doc: Any, month: str) -> None:
+    paint_background(canvas)
     canvas.saveState()
     canvas.setFillColor(colors.HexColor(NAVY))
     canvas.rect(0, PAGE_H - 0.55 * cm, PAGE_W, 0.55 * cm, stroke=0, fill=1)
-    canvas.setFillColor(colors.HexColor(GOLD))
+    canvas.setFillColor(colors.HexColor(ACCENT))
     canvas.rect(0, PAGE_H - 0.62 * cm, 3.2 * cm, 0.07 * cm, stroke=0, fill=1)
     canvas.restoreState()
     footer(canvas, doc, month)
@@ -1094,8 +1116,8 @@ def _build_report(month: str, output: Path | None = None, allow_network: bool = 
     story.append(kpi_cards([
         ("Exposição em ações", fmt_pct(stock_weight, 0), TEAL),
         ("CDI / Tesouro Selic líquido", fmt_pct(cdi_weight, 0), GOLD),
-        ("Ações na carteira", str(len(table)), NAVY),
-        ("Regime de mercado", f'<font size="12">{regime_name}</font>', NAVY),
+        ("Ações na carteira", str(len(table)), TITLE),
+        ("Regime de mercado", f'<font size="12">{regime_name}</font>', TITLE),
     ]))
     story.append(Spacer(1, 0.7 * cm))
     if not np.isnan(perf["retorno"]):
