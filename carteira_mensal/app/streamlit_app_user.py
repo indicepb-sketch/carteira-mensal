@@ -668,6 +668,35 @@ def cumulative_profiles(dfs:dict[str,pd.DataFrame]):
         if col in base.columns:
             vals=pd.to_numeric(base[col],errors='coerce').fillna(0); fig.add_trace(go.Scatter(x=base['mes'].astype(str),y=(1+vals).cumprod()-1,mode='lines',name=label,line=dict(color=color,dash='dot' if col!='retorno_expost_ibov' else 'solid')))
     fig.update_layout(height=380,yaxis_tickformat='.1%',margin=dict(l=10,r=10,t=30,b=10),legend=dict(orientation='h'),template='plotly_dark',hovermode='x unified'); return fig
+def risk_stats(df:pd.DataFrame)->dict[str,Any]:
+    """Queda maxima (pico a vale do acumulado), pior/melhor mes, volatilidade anualizada e Sharpe (excesso sobre o CDI liquido), do modelo e do IBOV."""
+    months=df['mes'].astype(str).str[:7].reset_index(drop=True)
+    cdi=pd.to_numeric(df.get('retorno_cdi_liquido_periodo',pd.Series(0.0,index=df.index)),errors='coerce').fillna(0.0).reset_index(drop=True)
+    def one(col):
+        r=pd.to_numeric(df.get(col,pd.Series(dtype=float)),errors='coerce').reset_index(drop=True)
+        ok=r.notna(); r,m,c=r[ok].reset_index(drop=True),months[ok].reset_index(drop=True),cdi[ok].reset_index(drop=True)
+        if r.empty: return dict(dd=np.nan,dd_mes='',worst=np.nan,worst_mes='',best=np.nan,best_mes='',vol=np.nan,sharpe=np.nan)
+        curve=(1+r).cumprod(); peak=np.maximum.accumulate(np.concatenate([[1.0],curve.to_numpy()]))[1:]; depth=curve.to_numpy()/peak-1
+        i=int(np.argmin(depth)); sd=float(r.std(ddof=1)) if len(r)>1 else np.nan
+        return dict(dd=float(depth[i]),dd_mes=m[i],worst=float(r.min()),worst_mes=m[int(r.idxmin())],best=float(r.max()),best_mes=m[int(r.idxmax())],
+                    vol=sd*np.sqrt(12) if sd==sd else np.nan,sharpe=float((r-c).mean()/sd*np.sqrt(12)) if sd and sd==sd else np.nan)
+    return {'modelo':one('retorno_modelo'),'ibov':one('retorno_expost_ibov')}
+def render_risk_indicators(dfs:dict[str,pd.DataFrame])->None:
+    """Bloco 'Risco e retorno ajustado ao risco', um por perfil (lado a lado quando ha mais de um)."""
+    st.subheader('Risco e retorno ajustado ao risco')
+    many=len(dfs)>1
+    for column,(perfil,df) in zip(st.columns(len(dfs)),dfs.items()):
+        k=risk_stats(df); m,i=k['modelo'],k['ibov']
+        def when(mes): return month_label(mes) if mes else '-'
+        with column:
+            if many: st.markdown(f'#### {profiles.display_name(perfil)}')
+            a,b=st.columns(2); c,d=st.columns(2); e,_=st.columns(2)
+            a.metric('Queda máxima',pct(m['dd']),delta=f"IBOV: {pct(i['dd'])} · vale em {when(m['dd_mes'])}",delta_color='off')
+            b.metric('Volatilidade anual',pct(m['vol']),delta=f"IBOV: {pct(i['vol'])}",delta_color='off')
+            c.metric('Pior mês',pct(m['worst']),delta=f"{when(m['worst_mes'])} · IBOV pior: {pct(i['worst'])}",delta_color='off')
+            d.metric('Melhor mês',pct(m['best']),delta=f"{when(m['best_mes'])} · IBOV melhor: {pct(i['best'])}",delta_color='off')
+            e.metric('Índice de Sharpe',f"{m['sharpe']:.2f}".replace('.',','),delta=f"IBOV: {i['sharpe']:.2f}".replace('.',','),delta_color='off')
+    st.caption('Queda máxima: maior queda do acumulado, do pico ao vale. Volatilidade: desvio dos retornos mensais, anualizado. Sharpe: retorno mensal acima do CDI líquido dividido pela volatilidade, anualizado (quanto maior, melhor o retorno por unidade de risco). Backtest, sem custos de negociação.')
 def history_totals(df)->dict[str,float]:
     model=df.get('retorno_modelo',pd.Series(dtype=float)); ibov=df.get('retorno_expost_ibov',pd.Series(dtype=float)); cdi=df.get('retorno_cdi_liquido_periodo',pd.Series(dtype=float))
     total_model,total_ibov=compound(model),compound(ibov)
@@ -706,6 +735,7 @@ def render_history_compare(perfis,fs,capital,min_w,frac):
             st.markdown(f'#### {profiles.display_name(perfil)}'); a,b=st.columns(2); c,d=st.columns(2)
             a.metric('Modelo ao mês',pct(t['m_modelo']),delta=f"Ano: {pct((1+t['m_modelo'])**12-1)}"); b.metric('IBOV ao mês',pct(t['m_ibov']),delta=f"Ano: {pct((1+t['m_ibov'])**12-1)}")
             c.metric('CDI líquido ao mês',pct(t['m_cdi']),delta=f"Ano: {pct((1+t['m_cdi'])**12-1)}"); d.metric('Ganho médio vs IBOV',pct(t['m_modelo']-t['m_ibov']),delta=f"Ano: {pct((1+t['m_modelo'])**12-(1+t['m_ibov'])**12)}")
+    render_risk_indicators(dfs)
     st.subheader('Evolução acumulada')
     fig=cumulative_profiles(dfs)
     if fig is not None: st.plotly_chart(fig,use_container_width=True)
@@ -761,6 +791,7 @@ def render_history(f,capital,min_w,frac):
     c1,c2,c3,c4=st.columns(4); c1.metric('Modelo executável',pct(total_model)); c2.metric('IBOV',pct(total_ibov)); c3.metric('Ganho acima do IBOV',pct(total_alfa)); c4.metric('Meses que bateu',pct(hit_rate))
     m_model=eq_month(df.get('retorno_modelo',pd.Series(dtype=float))); m_ibov=eq_month(df.get('retorno_expost_ibov',pd.Series(dtype=float))); m_cdi=eq_month(df.get('retorno_cdi_liquido_periodo',pd.Series(dtype=float)))
     st.subheader('Taxa média histórica'); a,b,c,d=st.columns(4); a.metric('Modelo ao mês',pct(m_model),delta=f'Ano: {pct((1+m_model)**12-1)}'); b.metric('IBOV ao mês',pct(m_ibov),delta=f'Ano: {pct((1+m_ibov)**12-1)}'); c.metric('CDI líquido ao mês',pct(m_cdi),delta=f'Ano: {pct((1+m_cdi)**12-1)}'); d.metric('Ganho médio vs IBOV',pct(m_model-m_ibov),delta=f'Ano: {pct((1+m_model)**12-(1+m_ibov)**12)}')
+    render_risk_indicators({_PROFILE.get():df})
     st.subheader('Evolução acumulada')
     fig=cumulative(df)
     if fig is not None:

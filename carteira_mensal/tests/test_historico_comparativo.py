@@ -47,3 +47,17 @@ def test_history_tab_shows_both_profiles_side_by_side_and_a_profile_switch_for_t
     assert not view.exception
     arrojado_table = [m.value for m in view.markdown if m.value.startswith('<div class="hist-card">')][0]
     assert arrojado_table != moderate_table                                                        # o alternador troca a tabela de perfil
+
+
+def test_risk_stats_computes_drawdown_extreme_months_volatility_and_sharpe():
+    import numpy as np
+    df = pd.DataFrame({"mes": ["2024-01", "2024-02", "2024-03", "2024-04"],
+                       "retorno_modelo": [0.10, -0.20, 0.05, 0.10],
+                       "retorno_expost_ibov": [0.02, -0.05, 0.01, 0.03],
+                       "retorno_cdi_liquido_periodo": [0.01, 0.01, 0.01, 0.01]})
+    k = app.risk_stats(df)["modelo"]
+    assert round(k["dd"], 4) == -0.2 and k["dd_mes"] == "2024-02"          # pico 1,10 -> vale 0,88
+    assert (k["worst"], k["worst_mes"], k["best"], k["best_mes"]) == (-0.20, "2024-02", 0.10, "2024-01")
+    sd = float(np.std(df["retorno_modelo"], ddof=1))
+    assert abs(k["vol"] - sd * np.sqrt(12)) < 1e-12
+    assert abs(k["sharpe"] - (df["retorno_modelo"] - 0.01).mean() / sd * np.sqrt(12)) < 1e-12
