@@ -2,14 +2,24 @@
 
 from __future__ import annotations
 
+import re
+
 import numpy as np
 import pandas as pd
 
 
+_CASH_WORDS = re.compile(r"\b(cdi|reserva|tesouro selic)\b")
+
+
 def is_cdi(row: pd.Series) -> bool:
-    text = " ".join(str(row.get(column, "")).lower() for column in
-                    ("ticker", "setor", "tipo_alocacao", "nome"))
-    return any(name in text for name in ("cdi", "caixa", "reserva"))
+    """Linha de CDI/reserva. Casa palavras inteiras: 'Caixa Seguridade' (CXSE3) e uma acao, nao dinheiro em caixa."""
+    if str(row.get("ticker", "")).strip().upper().replace(".SA", "") == "CDI":
+        return True
+    for column in ("setor", "tipo_alocacao", "nome"):
+        text = str(row.get(column, "")).strip().lower()
+        if _CASH_WORDS.search(text) or (column != "nome" and text == "caixa"):
+            return True
+    return False
 
 
 def norm(frame: pd.DataFrame, column: str = "peso_recomendado") -> pd.DataFrame:

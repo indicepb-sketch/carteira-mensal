@@ -1,0 +1,14 @@
+Parcial forward 2026-11
+Arquivo forward usado: carteira_forward_2026_11.xlsx
+Fonte precos: yfinance
+Data entrada: 2026-10-30
+Data de corte comum: 2026-11-09
+Acoes executaveis: 9; peso CDI: 2.09%
+CDI fonte: bcb_sgs_12
+CDI bruto periodo: 0.2542%
+IR CDI: 22.50%; CDI liquido periodo: 0.1970%
+Retorno oficial executavel: -1.38%
+Retorno bruto das recomendacoes (diagnostico): -1.39%
+Retorno IBOV parcial: 2.57%
+Alfa parcial: -3.95%
+Arquivo gerado: C:\Users\amade\Documents\Codex\2026-06-26\wt_score_v2\carteira_mensal\output\excel\arrojado\parcial_carteira_forward_2026_11_v20261110_214137.xlsx
