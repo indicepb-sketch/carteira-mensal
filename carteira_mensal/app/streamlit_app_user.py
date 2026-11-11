@@ -49,7 +49,7 @@ CDI_MONTHLY_PATH=ROOT/'data'/'processed'/'cdi_mensal_ipeadata.csv'
 IBOV_MONTHLY_PATH=ROOT/'data'/'processed'/'ibov_mensal_oficial.csv'
 SCENARIO='TOP15'; SCENARIO_LABEL='Top 15 operacional'; PLATFORM_MAX_STOCKS=15; HISTORY_CAPITAL=10000.0
 SOURCE_CDI_IR=0.225; PLATFORM_CDI_IR=0.225
-st.set_page_config(page_title='Carteira Mensal', page_icon='CM', layout='wide', initial_sidebar_state='expanded')
+st.set_page_config(page_title='Carteira Mensal', page_icon='CM', layout='wide', initial_sidebar_state='collapsed')
 @dataclass(frozen=True)
 class AppFiles:
     forward:Path|None; partial:Path|None; operational:Path|None; version:str; display_name:str|None=None
@@ -162,7 +162,8 @@ def simulated_capital_input()->float:
     if 'simulated_capital' not in st.session_state:
         st.session_state.simulated_capital=10000.0
         st.session_state.simulated_capital_text=format_brl_amount(10000.0)
-    with st.sidebar:
+    holder,_=st.columns([2,3])
+    with holder:
         st.markdown('Valor para simular')
         amount_col,minus_col,plus_col=st.columns([5,1,1],gap='small')
         with amount_col:
@@ -485,10 +486,29 @@ def autorefresh(enabled: bool, minutes: int):
         components.html(f"<script>setTimeout(function(){{window.parent.location.reload();}}, {minutes * 60000});</script>", height=0)
 def css():
     st.markdown('''<style>
-    .block-container{padding-top:1.4rem;max-width:1400px}
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    .stApp,.stApp p,.stApp label,.stApp h1,.stApp h2,.stApp h3,.stApp h4,.stApp td,.stApp th,.stApp button p{font-family:'Inter',system-ui,sans-serif}
+    div[data-baseweb="tab-highlight"]{background:#4cc9a0!important}
+    section[data-testid="stSidebar"]{background:#0f1519}
+    section[data-testid="stSidebar"],div[data-testid="stSidebarCollapsedControl"],div[data-testid="collapsedControl"]{display:none!important}
+    .stApp{background:radial-gradient(1200px 600px at 10% -10%,#16231f 0%,#0d1215 55%)}
+    .block-container{padding-top:1.6rem;max-width:1400px}
+    h1,h2,h3{letter-spacing:-.01em;font-weight:600}
+    h2,h3{margin-top:1.4rem;padding-bottom:.35rem;border-bottom:1px solid #26323a}
+    h4{font-weight:600;color:#9fe3c8;letter-spacing:.02em;margin:.4rem 0}
+    div[data-baseweb="tab-list"]{gap:6px;border-bottom:1px solid #26323a}
+    button[role="tab"]{padding:10px 18px;border-radius:8px 8px 0 0;color:#9aa8a6}
+    button[role="tab"][aria-selected="true"]{color:#e8eeec;background:#151b1f}
+    div[data-testid="stExpander"]{border:1px solid #26323a;border-radius:10px;background:#11171a}
+    div[data-testid="stExpander"] summary{font-weight:500}
+    div[data-testid="stSidebar"],section[data-testid="stSidebar"]{border-right:1px solid #1f2a30}
+    .stButton>button,.stDownloadButton>button{border-radius:8px;border:1px solid #2f4a42;background:#16231f;color:#d4f4e8;transition:all .15s}
+    .stButton>button:hover,.stDownloadButton>button:hover{border-color:#4cc9a0;background:#1c2f29;color:#fff}
+    div[data-testid="stPlotlyChart"]{border:1px solid #26323a;border-radius:12px;padding:8px;background:#11171a}
+    div[data-testid="stDataFrame"]{border:1px solid #26323a;border-radius:10px}
     .note{color:#aab3b9;line-height:1.5}
     .pill{display:inline-block;padding:4px 9px;border-radius:4px;background:#20312d;color:#d4f4e8;border:1px solid #35594e;font-size:.85rem}
-    .hist-card{background:#171c21;border:1px solid #343d42;border-radius:8px;margin:18px 0;overflow-x:auto;scrollbar-color:#6b7b80 #20272b}
+    .hist-card{background:#151b1f;border:1px solid #2a3a40;border-radius:12px;margin:18px 0;overflow-x:auto;scrollbar-color:#6b7b80 #20272b}
     .hist-card::-webkit-scrollbar{height:12px}
     .hist-card::-webkit-scrollbar-track{background:#20272b}
     .hist-card::-webkit-scrollbar-thumb{background:#6b7b80;border-radius:6px}
@@ -516,9 +536,11 @@ def css():
       .hist-table td{min-width:0;min-height:105px;border-right:1px solid #30393e}
       .hist-table td::before{content:attr(data-label);display:block;color:#b7c1c0;font-size:.73rem;font-weight:700;margin-bottom:5px}
     }
-    div[data-testid="stMetric"]{background:#1b2225;border:1px solid #34423f;border-radius:6px;padding:14px 16px;min-height:104px}
+    div[data-testid="stMetric"]{background:linear-gradient(160deg,#1a2328,#141b1f);border:1px solid #2a3a40;border-radius:12px;padding:14px 18px;min-height:104px;box-shadow:0 2px 10px rgba(0,0,0,.25)}
     div[data-testid="stMetric"] label,div[data-testid="stMetric"] [data-testid="stMetricValue"]{color:#f4f7f5!important;overflow-wrap:anywhere}
-    div[data-testid="stMetric"] [data-testid="stMetricValue"]{font-size:1.8rem}
+    div[data-testid="stMetric"] [data-testid="stMetricValue"]{font-size:clamp(1.15rem,1.7vw,1.8rem);font-weight:600}
+    div[data-testid="stMetric"] [data-testid="stMetricValue"] *{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+    div[data-testid="stMetric"] label{color:#93a3a0!important;font-size:.8rem;letter-spacing:.03em}
     </style>''',unsafe_allow_html=True)
 def render_start(f,port,capital,min_w,frac):
     ff=fields(f.forward,'Resumo Forward'); ps,assets=partial(f)
@@ -762,14 +784,13 @@ def monthly_report_files()->list[Path]:
     found=list(pdf_dir().glob('carteira_recomendada_20*_*.pdf'))
     final={p.stem for p in found if not p.stem.endswith('_parcial')}
     return sorted([p for p in found if not (p.stem.endswith('_parcial') and p.stem[:-8] in final)],reverse=True)
-def render_reports_sidebar():
+def render_reports(f):
     reports=monthly_report_files()
-    if not reports: return
+    if not reports: st.info('Nenhum relatório mensal encontrado.'); return
     def label(path:Path)->str:
         m=re.search(r'(20\d{2})_(\d{2})',path.stem); return (month_label(f'{m.group(1)}-{m.group(2)}')+(' (parcial)' if path.stem.endswith('_parcial') else '')) if m else path.stem
-    title='Relatório mensal (PDF)'+(f' · {profiles.display_name(_PROFILE.get())}' if len(available_profiles())>1 else '')
-    with st.sidebar.expander(title):
-        chosen=st.selectbox('Mês',reports,format_func=label,label_visibility='collapsed',key=K('relatorio_mes'))
+    if True:
+        chosen=st.selectbox('Mês do relatório (PDF)',reports,format_func=label,key=K('relatorio_mes'))
         st.download_button('Baixar relatório',key=K('relatorio_baixar'),data=chosen.read_bytes(),file_name=chosen.name,mime='application/pdf',icon=':material/picture_as_pdf:',help='Carteira recomendada, desempenho do mês e gráfico de 12 meses de cada ação com os indicadores do robô.')
 def main():
     perfis=available_profiles()
@@ -778,14 +799,8 @@ def main():
         st.error(f'Carteira oficial indisponivel: {exc}')
         st.stop()
     ports={perfil:with_profile(perfil,portfolio,fs[perfil]) for perfil in perfis}
-    css(); st.sidebar.title('Simular carteira'); capital=simulated_capital_input()
-    with st.sidebar.expander('Ajustes da simulação'):
-        frac=st.toggle('Permitir compra fracionária',value=True)
-        min_w=st.slider('Remover pesos menores que',0.0,0.05,0.01,0.005,format='%.3f')
-    with st.sidebar.expander('Atualização'):
-        auto=st.toggle('Atualizar parcial automaticamente',value=True)
-        mins=st.select_slider('Intervalo da parcial',options=[5,10,15,30,60],value=15)
-    for perfil in perfis: with_profile(perfil,render_reports_sidebar)
+    css()
+    frac,min_w,auto,mins=True,0.01,True,15      # valores padrao (os paineis de ajuste foram retirados da barra lateral)
     autorefresh(auto,mins)
     many=len(perfis)>1
     st.title(f'Carteira de {month_label(current_forward_month(fs[perfis[0]]))}')
@@ -793,19 +808,23 @@ def main():
         f=fs[perfil]; ff=with_profile(perfil,fields,f.forward,'Resumo Forward')
         prefix=f'Perfil {profiles.display_name(perfil)} · ' if many else ''
         st.caption(f'{prefix}{f.display_name or f.version} · Dados de seleção até {format_updated_at(ff.get("data_limite_dados_selecao"))} · Formação em {format_updated_at(ff.get("data_formacao_forward"))}')
+    capital=simulated_capital_input()
     def section(perfil,fn,*args):
         if many: st.markdown(f'## Perfil {profiles.display_name(perfil)}')
         with_profile(perfil,fn,fs[perfil],*args)
-    tabs=st.tabs(['Carteira','Acompanhamento','Histórico','Carteiras anteriores'])
-    with tabs[0]:
-        for perfil in perfis: section(perfil,render_start,ports[perfil],capital,min_w,frac)
-    with tabs[1]:
-        for perfil in perfis: section(perfil,render_tracking,ports[perfil],capital,min_w,frac)
+    tabs=st.tabs(['Carteira','Acompanhamento','Histórico','Carteiras anteriores','Relatórios'])
+    def side_by_side(fn,args):
+        if many:       # perfis lado a lado, 50% da largura cada
+            for column,perfil in zip(st.columns(len(perfis),gap='large'),perfis):
+                with column: section(perfil,fn,*args(perfil))
+        else: section(perfis[0],fn,*args(perfis[0]))
+    with tabs[0]: side_by_side(render_start,lambda p:(ports[p],capital,min_w,frac))
+    with tabs[1]: side_by_side(render_tracking,lambda p:(ports[p],capital,min_w,frac))
     with tabs[2]:
         if many: render_history_compare(perfis,fs,capital,min_w,frac)       # perfis lado a lado, um grafico, tabela com alternador
         else: section(perfis[0],render_history,capital,min_w,frac)
-    with tabs[3]:
-        for perfil in perfis: section(perfil,render_previous_portfolios)
+    with tabs[3]: side_by_side(render_previous_portfolios,lambda p:())
+    with tabs[4]: side_by_side(render_reports,lambda p:())      # relatorios mensais em PDF, um por perfil
     with st.expander('Sobre o modelo e os dados'):
         render_method()
         for perfil in perfis:
