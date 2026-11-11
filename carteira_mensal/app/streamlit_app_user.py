@@ -540,6 +540,7 @@ def css():
     div[data-testid="stMetric"] label,div[data-testid="stMetric"] [data-testid="stMetricValue"]{color:#f4f7f5!important;overflow-wrap:anywhere}
     div[data-testid="stMetric"] [data-testid="stMetricValue"]{font-size:clamp(1.15rem,1.7vw,1.8rem);font-weight:600}
     div[data-testid="stMetric"] [data-testid="stMetricValue"] *{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+    div[data-testid="stMetricDelta"] svg{display:none}
     div[data-testid="stMetric"] label{color:#93a3a0!important;font-size:.8rem;letter-spacing:.03em}
     </style>''',unsafe_allow_html=True)
 def render_start(f,port,capital,min_w,frac):
@@ -691,12 +692,12 @@ def render_risk_indicators(dfs:dict[str,pd.DataFrame])->None:
         with column:
             if many: st.markdown(f'#### {profiles.display_name(perfil)}')
             a,b=st.columns(2); c,d=st.columns(2); e,_=st.columns(2)
-            a.metric('Queda máxima',pct(m['dd']),delta=f"IBOV: {pct(i['dd'])} · vale em {when(m['dd_mes'])}",delta_color='off')
+            a.metric(f"Queda máxima · {when(m['dd_mes'])}",pct(m['dd']),delta=f"IBOV: {pct(i['dd'])}",delta_color='off')
             b.metric('Volatilidade anual',pct(m['vol']),delta=f"IBOV: {pct(i['vol'])}",delta_color='off')
-            c.metric('Pior mês',pct(m['worst']),delta=f"{when(m['worst_mes'])} · IBOV pior: {pct(i['worst'])}",delta_color='off')
-            d.metric('Melhor mês',pct(m['best']),delta=f"{when(m['best_mes'])} · IBOV melhor: {pct(i['best'])}",delta_color='off')
+            c.metric(f"Pior mês · {when(m['worst_mes'])}",pct(m['worst']),delta=f"IBOV pior: {pct(i['worst'])}",delta_color='off')
+            d.metric(f"Melhor mês · {when(m['best_mes'])}",pct(m['best']),delta=f"IBOV melhor: {pct(i['best'])}",delta_color='off')
             e.metric('Índice de Sharpe',f"{m['sharpe']:.2f}".replace('.',','),delta=f"IBOV: {i['sharpe']:.2f}".replace('.',','),delta_color='off')
-    st.caption('Queda máxima: maior queda do acumulado, do pico ao vale. Volatilidade: desvio dos retornos mensais, anualizado. Sharpe: retorno mensal acima do CDI líquido dividido pela volatilidade, anualizado (quanto maior, melhor o retorno por unidade de risco). Backtest, sem custos de negociação.')
+    st.caption('Queda máxima: maior queda do acumulado, do pico ao vale (o mês é o do vale). Volatilidade: desvio dos retornos mensais, anualizado. Sharpe: retorno mensal acima do CDI líquido dividido pela volatilidade, anualizado (quanto maior, melhor o retorno por unidade de risco). Backtest, sem custos de negociação.')
 def history_totals(df)->dict[str,float]:
     model=df.get('retorno_modelo',pd.Series(dtype=float)); ibov=df.get('retorno_expost_ibov',pd.Series(dtype=float)); cdi=df.get('retorno_cdi_liquido_periodo',pd.Series(dtype=float))
     total_model,total_ibov=compound(model),compound(ibov)
