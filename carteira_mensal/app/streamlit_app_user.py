@@ -676,11 +676,11 @@ def risk_stats(df:pd.DataFrame)->dict[str,Any]:
     def one(col):
         r=pd.to_numeric(df.get(col,pd.Series(dtype=float)),errors='coerce').reset_index(drop=True)
         ok=r.notna(); r,m,c=r[ok].reset_index(drop=True),months[ok].reset_index(drop=True),cdi[ok].reset_index(drop=True)
-        if r.empty: return dict(dd=np.nan,dd_mes='',worst=np.nan,worst_mes='',best=np.nan,best_mes='',vol=np.nan,sharpe=np.nan)
+        if r.empty: return dict(dd=np.nan,dd_mes='',worst=np.nan,worst_mes='',best=np.nan,best_mes='',vol=np.nan,sharpe=np.nan,neg=0,n=0)
         curve=(1+r).cumprod(); peak=np.maximum.accumulate(np.concatenate([[1.0],curve.to_numpy()]))[1:]; depth=curve.to_numpy()/peak-1
         i=int(np.argmin(depth)); sd=float(r.std(ddof=1)) if len(r)>1 else np.nan
         return dict(dd=float(depth[i]),dd_mes=m[i],worst=float(r.min()),worst_mes=m[int(r.idxmin())],best=float(r.max()),best_mes=m[int(r.idxmax())],
-                    vol=sd*np.sqrt(12) if sd==sd else np.nan,sharpe=float((r-c).mean()/sd*np.sqrt(12)) if sd and sd==sd else np.nan)
+                    neg=int((r<0).sum()),n=int(len(r)),vol=sd*np.sqrt(12) if sd==sd else np.nan,sharpe=float((r-c).mean()/sd*np.sqrt(12)) if sd and sd==sd else np.nan)
     return {'modelo':one('retorno_modelo'),'ibov':one('retorno_expost_ibov')}
 def render_risk_indicators(dfs:dict[str,pd.DataFrame])->None:
     """Bloco 'Risco e retorno ajustado ao risco', um por perfil (lado a lado quando ha mais de um)."""
@@ -691,11 +691,13 @@ def render_risk_indicators(dfs:dict[str,pd.DataFrame])->None:
         def when(mes): return month_label(mes) if mes else '-'
         with column:
             if many: st.markdown(f'#### {profiles.display_name(perfil)}')
-            a,b=st.columns(2); c,d=st.columns(2); e,_=st.columns(2)
+            a,b=st.columns(2); c,d=st.columns(2); e,f=st.columns(2)
             a.metric(f"Queda máxima · {when(m['dd_mes'])}",pct(m['dd']),delta=f"IBOV: {pct(i['dd'])}",delta_color='off')
             b.metric('Volatilidade anual',pct(m['vol']),delta=f"IBOV: {pct(i['vol'])}",delta_color='off')
             c.metric(f"Pior mês · {when(m['worst_mes'])}",pct(m['worst']),delta=f"IBOV pior: {pct(i['worst'])}",delta_color='off')
             d.metric(f"Melhor mês · {when(m['best_mes'])}",pct(m['best']),delta=f"IBOV melhor: {pct(i['best'])}",delta_color='off')
+            share=lambda x:x['neg']/x['n'] if x['n'] else np.nan
+            f.metric(f"Meses negativos · {m['neg']} de {m['n']}",pct(share(m),1),delta=f"IBOV: {pct(share(i),1)} ({i['neg']} de {i['n']})",delta_color='off')
             e.metric('Índice de Sharpe',f"{m['sharpe']:.2f}".replace('.',','),delta=f"IBOV: {i['sharpe']:.2f}".replace('.',','),delta_color='off')
     st.caption('Queda máxima: maior queda do acumulado, do pico ao vale (o mês é o do vale). Volatilidade: desvio dos retornos mensais, anualizado. Sharpe: retorno mensal acima do CDI líquido dividido pela volatilidade, anualizado (quanto maior, melhor o retorno por unidade de risco). Backtest, sem custos de negociação.')
 def history_totals(df)->dict[str,float]:
