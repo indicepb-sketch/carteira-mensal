@@ -60,4 +60,5 @@ def test_risk_stats_computes_drawdown_extreme_months_volatility_and_sharpe():
     assert (k["worst"], k["worst_mes"], k["best"], k["best_mes"]) == (-0.20, "2024-02", 0.10, "2024-01")
     sd = float(np.std(df["retorno_modelo"], ddof=1))
     assert abs(k["vol"] - sd * np.sqrt(12)) < 1e-12
+    assert (k["neg"], k["n"]) == (1, 4) and app.risk_stats(df)["ibov"]["neg"] == 1
     assert abs(k["sharpe"] - (df["retorno_modelo"] - 0.01).mean() / sd * np.sqrt(12)) < 1e-12
