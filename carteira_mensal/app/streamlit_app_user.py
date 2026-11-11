@@ -536,7 +536,8 @@ def css():
     }
     div[data-testid="stMetric"]{background:linear-gradient(160deg,#1a2328,#141b1f);border:1px solid #2a3a40;border-radius:12px;padding:14px 18px;min-height:104px;box-shadow:0 2px 10px rgba(0,0,0,.25)}
     div[data-testid="stMetric"] label,div[data-testid="stMetric"] [data-testid="stMetricValue"]{color:#f4f7f5!important;overflow-wrap:anywhere}
-    div[data-testid="stMetric"] [data-testid="stMetricValue"]{font-size:1.8rem;font-weight:600}
+    div[data-testid="stMetric"] [data-testid="stMetricValue"]{font-size:clamp(1.15rem,1.7vw,1.8rem);font-weight:600}
+    div[data-testid="stMetric"] [data-testid="stMetricValue"] *{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
     div[data-testid="stMetric"] label{color:#93a3a0!important;font-size:.8rem;letter-spacing:.03em}
     </style>''',unsafe_allow_html=True)
 def render_start(f,port,capital,min_w,frac):
@@ -817,7 +818,10 @@ def main():
         with_profile(perfil,fn,fs[perfil],*args)
     tabs=st.tabs(['Carteira','Acompanhamento','Histórico','Carteiras anteriores'])
     with tabs[0]:
-        for perfil in perfis: section(perfil,render_start,ports[perfil],capital,min_w,frac)
+        if many:       # perfis lado a lado, 50% da largura cada
+            for column,perfil in zip(st.columns(len(perfis),gap='large'),perfis):
+                with column: section(perfil,render_start,ports[perfil],capital,min_w,frac)
+        else: section(perfis[0],render_start,ports[perfis[0]],capital,min_w,frac)
     with tabs[1]:
         for perfil in perfis: section(perfil,render_tracking,ports[perfil],capital,min_w,frac)
     with tabs[2]:
