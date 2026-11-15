@@ -168,7 +168,7 @@ def test_dashboard_selects_only_official_partial_for_active_version(monkeypatch,
     assert app.latest_official_partial("2026-10", "carteira_forward_2026_10.xlsx", "v1.0.0") == valid
 
 
-def test_official_partial_uses_common_cutoff_and_executable_return(monkeypatch, tmp_path):
+def test_official_partial_uses_last_trading_day_estimating_pending_cdi_and_executable_return(monkeypatch, tmp_path):
     portfolio = pd.DataFrame([
         {"ticker": "AAA3.SA", "nota_final": 2, "peso_recomendado": .6,
          "preco_entrada_fechamento_mes_anterior": 120.0},
@@ -204,10 +204,14 @@ def test_official_partial_uses_common_cutoff_and_executable_return(monkeypatch, 
     summary_frame = pd.read_excel(output, sheet_name="Resumo Parcial")
     summary = dict(zip(summary_frame["metrica"], summary_frame["valor"]))
     assert summary["data_solicitada"] == "2026-10-05"
-    assert summary["data_corte_comum"] == summary["data_avaliacao_parcial"] == "2026-10-02"
+    # cotacoes ate 5/10 e CDI oficial ate 2/10: o pregao de 5/10 usa a ultima taxa diaria conhecida, marcado como estimado
+    assert summary["data_corte_comum"] == summary["data_avaliacao_parcial"] == "2026-10-05"
+    assert summary["cdi_oficial_ate"] == "2026-10-02" and summary["cdi_pregoes_estimados"] == 1
+    assert summary["status"] == "parcial_mes_em_andamento"
+    assert pd.read_excel(output, sheet_name="CDI Diario")["estimado"].tolist() == [False, False, True]
     assert summary["calculo_oficial"] == "executavel_top15_capital_10000"
     assets = pd.read_excel(output, sheet_name="Ativos")
-    assert set(assets["data_avaliacao"]) == {"2026-10-02"}
+    assert set(assets["data_avaliacao"]) == {"2026-10-05"}
     executable = pd.read_excel(output, sheet_name="Carteira Executavel")
     assert summary["retorno_modelo_executavel"] == pytest.approx(executable["contribuicao_pratica"].sum())
     assert summary["retorno_carteira_parcial_aplicada"] == summary["retorno_modelo_executavel"]

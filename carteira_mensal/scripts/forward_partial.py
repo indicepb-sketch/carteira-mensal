@@ -72,6 +72,28 @@ def fetch_cdi_gross_return(start: pd.Timestamp, end: pd.Timestamp) -> tuple[floa
     return gross, frame[["data", "cdi_diario_pct", "cdi_diario_decimal"]], "bcb_sgs_12"
 
 
+MAX_CDI_ESTIMATED_DAYS = 5
+
+
+def extend_cdi_with_last_rate(cdi_daily: pd.DataFrame, trading_days: pd.DatetimeIndex, target: pd.Timestamp,
+                              max_days: int = MAX_CDI_ESTIMATED_DAYS) -> tuple[pd.DataFrame, int]:
+    """O CDI do BCB sai com defasagem de ~1 dia util; as cotacoes saem no mesmo dia.
+
+    Para o parcial do mes em andamento, os pregoes ainda sem CDI oficial usam a ultima taxa diaria conhecida
+    (o CDI so muda nas reunioes do Copom). Os dias estimados ficam marcados e sao substituidos pelo oficial
+    na primeira atualizacao apos a publicacao. Acima de `max_days` pregoes de defasagem nao se estima nada.
+    """
+    official = cdi_daily.assign(estimado=False)
+    last = official.sort_values("data").iloc[-1]
+    end = pd.Timestamp(last["data"]).normalize()
+    days = [d.normalize() for d in pd.DatetimeIndex(trading_days) if end < d.normalize() <= target.normalize()]
+    if not days or len(days) > max_days:
+        return official, 0
+    extra = pd.DataFrame({"data": days, "cdi_diario_pct": float(last["cdi_diario_pct"]),
+                          "cdi_diario_decimal": float(last["cdi_diario_decimal"]), "estimado": True})
+    return pd.concat([official, extra], ignore_index=True), len(days)
+
+
 def cdi_publication_pending(month: str, requested_date: pd.Timestamp, explicit_date: bool, local_today: date | None = None) -> bool:
     local_today = local_today or datetime.now(ZoneInfo("America/Fortaleza")).date()
     return (
@@ -308,6 +330,13 @@ def main() -> None:
             print(f"CDI do periodo {mes_key} ainda nao publicado pelo BCB; parcial nao gerada. Nova tentativa no proximo agendamento.")
             return
         raise RuntimeError("CDI oficial indisponivel; parcial nao publicada")
+    estimated_days = 0
+    if not closing_past_month:       # fechamento de mes usa so CDI oficial; o parcial do mes aberto pode estimar os ultimos pregoes
+        price_end = min(pd.Timestamp(prices[t].dropna().index.max()).normalize() for t in tickers + ["^BVSP"] if t in prices)
+        cdi_daily, estimated_days = extend_cdi_with_last_rate(cdi_daily, prices["^BVSP"].dropna().index, min(requested_date, price_end))
+    else:
+        cdi_daily = cdi_daily.assign(estimado=False)
+    official_cdi_end = pd.Timestamp(cdi_daily.loc[~cdi_daily["estimado"], "data"].max()).normalize()
     today = min(requested_date, pd.Timestamp(cdi_daily["data"].max()).normalize())
     if today <= entry_date or today.month != month or today.year != year:
         raise RuntimeError("CDI ainda nao possui data util no mes da carteira")
@@ -318,7 +347,7 @@ def main() -> None:
             raise RuntimeError(f"Cotacao de {ticker} indisponivel; parcial nao publicada")
         require_price_on(prices[ticker], entry_date, ticker)
         require_price_on(prices[ticker], today, ticker)
-    period_status = "fechamento_mes" if today >= last_weekday else "parcial_mes_em_andamento"
+    period_status = "fechamento_mes" if today >= last_weekday and not estimated_days else "parcial_mes_em_andamento"
     if closing_past_month and period_status != "fechamento_mes":
         print(f"Fechamento de {mes_key} adiado: dados comuns (cotacoes/CDI) so vao ate {today.date()}, ultimo dia util e {last_weekday.date()}.")
         return
@@ -405,6 +434,8 @@ def main() -> None:
             {"metrica": "data_corte_comum", "valor": today.date().isoformat()},
             {"metrica": "data_avaliacao_parcial", "valor": today.date().isoformat()},
             {"metrica": "status", "valor": period_status},
+            {"metrica": "cdi_oficial_ate", "valor": official_cdi_end.date().isoformat()},
+            {"metrica": "cdi_pregoes_estimados", "valor": estimated_days},
             {"metrica": "fonte_precos", "valor": source},
             {"metrica": "consulta_rede_autorizada", "valor": bool(args.allow_network)},
             {"metrica": "capital_referencia", "valor": capital},
